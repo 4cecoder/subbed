@@ -29,7 +29,7 @@ console.log('Transformed data saved to data/transformed-subscriptions.json');
 
 // Generate individual commands for each subscription
 console.log('\n=== Individual commands to add subscriptions ===');
-transformedSubscriptions.forEach((sub, index) => {
+transformedSubscriptions.forEach((sub) => {
   console.log(`npx convex run subscriptions:addSubscription --args '${JSON.stringify({
     channelId: sub.channelId,
     channelName: sub.channelName,

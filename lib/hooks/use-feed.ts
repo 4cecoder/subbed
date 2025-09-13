@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { FeedItem, UseFeedReturn, UserSettings, FeedType } from "@/lib/types";
+import { FeedItem, UseFeedReturn, UserSettings } from "@/lib/types";
 import { apiClient } from "@/lib/api-client";
 
 export function useFeed(settings: UserSettings | null): UseFeedReturn {

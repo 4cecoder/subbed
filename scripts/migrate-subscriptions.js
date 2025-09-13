@@ -1,5 +1,4 @@
 const { readFileSync } = require('fs');
-const { convex } = require('./convex/_generated/server');
 
 // Read the sample subscriptions data
 const sampleSubscriptions = JSON.parse(

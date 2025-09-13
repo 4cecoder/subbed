@@ -13,7 +13,7 @@ import Link from "next/link";
 
 export default function Home() {
   const subscriptions = useQuery(api.subscriptions.getSubscriptions);
-  const { shouldShowOnboarding, isLoading: onboardingLoading } = useOnboarding();
+  useOnboarding();
 
   return (
     <main id="main-content" className="container mx-auto p-4">

@@ -48,7 +48,7 @@ export default function SubscriptionList({
   const handleRemove = useCallback(async (channelId: string) => {
     try {
       if (onRemove) {
-        await onRemove(channelId);
+        onRemove(channelId);
       }
     } catch (error) {
       console.error('Failed to remove subscription:', error);

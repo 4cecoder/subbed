@@ -1,135 +1,126 @@
 # Subbed — YouTube Subscription Manager
 
-This project is a YouTube subscription manager that allows users to manage their channel subscriptions and view recent uploads. It uses Clerk for authentication and Convex for the backend.
+A modern, real-time YouTube subscription manager built with Next.js, Convex, and Clerk. Manage your YouTube subscriptions with offline support, real-time synchronization, and a beautiful responsive interface.
 
-## UI Changes and New Component Functionalities
+## ✨ Features
 
-### Login, Logout, and Profile Management
+- 🎥 **YouTube Subscription Management** - Organize and filter your YouTube subscriptions
+- 🔐 **Secure Authentication** - User authentication with Clerk
+- 🌐 **Real-time Sync** - Instant synchronization across all devices
+- 📱 **Responsive Design** - Works seamlessly on all devices
+- 🚀 **Performance Optimized** - Fast loading and smooth interactions
+- 🔄 **Offline Support** - Works without internet connection
+- 📊 **Analytics Dashboard** - Track your viewing habits and statistics
 
-- **Clerk Integration**: The application now uses Clerk for user authentication.
-  - **Login/Signup**: New users can sign up and existing users can sign in using the Clerk-provided UI. This is available via the "Sign in" button in the header.
-  - **User Profile**: Once signed in, users can manage their profile by clicking on the user button in the header. This opens the Clerk profile management interface.
-  - **Logout**: Users can sign out by clicking the "Sign out" option in the user profile menu.
+## 🚀 Quick Start
 
-### Subscription Management
+### Prerequisites
+- Node.js 18+ or Bun
+- Convex account
+- Clerk account
 
-- **Real-time Synchronization**: Subscriptions are now stored in ConvexDB, providing real-time synchronization across all devices. When a user adds or removes a subscription, the changes are instantly reflected everywhere.
-- **Fetching Subscriptions**: After a user logs in, their subscriptions are fetched from ConvexDB and displayed in a list.
-- **Loading and Error States**:
-  - **Loading**: A loading skeleton is displayed while the subscriptions are being fetched.
-  - **Empty State**: If the user has no subscriptions, a message is displayed with a button to add a sample subscription.
-  - **Errors**: If there is an error fetching the subscriptions, a relevant error message will be displayed to the user.
+### Installation
 
-### New Components
+```bash
+# Clone the repository
+git clone https://github.com/your-username/subbed.git
+cd subbed
 
-- **`Header`**: A new header component has been added, which includes the application title and the Clerk user management buttons (Sign in/Sign up, User Profile).
-- **`SubscriptionList`**: This component is responsible for displaying the list of user subscriptions. It handles the display of each subscription, including the channel logo, name, and a button to remove the subscription.
-- **`FeedLoading`**: A component that displays a skeleton loader while data is being fetched.
-- **`FeedEmpty`**: A component that is displayed when the user has no subscriptions.
+# Install dependencies
+bun install
 
-### Accessibility and Responsiveness
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your credentials
 
-- All new UI components have been designed to be fully accessible, following WCAG 2.1 AA guidelines. This includes proper use of ARIA attributes, keyboard navigation, and focus management.
-- The UI is fully responsive and works seamlessly on all screen sizes, from mobile devices to desktops.
-
-## Quick setup (local machine):
-
-1.  Install dependencies
-
-    ```bash
-    bun install
-    ```
-
-    Or if you prefer npm:
-
-    ```bash
-    npm install
-    ```
-
-2.  Start the dev server
-
-    ```bash
-    bun run dev
-    ```
-
-    Or:
-
-    ```bash
-    npm run dev
-    ```
-
-3.  Open http://localhost:3000
-
-## Authentication
-
-This project uses [Clerk](https://clerk.com/) for authentication.
-
-### Environment Variables
-
-Create a `.env.local` file in the root of the project and add the following environment variables:
-
+# Start development server
+bun run dev
 ```
+
+### Environment Setup
+
+Create a `.env.local` file with the following variables:
+
+```bash
+# Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+
+# Convex Backend
+NEXT_PUBLIC_CONVEX_URL=https://your-convex-url.convex.cloud
+
+# Optional: Analytics
+NEXT_PUBLIC_ANALYTICS_ID=your_analytics_id
 ```
 
-## ConvexDB Integration
+## 📚 Documentation
 
-This project uses [Convex](https://convex.dev/) as a backend for storing and managing subscriptions.
+Comprehensive documentation is available in the [`docs/`](./docs/) directory:
 
-### Setup
+### 📖 Getting Started
+- [**Setup Guide**](./docs/SETUP.md) - Installation and configuration
+- [**Architecture Overview**](./docs/ARCHITECTURE.md) - System design and components
 
-1.  **Install Convex CLI:**
+### 🔧 Technical Documentation
+- [**API Documentation**](./docs/API.md) - API endpoints and usage
+- [**Deployment Guide**](./docs/DEPLOYMENT.md) - Production deployment
+- [**Performance Guide**](./docs/PERFORMANCE.md) - Performance optimization
+- [**Hybrid Storage**](./docs/HYBRID_STORAGE.md) - Offline-first architecture
 
-    ```bash
-    npm install -g convex
-    ```
+### 🛠️ Development
+- [**Contributing Guide**](./docs/CONTRIBUTING.md) - How to contribute
+- [**Testing Guide**](./docs/TESTING.md) - Testing strategies
+- [**Code Style Guide**](./docs/CODE_STYLE.md) - Coding conventions
 
-2.  **Initialize Convex:**
+### 📋 Additional Resources
+- [**Troubleshooting**](./docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [**Bug Fixes**](./docs/BUG_FIXES.md) - Documented bug fixes
+- [**Migration Guide**](./docs/MIGRATION.md) - Data migration procedures
 
-    Run the following command in your project root and follow the prompts:
+## 🏗️ Architecture
 
-    ```bash
-    npx convex dev
-    ```
-
-    This will create a `convex` directory with a basic schema and functions.
-
-### Environment Variables
-
-Add the following environment variables to your `.env.local` file:
+Subbed is built with a modern, scalable architecture:
 
 ```
-NEXT_PUBLIC_CONVEX_URL=...
+Frontend (Next.js 14)
+├── React Components (TypeScript)
+├── State Management (React Hooks)
+├── UI Components (Shadcn/ui)
+└── Performance Optimizations
+
+Backend (Convex)
+├── Database Schema
+├── API Functions
+├── Authentication Integration
+└── Real-time Data Sync
+
+Infrastructure
+├── Vercel Deployment
+├── Environment Management
+├── Performance Monitoring
+└── Error Tracking
 ```
 
-You can get the `NEXT_PUBLIC_CONVEX_URL` from the Convex dashboard.
+## 🤝 Contributing
 
-### API Usage
+We welcome contributions! Please see our [Contributing Guide](./docs/CONTRIBUTING.md) for details on:
 
-The Convex backend provides the following functions for managing subscriptions:
+- Setting up the development environment
+- Code style and conventions
+- Testing requirements
+- Submitting pull requests
 
-*   `getSubscriptions`: Retrieves all subscriptions for the authenticated user.
-*   `addSubscription`: Adds a new subscription for the authenticated user.
-*   `removeSubscription`: Deletes a subscription for the authenticated user.
+## 📄 License
 
-All API functions are secured and require a valid Clerk JWT. The backend validates the token and ensures that users can only access their own data.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Deployment (Vercel)
+## 🆘 Support
 
-1.  **Set up environment variables:**
-    - In your Vercel project dashboard, navigate to **Settings > Environment Variables**.
-    - Add the following variables:
-      - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-      - `CLERK_SECRET_KEY`
-      - `NEXT_PUBLIC_CONVEX_URL`
+- 📖 [Documentation](./docs/README.md)
+- 🐛 [Report Issues](https://github.com/your-username/subbed/issues)
+- 💬 [Discussions](https://github.com/your-username/subbed/discussions)
 
-2.  **Import project:**
-    - In the Vercel dashboard, import your Git repository.
+---
 
-3.  **Deploy:**
-    - Push your code to the main branch. Vercel will automatically build and deploy the project.
+**Built with ❤️ using Next.js, Convex, and Clerk**</content>
+<parameter name="filePath">README.md

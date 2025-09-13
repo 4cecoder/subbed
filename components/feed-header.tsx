@@ -102,7 +102,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = React.memo(({
                   Refresh
                 </Button>
               </div>
-              <UserButton afterSignOutUrl="/"/>
+              <UserButton />
           </div>
         </div>
       </div>

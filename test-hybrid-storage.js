@@ -11,23 +11,6 @@ process.env.NODE_ENV = 'test';
 process.env.NEXT_PUBLIC_CONVEX_URL = 'http://localhost:3001';
 
 // Test data
-const testSubscription = {
-  id: 'UCtest123456789',
-  title: 'Test Channel',
-  url: 'https://www.youtube.com/channel/UCtest123456789',
-  created_at: new Date().toISOString()
-};
-
-const testSettings = {
-  per_page: 25,
-  per_channel: 15,
-  showThumbnails: false,
-  showDescriptions: true,
-  defaultFeedType: 'video',
-  sortOrder: 'oldest',
-  caching_ttl: 300,
-  concurrency: 8
-};
 
 async function testLocalStorage() {
   console.log('🧪 Testing Local Storage...');

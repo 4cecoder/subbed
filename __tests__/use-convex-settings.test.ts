@@ -1,4 +1,4 @@
-import { renderHook, act, waitFor } from '@testing-library/react'
+import { renderHook } from '@testing-library/react'
 import { useConvexSettings } from '../lib/hooks/use-convex-settings'
 import { UserSettings } from '../lib/types'
 
@@ -80,9 +80,7 @@ describe('useConvexSettings', () => {
       showThumbnails: false,
     }
 
-    await act(async () => {
-      await result.current.updateSettings(newSettings)
-    })
+    await result.current.updateSettings(newSettings)
 
     expect(mockUpdateSettings).toHaveBeenCalledWith(newSettings)
     expect(result.current.settings).toEqual({
@@ -110,9 +108,7 @@ describe('useConvexSettings', () => {
 
     let error: Error | null = null
     try {
-      await act(async () => {
-        await result.current.updateSettings(newSettings)
-      })
+      await result.current.updateSettings(newSettings)
     } catch (err) {
       error = err as Error
     }
@@ -129,7 +125,7 @@ describe('useConvexSettings', () => {
 
     const { result } = renderHook(() => useConvexSettings())
     
-    const updatePromise = act(() => result.current.updateSettings({ per_page: 30 }))
+    const updatePromise = result.current.updateSettings({ per_page: 30 })
     
     expect(result.current.loading).toBe(true)
     
@@ -140,9 +136,7 @@ describe('useConvexSettings', () => {
   it('refreshes settings', async () => {
     const { result } = renderHook(() => useConvexSettings())
     
-    await act(async () => {
-      await result.current.refreshSettings()
-    })
+    await result.current.refreshSettings()
 
     // Should not throw error and should maintain current settings
     expect(result.current.settings).toEqual(mockConvexSettings)
@@ -156,9 +150,7 @@ describe('useConvexSettings', () => {
 
     const { result } = renderHook(() => useConvexSettings())
     
-    await act(async () => {
-      await result.current.refreshSettings()
-    })
+    await result.current.refreshSettings()
 
     expect(result.current.error).toBe('Failed to fetch settings')
   })
@@ -173,9 +165,7 @@ describe('useConvexSettings', () => {
     }
 
     // State should update immediately, before the async operation completes
-    act(() => {
-      result.current.updateSettings(newSettings)
-    })
+    result.current.updateSettings(newSettings)
 
     expect(result.current.settings.per_page).toBe(30)
   })
@@ -190,9 +180,7 @@ describe('useConvexSettings', () => {
       showThumbnails: false,
     }
 
-    await act(async () => {
-      await result.current.updateSettings(newSettings)
-    })
+    await result.current.updateSettings(newSettings)
 
     expect(result.current.settings).toEqual({
       per_page: 30,

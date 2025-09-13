@@ -52,7 +52,7 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
     updateQuery, 
     clearQuery, 
     isSearching 
-  } = useDebouncedSearch('', (searchQuery) => {
+  } = useDebouncedSearch('', () => {
     // Search is handled by the filteredAndSortedFeed useMemo
   });
 

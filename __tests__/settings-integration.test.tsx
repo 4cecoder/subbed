@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { AdvancedVideoFeed } from '../components/advanced-video-feed'
 import { useConvexSettings } from '../lib/hooks/use-convex-settings'
 import { useConvexSubscriptions } from '../lib/hooks/use-convex-subscriptions'
@@ -36,6 +36,9 @@ describe('Settings Integration', () => {
 
   const mockSubscriptions = [
     {
+      _id: 'sub1' as any,
+      _creationTime: 1704067200000,
+      userId: 'user1',
       channelId: 'channel1',
       channelName: 'Test Channel 1',
       channelLogoUrl: 'https://example.com/logo1.png',
@@ -203,7 +206,7 @@ describe('Settings Integration', () => {
 
   it('shows loading state when settings are loading', () => {
     mockUseConvexSettings.mockReturnValue({
-      settings: null,
+      settings: mockSettings,
       loading: true,
       error: null,
       updateSettings: jest.fn(),
@@ -217,7 +220,7 @@ describe('Settings Integration', () => {
 
   it('shows error state when settings have error', () => {
     mockUseConvexSettings.mockReturnValue({
-      settings: null,
+      settings: mockSettings,
       loading: false,
       error: 'Failed to load settings',
       updateSettings: jest.fn(),
