@@ -1,0 +1,13 @@
+Util commands for the system (Linux):
+- File operations: ls, cd, mkdir, rm, cp, mv
+- Text processing: grep, sed, awk, cat, head, tail
+- Process management: ps, kill, top
+- Network: curl, wget
+- Package management: apt (update, install, remove)
+- Version control: git (status, add, commit, push, pull, log, diff)
+- Build tools: make, gcc, python3 (for native packages)
+- Text editors: nano, vim
+- File permissions: chmod, chown
+- Disk usage: df, du
+- System info: uname, lsb_release
+- For this project: bun or npm for package management, node for running scripts

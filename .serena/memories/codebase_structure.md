@@ -1,0 +1,22 @@
+Rough structure of the codebase:
+- app/: Next.js app directory
+  - page.tsx: Main home page component with all UI logic
+  - layout.tsx: Root layout
+  - globals.css: Global styles
+  - api/: API routes
+    - feed/route.ts: Aggregated feed endpoint
+    - resolve/route.ts: Resolve channel URL to ID
+    - rss/route.ts: Individual channel RSS feed
+    - settings/route.ts: Settings management
+    - subscriptions/route.ts: Subscription CRUD
+- components/: Reusable components
+  - ui/: shadcn/ui style components (button, input, card, etc.)
+- data/: Data storage
+  - settings.json: User settings
+  - subscriptions.json: Subscription list
+- lib/: Utilities
+  - db.ts: JSON file database operations
+  - settings.ts: Settings management
+  - utils.ts: Utility functions
+- public/: Static assets (favicon, icons)
+- Root files: package.json, tsconfig.json, next.config.ts, eslint.config.mjs, etc.

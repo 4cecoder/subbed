@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Subbed — YouTube subscription manager (local + no logins)
 
-## Getting Started
+This project runs locally and stores subscriptions in a local SQLite database. It does not require any login.
 
-First, run the development server:
+## Quick setup (local machine):
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1.  Install dependencies
+
+    ```bash
+    bun install
+    ```
+
+    Or if you prefer npm:
+
+    ```bash
+    npm install
+    ```
+
+    Note: `better-sqlite3` is a native package and may require build tools on your system (Python 3, make, gcc/clang). On Debian/Ubuntu:
+
+    ```bash
+    sudo apt update && sudo apt install -y build-essential python3
+    ```
+
+    On Gentoo:
+
+    ```bash
+    emerge --ask dev-lang/python sys-devel/gcc sys-devel/make
+    ```
+
+2.  Start the dev server
+
+    ```bash
+    bun run dev
+    ```
+
+    Or:
+
+    ```bash
+    npm run dev
+    ```
+
+3.  Open http://localhost:3000
+
+## Authentication
+
+This project uses [Clerk](https://clerk.com/) for authentication.
+
+### Environment Variables
+
+Create a `.env.local` file in the root of the project and add the following environment variables:
+
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ConvexDB Integration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project uses [Convex](https://convex.dev/) as a backend for storing and managing subscriptions.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Setup
 
-## Learn More
+1.  **Install Convex CLI:**
 
-To learn more about Next.js, take a look at the following resources:
+    ```bash
+    npm install -g convex
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2.  **Initialize Convex:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    Run the following command in your project root and follow the prompts:
 
-## Deploy on Vercel
+    ```bash
+    npx convex dev
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    This will create a `convex` directory with a basic schema and functions.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Environment Variables
+
+Add the following environment variables to your `.env.local` file:
+
+```
+CONVEX_URL=...
+CLERK_JWT_ISSUER_DOMAIN=...
+```
+
+You can get the `CONVEX_URL` from the Convex dashboard. The `CLERK_JWT_ISSUER_DOMAIN` should be set to your Clerk JWT issuer domain.
+
+### API Usage
+
+The Convex backend provides the following functions for managing subscriptions:
+
+*   `getSubscriptions`: Retrieves all subscriptions for the authenticated user.
+*   `addSubscription`: Adds a new subscription for the authenticated user.
+*   `deleteSubscription`: Deletes a subscription for the authenticated user.
+
+All API functions are secured and require a valid Clerk JWT. The backend validates the token and ensures that users can only access their own data.
+
+## Notes
+- The app provisions the SQLite DB automatically at `./data/subbed.sqlite` when the server runs.
+- No Google/YouTube login is used. The server fetches public YouTube oEmbed and Atom feeds to provide video lists.
+
+If you prefer to avoid any network lookups when adding subscriptions, enter channel IDs directly (they start with `UC`).
+
+## Commands
+- `bun run dev` or `npm run dev` — development server
+- `bun run build` and `bun run start` or `npm run build` and `npm run start` — build and run in production
+
+If you want an Electron/desktop wrapper or to change where the DB file is stored, set environment variable `SUBBED_DB_FILE` to an absolute path before starting the server.
