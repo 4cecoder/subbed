@@ -1,32 +1,29 @@
 "use client";
 
-import React from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
-interface FeedEmptyProps {
-  onRefresh: () => void;
-}
+export default function FeedEmpty() {
+  const addSubscription = useMutation(api.subscriptions.addSubscription);
 
-export const FeedEmpty: React.FC<FeedEmptyProps> = ({ onRefresh }) => {
+  const handleAddSample = () => {
+    addSubscription({
+      channelId: "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+      channelName: "Google",
+      channelLogoUrl:
+        "https://yt3.ggpht.com/ytc/AAUvwni_LdnpDi-SOIhjp4Kxo2l_yVBoYsfdDCpUM5IK=s88-c-k-c0x00ffffff-no-rj",
+      channelUrl: "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+    });
+  };
+
   return (
-    <Card className="p-8 text-center">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-          <div className="w-6 h-6 bg-muted-foreground rounded-sm"></div>
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold">No videos to show</h3>
-          <p className="text-muted-foreground mt-1">
-            Select a subscription or press &ldquo;Refresh All&rdquo; to load recent uploads.
-          </p>
-        </div>
-        <Button onClick={onRefresh} variant="outline">
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Refresh All
-        </Button>
-      </div>
-    </Card>
+    <div className="text-center">
+      <h2 className="text-2xl font-bold mb-4">No subscriptions yet</h2>
+      <p className="mb-8">
+        Add your favorite YouTube channels to see their latest videos here.
+      </p>
+      <Button onClick={handleAddSample}>Add Sample Subscription</Button>
+    </div>
   );
-};
+}

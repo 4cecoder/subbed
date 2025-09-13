@@ -162,3 +162,10 @@ export interface UseSettingsReturn {
   updateSettings: (settings: Partial<UserSettings>) => Promise<void>;
   refreshSettings: () => Promise<void>;
 }
+
+export interface UseSyncReturn {
+  isOnline: boolean;
+  forceSync: () => Promise<void>;
+  startSync: () => void;
+  stopSync: () => void;
+}

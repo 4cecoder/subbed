@@ -1,8 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { SubscriptionList } from '../components/subscription-list'
+import '@testing-library/jest-dom'
+import SubscriptionList from '../components/subscription-list'
 import { EnhancedSubscriptionList } from '../components/enhanced-subscription-list'
 
-// Mock the ScrollArea component to test scrolling behavior
+// Mock ScrollArea component to test scrolling behavior
 jest.mock('../components/ui/scroll-area', () => ({
   ScrollArea: ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <div data-testid="scroll-area" className={className}>
@@ -19,7 +20,18 @@ describe('Subscription List Scrolling', () => {
     created_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
   }))
 
-  const mockProps = {
+  const mockConvexSubscriptions = Array.from({ length: 50 }, (_, i) => ({
+    _id: `convex-${i}` as any,
+    _creationTime: Date.now() - i * 24 * 60 * 60 * 1000,
+    userId: 'test-user',
+    channelId: `channel-${i}`,
+    channelName: `Test Channel ${i + 1}`,
+    channelLogoUrl: `https://example.com/logo${i}.jpg`,
+    channelUrl: `https://youtube.com/channel/test${i}`,
+    createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
+  }))
+
+  const mockEnhancedProps = {
     subs: mockSubscriptions,
     selected: null,
     loading: false,
@@ -29,9 +41,18 @@ describe('Subscription List Scrolling', () => {
     onOpenClearConfirm: jest.fn(),
   }
 
-  describe('SubscriptionList', () => {
+  const mockSubscriptionListProps = {
+    subscriptions: mockConvexSubscriptions,
+    selectedId: null,
+    loading: false,
+    onSelect: jest.fn(),
+    onRefreshAll: jest.fn(),
+    onOpenClearConfirm: jest.fn(),
+  }
+
+  describe('SubscriptionList (Enhanced)', () => {
     it('renders with ScrollArea for many subscriptions', () => {
-      render(<SubscriptionList {...mockProps} />)
+      render(<SubscriptionList {...mockSubscriptionListProps} />)
       
       // Check if ScrollArea is rendered
       expect(screen.getByTestId('scroll-area')).toBeInTheDocument()
@@ -39,42 +60,92 @@ describe('Subscription List Scrolling', () => {
       // Check if all subscriptions are rendered
       expect(screen.getAllByText(/Test Channel/)).toHaveLength(50)
       
-      // Check if the component has proper height classes
-      const card = screen.getByRole('heading', { name: /subscriptions/i }).closest('.card')
+      // Check if component has proper height classes
+      const card = screen.getByRole('heading', { name: /subscriptions/i }).closest('.border-border\\/60')
       expect(card).toHaveClass('h-full', 'flex', 'flex-col')
     })
 
     it('maintains proper layout with many items', () => {
-      render(<SubscriptionList {...mockProps} />)
+      render(<SubscriptionList {...mockSubscriptionListProps} />)
       
-      // Check if the content area has flex layout
+      // Check if content area has flex layout
       const cardContent = screen.getByTestId('scroll-area').closest('.flex-1')
       expect(cardContent).toBeInTheDocument()
       
       // Check if subscription items are properly spaced
       const subscriptionItems = screen.getAllByRole('listitem')
       subscriptionItems.forEach(item => {
-        expect(item).toHaveClass('border', 'rounded-lg')
+        expect(item).toHaveClass('border', 'rounded-xl')
       })
     })
 
     it('handles empty state without scrolling issues', () => {
-      render(<SubscriptionList {...mockProps} subs={[]} />)
+      render(<SubscriptionList {...mockSubscriptionListProps} subscriptions={[]} />)
       
-      expect(screen.getByText('No subscriptions yet.')).toBeInTheDocument()
+      expect(screen.getByText('No subscriptions yet')).toBeInTheDocument()
       expect(screen.getByTestId('scroll-area')).toBeInTheDocument()
+    })
+
+    it('handles search functionality', async () => {
+      render(<SubscriptionList {...mockSubscriptionListProps} />)
+      
+      // Find search input
+      const searchInput = screen.getByPlaceholderText('Search subscriptions...')
+      
+      // Search for a specific channel
+      fireEvent.change(searchInput, { target: { value: 'Test Channel 5' } })
+      
+      // Should show filtered results
+      await waitFor(() => {
+        expect(screen.getByText('Test Channel 5')).toBeInTheDocument()
+        expect(screen.queryByText('Test Channel 1')).not.toBeInTheDocument()
+      })
+    })
+
+    it('handles sorting functionality', async () => {
+      render(<SubscriptionList {...mockSubscriptionListProps} />)
+      
+      // Find and click filter button
+      const filterButton = screen.getByRole('button', { name: /toggle filters/i })
+      fireEvent.click(filterButton)
+      
+      // Change sort to 'name'
+      const sortSelect = screen.getByLabelText('Sort subscriptions')
+      fireEvent.change(sortSelect, { target: { value: 'name' } })
+      
+      // Should still show all subscriptions but sorted
+      expect(screen.getAllByText(/Test Channel/)).toHaveLength(50)
+    })
+
+    it('handles grouping functionality', async () => {
+      render(<SubscriptionList {...mockSubscriptionListProps} />)
+      
+      // Find and click filter button
+      const filterButton = screen.getByRole('button', { name: /toggle filters/i })
+      fireEvent.click(filterButton)
+      
+      // Change grouping to 'alphabetical'
+      const groupSelect = screen.getByLabelText('Group subscriptions')
+      fireEvent.change(groupSelect, { target: { value: 'alphabetical' } })
+      
+      // Should show grouped subscriptions
+      await waitFor(() => {
+        // Look for any alphabetical grouping buttons
+        const groupButtons = screen.getAllByRole('button', { name: /[A-Z]/ })
+        expect(groupButtons.length).toBeGreaterThan(0)
+      })
     })
   })
 
   describe('EnhancedSubscriptionList', () => {
     it('renders with proper height constraints and ScrollArea', () => {
-      render(<EnhancedSubscriptionList {...mockProps} />)
+      render(<EnhancedSubscriptionList {...mockEnhancedProps} />)
       
       // Check if ScrollArea is rendered
       expect(screen.getByTestId('scroll-area')).toBeInTheDocument()
       
-      // Check if the card has max height constraint
-      const card = screen.getByRole('heading', { name: /subscriptions/i }).closest('.card')
+      // Check if card has max height constraint
+      const card = screen.getByRole('heading', { name: /subscriptions/i }).closest('.border-border\\/60')
       expect(card).toHaveClass('max-h-[calc(100vh-200px)]')
       
       // Check if all subscriptions are rendered
@@ -82,9 +153,9 @@ describe('Subscription List Scrolling', () => {
     })
 
     it('maintains responsive layout with many items', () => {
-      render(<EnhancedSubscriptionList {...mockProps} />)
+      render(<EnhancedSubscriptionList {...mockEnhancedProps} />)
       
-      // Check if the header is not scrollable (flex-shrink-0)
+      // Check if header is not scrollable (flex-shrink-0)
       const header = screen.getByRole('heading', { name: /subscriptions/i }).closest('.flex-shrink-0')
       expect(header).toBeInTheDocument()
       
@@ -98,7 +169,7 @@ describe('Subscription List Scrolling', () => {
     })
 
     it('handles search and filtering with many items', async () => {
-      render(<EnhancedSubscriptionList {...mockProps} />)
+      render(<EnhancedSubscriptionList {...mockEnhancedProps} />)
       
       // Find search input
       const searchInput = screen.getByPlaceholderText('Search subscriptions...')
@@ -117,9 +188,9 @@ describe('Subscription List Scrolling', () => {
     })
 
     it('handles grouping with many items', async () => {
-      render(<EnhancedSubscriptionList {...mockProps} />)
+      render(<EnhancedSubscriptionList {...mockEnhancedProps} />)
       
-      // Find and click the filter button
+      // Find and click filter button
       const filterButton = screen.getByRole('button', { name: /toggle filters/i })
       fireEvent.click(filterButton)
       
@@ -139,7 +210,7 @@ describe('Subscription List Scrolling', () => {
     })
 
     it('handles empty state with enhanced features', () => {
-      render(<EnhancedSubscriptionList {...mockProps} subs={[]} />)
+      render(<EnhancedSubscriptionList {...mockEnhancedProps} subs={[]} />)
       
       expect(screen.getByText('No subscriptions yet')).toBeInTheDocument()
       expect(screen.getByText('Add your first YouTube channel above')).toBeInTheDocument()
@@ -157,7 +228,7 @@ describe('Subscription List Scrolling', () => {
       }))
 
       const startTime = performance.now()
-      render(<EnhancedSubscriptionList {...mockProps} subs={manySubscriptions} />)
+      render(<EnhancedSubscriptionList {...mockEnhancedProps} subs={manySubscriptions} />)
       const endTime = performance.now()
 
       // Should render within reasonable time (less than 1 second)

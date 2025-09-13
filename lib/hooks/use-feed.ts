@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { FeedItem, UseFeedReturn, UserSettings, FeedType } from "@/lib/types";
 import { apiClient } from "@/lib/api-client";
 
@@ -26,12 +26,14 @@ export function useFeed(settings: UserSettings | null): UseFeedReturn {
   }, [feed, settings]);
 
   const loadFeed = useCallback(async (pageToLoad = 1, search = "") => {
+    if (!settings) return;
+    
     setError(null);
     setLoading(true);
 
     try {
-      const perPage = settings?.per_page || 20;
-      const feedType = (settings?.defaultFeedType || "all") as FeedType;
+      const perPage = settings.per_page || 20;
+      const feedType = settings.defaultFeedType || "all";
 
       const response = await apiClient.getFeed(pageToLoad, perPage, search, feedType);
       const data = response.data;
@@ -57,13 +59,15 @@ export function useFeed(settings: UserSettings | null): UseFeedReturn {
   }, [settings]);
 
   const loadChannelFeed = useCallback(async (channelId: string) => {
+    if (!settings) return;
+    
     setError(null);
     setLoading(true);
     setFeed([]);
 
     try {
-      const limit = settings?.per_channel || 10;
-      const feedType = (settings?.defaultFeedType || "all") as FeedType;
+      const limit = settings.per_channel || 10;
+      const feedType = settings.defaultFeedType || "all";
 
       const response = await apiClient.getRssFeed(channelId, limit, feedType);
       const data = response.data;
@@ -94,6 +98,13 @@ export function useFeed(settings: UserSettings | null): UseFeedReturn {
       await loadChannelFeed(selectedId);
     }
   }, [selectedId, loadFeed, loadChannelFeed]);
+
+  // Auto-load feed when settings are available
+  useEffect(() => {
+    if (settings && selectedId === null) {
+      loadFeed(1, "");
+    }
+  }, [settings, selectedId, loadFeed]);
 
   return {
     feed: filteredFeed,

@@ -166,6 +166,25 @@ class ApiClient {
     return response.json();
   }
 
+  // Sync data between local and Convex
+  async syncData(): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/api/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to sync data');
+    }
+
+    const data = await response.json();
+    
+    // Clear all caches after sync
+    this.clearCache();
+
+    return data;
+  }
+
   // Clear all caches
   clearCache(): void {
     apiCache.clear();

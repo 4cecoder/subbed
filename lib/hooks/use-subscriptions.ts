@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Subscription, UseSubscriptionsReturn } from "@/lib/types";
 import { apiClient } from "@/lib/api-client";
 
@@ -70,6 +70,11 @@ export function useSubscriptions(): UseSubscriptionsReturn {
       throw err;
     }
   }, []);
+
+  // Load subscriptions on mount
+  useEffect(() => {
+    refreshSubscriptions();
+  }, [refreshSubscriptions]);
 
   return {
     subscriptions,

@@ -1,0 +1,101 @@
+[
+  {
+    "userId": "sample-user-id",
+    "channelId": "UCr-5TdGkKszdbboXXsFZJTQ",
+    "channelName": "Gamefromscratch",
+    "channelLogoUrl": "https://picsum.photos/seed/UCr-5TdGkKszdbboXXsFZJTQ/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UCr-5TdGkKszdbboXXsFZJTQ",
+    "createdAt": "2025-09-13T16:18:34.257Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UCUyeluBRhGPCW4rPe_UvBZQ",
+    "channelName": "ThePrimeTime",
+    "channelLogoUrl": "https://picsum.photos/seed/UCUyeluBRhGPCW4rPe_UvBZQ/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UCUyeluBRhGPCW4rPe_UvBZQ",
+    "createdAt": "2025-09-13T16:32:52.415Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UCsBjURrPoezykLs9EqgamOA",
+    "channelName": "Fireship",
+    "channelLogoUrl": "https://picsum.photos/seed/UCsBjURrPoezykLs9EqgamOA/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UCsBjURrPoezykLs9EqgamOA",
+    "createdAt": "2025-09-13T16:36:42.674Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UCaJ1IYz3Bxcg9tCJPpn5v0g",
+    "channelName": "Darren Builds AI",
+    "channelLogoUrl": "https://picsum.photos/seed/UCaJ1IYz3Bxcg9tCJPpn5v0g/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UCaJ1IYz3Bxcg9tCJPpn5v0g",
+    "createdAt": "2025-09-13T19:24:38.834Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UC9H0HzpKf5JlazkADWnW1Jw",
+    "channelName": "bashbunni",
+    "channelLogoUrl": "https://picsum.photos/seed/UC9H0HzpKf5JlazkADWnW1Jw/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UC9H0HzpKf5JlazkADWnW1Jw",
+    "createdAt": "2025-09-13T19:26:15.548Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UChhw6DlKKTQ9mYSpTfXUYqA",
+    "channelName": "Starter Story",
+    "channelLogoUrl": "https://picsum.photos/seed/UChhw6DlKKTQ9mYSpTfXUYqA/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UChhw6DlKKTQ9mYSpTfXUYqA",
+    "createdAt": "2025-09-13T19:27:59.627Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UCxOVEOhPNXcJuyfVLhm_BfQ",
+    "channelName": "Tom Gregory",
+    "channelLogoUrl": "https://picsum.photos/seed/UCxOVEOhPNXcJuyfVLhm_BfQ/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UCxOVEOhPNXcJuyfVLhm_BfQ",
+    "createdAt": "2025-09-13T20:43:13.807Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UCQd9wpBDkfQxqxGIBko2fKg",
+    "channelName": "GosuCoder",
+    "channelLogoUrl": "https://picsum.photos/seed/UCQd9wpBDkfQxqxGIBko2fKg/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UCQd9wpBDkfQxqxGIBko2fKg",
+    "createdAt": "2025-09-13T20:51:20.809Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UCrXSVX9a1mj8l0CMLwKgMVw",
+    "channelName": "AI Jason",
+    "channelLogoUrl": "https://picsum.photos/seed/UCrXSVX9a1mj8l0CMLwKgMVw/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UCrXSVX9a1mj8l0CMLwKgMVw",
+    "createdAt": "2025-09-13T21:02:10.281Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UC_x36zCEGilGpB1m-V4gmjg",
+    "channelName": "IndyDevDan",
+    "channelLogoUrl": "https://picsum.photos/seed/UC_x36zCEGilGpB1m-V4gmjg/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UC_x36zCEGilGpB1m-V4gmjg",
+    "createdAt": "2025-09-13T21:51:52.326Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  },
+  {
+    "userId": "sample-user-id",
+    "channelId": "UCEMA_xj3YeAI7Z6jsOw3peg",
+    "channelName": "Patrick Ellis",
+    "channelLogoUrl": "https://picsum.photos/seed/UCEMA_xj3YeAI7Z6jsOw3peg/100/100.jpg",
+    "channelUrl": "https://www.youtube.com/channel/UCEMA_xj3YeAI7Z6jsOw3peg",
+    "createdAt": "2025-09-13T22:10:06.743Z",
+    "lastSyncedAt": "2025-09-13T23:25:47.242Z"
+  }
+]

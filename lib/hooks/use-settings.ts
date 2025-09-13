@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { UserSettings, UseSettingsReturn } from "@/lib/types";
 import { apiClient } from "@/lib/api-client";
 
@@ -36,6 +36,11 @@ export function useSettings(): UseSettingsReturn {
       setLoading(false);
     }
   }, [settings]);
+
+  // Load settings on mount
+  useEffect(() => {
+    refreshSettings();
+  }, [refreshSettings]);
 
   return {
     settings,

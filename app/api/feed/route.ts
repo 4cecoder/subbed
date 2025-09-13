@@ -113,7 +113,7 @@ async function createShortDetector() {
 
 export async function GET(req: Request) {
   try {
-    const settings = readSettings();
+    const settings = await readSettings();
     const { searchParams } = new URL(req.url);
     const page = Math.max(1, isValidNumber(searchParams.get("page"), 1));
     const per_page = Math.max(1, isValidNumber(searchParams.get("per_page"), settings?.per_page || DEFAULT_PER_PAGE));
@@ -122,7 +122,7 @@ export async function GET(req: Request) {
     const type = (searchParams.get("type") || settings?.defaultFeedType || "all").toLowerCase();
     const concurrency = Math.max(1, isValidNumber(settings?.concurrency || 6, 6));
 
-    const subs = listSubscriptions();
+    const subs = await listSubscriptions();
     // fetch per-channel feeds but limit concurrency
     let items: any[] = [];
 

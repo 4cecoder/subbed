@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { EnhancedSubscriptionList } from '@/components/enhanced-subscription-list';
 import { EnhancedVirtualList } from '@/components/enhanced-virtual-list';
+import { AnalyticsDashboard } from '@/components/analytics-dashboard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -164,69 +165,11 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
           </>
         ) : (
           /* Analytics View */
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5" />
-                  Analytics Overview
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-primary/5 rounded-lg">
-                    <div className="text-2xl font-bold text-primary">{analytics.totalVideos}</div>
-                    <div className="text-sm text-muted-foreground">Total Videos</div>
-                  </div>
-                  <div className="text-center p-4 bg-secondary/50 rounded-lg">
-                    <div className="text-2xl font-bold">{analytics.channelsWithContent}</div>
-                    <div className="text-sm text-muted-foreground">Active Channels</div>
-                  </div>
-                  <div className="text-center p-4 bg-accent/50 rounded-lg">
-                    <div className="text-2xl font-bold">{analytics.shortVideos}</div>
-                    <div className="text-sm text-muted-foreground">Short Videos</div>
-                  </div>
-                </div>
-
-                {analytics.oldestVideo && analytics.newestVideo && (
-                  <div className="mt-6 space-y-2">
-                    <h4 className="font-medium">Content Timeline</h4>
-                    <div className="text-sm text-muted-foreground">
-                      <div>Oldest: {analytics.oldestVideo.toLocaleDateString()}</div>
-                      <div>Newest: {analytics.newestVideo.toLocaleDateString()}</div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Channel breakdown could be added here */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Channel Activity</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {subs.slice(0, 10).map(sub => {
-                    const channelVideos = feed.filter(item => item.channelId === sub.id);
-                    return (
-                      <div key={sub.id} className="flex items-center justify-between py-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium truncate">{sub.title || sub.id}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {channelVideos.length} videos
-                          </div>
-                        </div>
-                        <Badge variant="outline">
-                          {channelVideos.length}
-                        </Badge>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <AnalyticsDashboard 
+            feed={feed}
+            subscriptions={subs}
+            loading={loading}
+          />
         )}
       </div>
     </div>

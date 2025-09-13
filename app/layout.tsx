@@ -1,7 +1,15 @@
-import { ClerkProvider } from "@clerk/nextjs";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/header";
+import ConvexClientProvider from "@/lib/context/convex-client-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,19 +22,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Subbed — YouTube subscriptions (no login)",
-  description: "Manage YouTube channel subscriptions and view recent uploads without signing into YouTube",
+  title: "Subbed — YouTube subscriptions",
+  description:
+    "Manage YouTube channel subscriptions and view recent uploads with your YouTube account.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50"
+          >
             Skip to main content
           </a>
-          {children}
+          <ConvexClientProvider>
+            <Header />
+            {children}
+          </ConvexClientProvider>
         </body>
       </html>
     </ClerkProvider>

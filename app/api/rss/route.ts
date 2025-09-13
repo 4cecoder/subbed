@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   let id = (searchParams.get("id") || searchParams.get("channel") || "").trim();
 
-  const settings = readSettings();
+  const settings = await readSettings();
   const defaultLimit = settings?.per_channel || 10;
   const limit = Math.max(1, Math.min(50, Number(searchParams.get("limit") || String(defaultLimit))));
   const q = (searchParams.get("q") || "").trim().toLowerCase();

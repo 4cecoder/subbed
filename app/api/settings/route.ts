@@ -3,7 +3,7 @@ import { readSettings, writeSettings } from "../../../lib/settings";
 
 export async function GET() {
   try {
-    const s = readSettings();
+    const s = await readSettings();
     return NextResponse.json({ settings: s });
   } catch (e: any) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     if (typeof body.caching_ttl === "number") allowed.caching_ttl = Math.max(0, Math.floor(body.caching_ttl));
     if (typeof body.concurrency === "number") allowed.concurrency = Math.max(1, Math.floor(body.concurrency));
 
-    const updated = writeSettings(allowed);
+    const updated = await writeSettings(allowed);
     return NextResponse.json({ settings: updated });
   } catch (e: any) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
