@@ -70,7 +70,7 @@ export async function GET(req: Request) {
                 }
               }
             }
-          } catch (e) {
+          } catch {
             // ignore
           }
         }
@@ -97,7 +97,7 @@ export async function GET(req: Request) {
               }
             }
           }
-        } catch (e) {
+        } catch {
           // ignore
         }
       }
@@ -175,7 +175,7 @@ export async function GET(req: Request) {
         } finally {
           clearTimeout(to);
         }
-      } catch (e) {
+      } catch {
         // ignore fetch errors
       }
 

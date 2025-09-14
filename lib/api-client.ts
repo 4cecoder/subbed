@@ -48,12 +48,12 @@ class ApiClient {
     });
   }
 
-  async getSubscriptions(): Promise<ApiResponse<any[]>> {
+  async getSubscriptions(): Promise<ApiResponse<unknown[]>> {
     const url = `${this.baseUrl}/api/subscriptions`;
     return this.fetchWithCache(url, CACHE_KEYS.SUBSCRIPTIONS, 60); // 1 minute cache
   }
 
-  async getSettings(): Promise<ApiResponse<any>> {
+  async getSettings(): Promise<ApiResponse<unknown>> {
     const url = `${this.baseUrl}/api/settings`;
     return this.fetchWithCache(url, CACHE_KEYS.SETTINGS, 300); // 5 minutes cache
   }
@@ -63,7 +63,7 @@ class ApiClient {
     perPage: number,
     query: string,
     type: string
-  ): Promise<ApiResponse<any>> {
+  ): Promise<ApiResponse<unknown>> {
     const params = new URLSearchParams({
       page: page.toString(),
       per_page: perPage.toString(),
@@ -79,7 +79,7 @@ class ApiClient {
     channelId: string,
     limit: number,
     type: string
-  ): Promise<ApiResponse<any>> {
+  ): Promise<ApiResponse<unknown>> {
     const params = new URLSearchParams({
       id: channelId,
       limit: limit.toString(),
@@ -90,7 +90,7 @@ class ApiClient {
     return this.fetchWithCache(url, cacheKey, 300); // 5 minutes cache
   }
 
-  async resolveChannel(url: string): Promise<any> {
+  async resolveChannel(url: string): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/resolve?url=${encodeURIComponent(url)}`);
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: response.statusText }));
@@ -99,7 +99,7 @@ class ApiClient {
     return response.json();
   }
 
-  async saveSettings(settings: any): Promise<any> {
+  async saveSettings(settings: unknown): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/settings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -118,7 +118,7 @@ class ApiClient {
     return data;
   }
 
-  async addSubscription(subscription: { id: string; title: string | null; url: string }): Promise<any> {
+  async addSubscription(subscription: { id: string; title: string | null; url: string }): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/subscriptions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -136,7 +136,7 @@ class ApiClient {
     return response.json();
   }
 
-  async removeSubscription(id: string): Promise<any> {
+  async removeSubscription(id: string): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/subscriptions?id=${encodeURIComponent(id)}`, {
       method: 'DELETE',
     });
@@ -151,7 +151,7 @@ class ApiClient {
     return response.json();
   }
 
-  async clearSubscriptions(): Promise<any> {
+  async clearSubscriptions(): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/subscriptions`, {
       method: 'DELETE',
     });
@@ -167,7 +167,7 @@ class ApiClient {
   }
 
   // Sync data between local and Convex
-  async syncData(): Promise<any> {
+  async syncData(): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/sync`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

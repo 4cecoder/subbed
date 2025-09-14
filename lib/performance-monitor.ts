@@ -83,7 +83,7 @@ class PerformanceMonitor {
   getMemoryUsage(): { used: number; total: number; limit: number } | null {
     if (typeof window === 'undefined') return null;
 
-    // @ts-ignore - performance.memory is not in types but available in Chrome
+    // @ts-expect-error - performance.memory is not in types but available in Chrome
     const memory = (performance as any).memory;
     if (!memory) return null;
 

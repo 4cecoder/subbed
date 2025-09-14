@@ -147,7 +147,7 @@ export async function GET(req: Request) {
             const channelTitle = j.channelTitle || subs.find((s: { id: string; title?: string }) => s.id === channelId)?.title || null;
             const from = (j.items || []).map((it: unknown) => ({ ...it, channelId, channelTitle }));
             items.push(...from);
-          } catch (e) {
+          } catch {
             // ignore per-channel errors
           }
         })
@@ -181,7 +181,7 @@ export async function GET(req: Request) {
               const channelTitle = j.channelTitle || subs.find((s: { id: string; title?: string }) => s.id === channelId)?.title || null;
               const from = (j.items || []).map((it: unknown) => ({ ...it, channelId, channelTitle }));
               items.push(...from);
-            } catch (e) {
+            } catch {
               // ignore
             }
           })

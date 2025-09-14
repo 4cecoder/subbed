@@ -72,7 +72,7 @@ export function useFeed(settings: UserSettings | null): UseFeedReturn {
       const response = await apiClient.getRssFeed(channelId, limit, feedType);
       const data = response.data;
 
-      const items: FeedItem[] = (data.items || []).map((item: any) => ({
+      const items: FeedItem[] = (data.items || []).map((item: unknown) => ({
         ...item,
         channelId: data.channelId,
         channelTitle: data.channelTitle,

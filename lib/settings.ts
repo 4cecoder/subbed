@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { ConvexHttpClient } from "convex/browser";
 // Dynamic import to avoid build-time issues
-let api: any;
+let api: unknown;
 try {
   api = require("../convex/_generated/api").api;
 } catch (error) {
@@ -45,13 +45,13 @@ function readLocalSettings(): Settings {
     const raw = fs.readFileSync(SETTINGS_FILE, "utf8");
     const parsed = JSON.parse(raw || "{}");
     return { ...DEFAULT_SETTINGS, ...(parsed || {}) };
-  } catch (e) {
+  } catch {
     return DEFAULT_SETTINGS;
   }
 }
 
 function writeLocalSettings(s: Partial<Settings>): Settings {
-  const merged: Settings = { ...DEFAULT_SETTINGS, ...(s || {}) as any } as Settings;
+  const merged: Settings = { ...DEFAULT_SETTINGS, ...(s || {}) as Record<string, unknown> } as Settings;
   fs.writeFileSync(SETTINGS_FILE, JSON.stringify(merged, null, 2));
   return merged;
 }
@@ -72,7 +72,7 @@ async function isConvexAvailable(): Promise<boolean> {
 }
 
 // Convert Convex settings to local format
-function convexToLocalSettings(convexSettings: any): Settings {
+function convexToLocalSettings(convexSettings: Record<string, unknown>): Settings {
   return {
     per_page: convexSettings.per_page,
     per_channel: convexSettings.per_channel,

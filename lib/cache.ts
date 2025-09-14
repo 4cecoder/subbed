@@ -1,8 +1,8 @@
 // Simple in-memory cache with TTL support
 class MemoryCache {
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
 
-  set(key: string, data: any, ttlSeconds: number = 300): void {
+  set(key: string, data: unknown, ttlSeconds: number = 300): void {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -10,7 +10,7 @@ class MemoryCache {
     });
   }
 
-  get(key: string): any | null {
+  get(key: string): unknown {
     const item = this.cache.get(key);
     if (!item) return null;
 
@@ -43,7 +43,7 @@ class MemoryCache {
 
 // Request deduplication
 class RequestDeduper {
-  private pendingRequests = new Map<string, Promise<any>>();
+  private pendingRequests = new Map<string, Promise<unknown>>();
 
   async dedupe<T>(key: string, requestFn: () => Promise<T>): Promise<T> {
     if (this.pendingRequests.has(key)) {

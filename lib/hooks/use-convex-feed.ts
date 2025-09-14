@@ -37,7 +37,7 @@ export function useConvexFeed(settings: UserSettings | null): UseFeedReturn {
       const data = await response.json();
       const subscription = subscriptions.find(sub => sub.channelId === channelId);
 
-      return (data.items || []).map((item: any) => ({
+      return (data.items || []).map((item: unknown) => ({
         ...item,
         channelId: channelId,
         channelTitle: subscription?.channelName || data.channelTitle || 'Unknown Channel',

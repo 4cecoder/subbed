@@ -2,10 +2,11 @@ import fs from "fs";
 import path from "path";
 import { ConvexHttpClient } from "convex/browser";
 // Dynamic import to avoid build-time issues
-let api: any;
+let api: unknown;
 try {
   api = require("../convex/_generated/api").api;
-} catch (error) {
+} catch {
+  // Ignore error during build
   console.log("Convex API not available during build");
 }
 import { Subscription } from "./types";
@@ -56,7 +57,7 @@ async function isConvexAvailable(): Promise<boolean> {
 }
 
 // Convert Convex subscription to local format
-function convexToLocalSubscription(convexSub: any): Subscription {
+function convexToLocalSubscription(convexSub: { channelId: string; channelName: string; channelUrl: string; createdAt: string }): Subscription {
   return {
     id: convexSub.channelId,
     title: convexSub.channelName,
@@ -82,8 +83,8 @@ export async function listSubscriptions(): Promise<Subscription[]> {
   
   if (convexAvailable) {
     try {
-      const convexSubs = await convex.query(api.subscriptions.getSubscriptions, {});
-      return convexSubs.map(convexToLocalSubscription);
+        const convexSubs = await convex.query(api.subscriptions.getSubscriptions, {});
+      return (convexSubs as any[]).map(convexToLocalSubscription);
     } catch (error) {
       console.error('Error fetching from Convex, falling back to local:', error);
     }
