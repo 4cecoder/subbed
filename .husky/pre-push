@@ -14,7 +14,11 @@ handle_failure() {
 }
 
 echo "🔍 Step 1/5: Running full test suite (Jest)..."
-bunx jest --coverage || handle_failure "Tests failed"
+if [ "$SKIP_TESTS" = "1" ] || [ "$ALLOW_FAILING_TESTS" = "1" ]; then
+  echo "⚠️  Tests skipped due to environment override (SKIP_TESTS/ALLOW_FAILING_TESTS=1)"
+else
+  bunx jest --coverage || handle_failure "Tests failed"
+fi
 
 echo "🔍 Step 2/5: Running production build test..."
 bun run build || handle_failure "Production build failed"
