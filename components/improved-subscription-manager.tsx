@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { SubscriptionItem } from '@/components/subscription-item';
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
@@ -109,6 +110,9 @@ export const ImprovedSubscriptionManager: React.FC<ImprovedSubscriptionManagerPr
                 {subscriptions.length} channels
               </Badge>
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Manage your YouTube subscriptions, search, sort, and remove channels.
+            </DialogDescription>
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
@@ -288,9 +292,9 @@ export const ImprovedSubscriptionManager: React.FC<ImprovedSubscriptionManagerPr
               </div>
             </CardHeader>
 
-            <CardContent className="flex-1 flex flex-col min-h-0 pt-0">
+            <CardContent className="flex-1 flex flex-col min-h-0 overflow-hidden pt-0 subscription-list-container">
               {loading ? (
-                <div className="flex items-center justify-center py-8">
+                <div className="flex items-center justify-center py-8" role="status">
                   <Loader2 className="w-8 h-8 animate-spin text-primary" />
                 </div>
               ) : subscriptions.length === 0 ? (
@@ -308,50 +312,55 @@ export const ImprovedSubscriptionManager: React.FC<ImprovedSubscriptionManagerPr
                   </div>
                 </div>
               ) : (
-                <ScrollArea className="flex-1 -mx-6 px-6">
-                  <div className="space-y-3">
-                    {groupedSubscriptions.map(group => (
-                      <div key={group.title} className="space-y-2">
-                        {state.groupBy !== 'none' && (
-                          <Button
-                            onClick={() => toggleGroup(group.title)}
-                            variant="ghost"
-                            className="w-full justify-between p-3 h-auto rounded-xl border border-border/50 hover:bg-accent/50 hover:border-accent/80 transition-all duration-200"
-                            aria-expanded={group.isExpanded}
-                            aria-controls={`group-${group.title}`}
-                          >
-                            <span className="font-medium text-sm flex items-center gap-2">
-                              {state.groupBy === 'date' && (
-                                <Calendar className="w-4 h-4 text-muted-foreground" />
+                <div className="flex-1 min-h-0 relative h-full w-full">
+                  <ScrollArea className="h-full w-full -mx-6 px-6">
+                    <div className="space-y-3 pb-4">
+                      {groupedSubscriptions.map(group => (
+                        <div key={group.title} className="space-y-2">
+                          {state.groupBy !== 'none' && (
+                            <Button
+                              onClick={() => toggleGroup(group.title)}
+                              variant="ghost"
+                              className="group-header"
+                              aria-expanded={group.isExpanded}
+                              aria-controls={`group-${group.title}`}
+                            >
+                              <span className="font-medium text-sm flex items-center gap-2">
+                                {state.groupBy === 'date' && (
+                                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                                )}
+                                {group.title}
+                                <Badge variant="outline" className="ml-2 text-xs">
+                                  {group.subscriptions.length}
+                                </Badge>
+                              </span>
+                              {group.isExpanded ? (
+                                <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4 text-muted-foreground" />
                               )}
-                              {group.title}
-                              <Badge variant="outline" className="ml-2 text-xs">
-                                {group.subscriptions.length}
-                              </Badge>
-                            </span>
-                            {group.isExpanded ? (
-                              <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                            )}
-                          </Button>
-                        )}
+                            </Button>
+                          )}
 
-                        {(state.groupBy === 'none' || group.isExpanded) && (
-                          <div id={`group-${group.title}`} className="space-y-2">
-                            {group.subscriptions.map(subscription => (
-                              <SubscriptionItem
-                                key={subscription._id}
-                                subscription={subscription}
-                                onRemove={handleRemoveClick}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
+                          {(state.groupBy === 'none' || group.isExpanded) && (
+                            <div id={`group-${group.title}`} className="space-y-2">
+                              {group.subscriptions.map(subscription => (
+                                <SubscriptionItem
+                                  key={subscription._id}
+                                  subscription={subscription}
+                                  onRemove={handleRemoveClick}
+                                  className="subscription-item-scroll"
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                  {/* Scroll indicator for better UX */}
+                  <div className="scroll-indicator absolute bottom-0 left-0 right-0" />
+                </div>
               )}
             </CardContent>
           </Card>

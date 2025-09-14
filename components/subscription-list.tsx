@@ -9,6 +9,13 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   RefreshCw,
   ExternalLink,
   Trash2,
@@ -180,10 +187,8 @@ export default function SubscriptionList({
   const SubscriptionItem: React.FC<{ sub: Doc<'subscriptions'>; isSelected: boolean }> = React.memo(
     ({ sub, isSelected }) => (
       <li
-        className={`p-3 sm:p-4 border rounded-xl transition-all duration-200 hover:shadow-md ${
-          isSelected
-            ? 'bg-primary/5 border-primary/20 shadow-sm ring-1 ring-primary/10'
-            : 'hover:bg-accent/50 hover:border-accent/60'
+        className={`p-3 sm:p-4 border rounded-xl subscription-item ${
+          isSelected ? 'subscription-item-active' : 'subscription-item-hover'
         }`}
       >
         <div className="flex items-center justify-between gap-3 sm:gap-4">
@@ -291,7 +296,7 @@ export default function SubscriptionList({
             placeholder="Search subscriptions..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10 h-9 sm:h-10 text-sm"
+            className="search-input"
             aria-label="Search subscriptions"
           />
           {searchQuery && (
@@ -309,45 +314,43 @@ export default function SubscriptionList({
 
         {/* Filters */}
         {showFilters && (
-          <div className="space-y-3 p-3 sm:p-4 bg-muted/30 rounded-xl border border-border/50 mt-3 sm:mt-4">
+          <div className="filter-panel mt-3 sm:mt-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label
-                  htmlFor="sort-select"
+                  htmlFor="subs-sort"
                   className="text-sm font-medium mb-1.5 block text-foreground"
                 >
                   Sort by
                 </label>
-                <select
-                  id="sort-select"
-                  value={sortBy}
-                  onChange={e => setSortBy(e.target.value as SortOption)}
-                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  aria-label="Sort subscriptions"
-                >
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="name">Name A-Z</option>
-                </select>
+                <Select value={sortBy} onValueChange={value => setSortBy(value as SortOption)}>
+                  <SelectTrigger id="subs-sort" aria-label="Sort subscriptions">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest First</SelectItem>
+                    <SelectItem value="oldest">Oldest First</SelectItem>
+                    <SelectItem value="name">Name A-Z</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label
-                  htmlFor="group-select"
+                  htmlFor="subs-group"
                   className="text-sm font-medium mb-1.5 block text-foreground"
                 >
                   Group by
                 </label>
-                <select
-                  id="group-select"
-                  value={groupBy}
-                  onChange={e => setGroupBy(e.target.value as GroupOption)}
-                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  aria-label="Group subscriptions"
-                >
-                  <option value="none">No Grouping</option>
-                  <option value="date">By Date</option>
-                  <option value="alphabetical">Alphabetical</option>
-                </select>
+                <Select value={groupBy} onValueChange={value => setGroupBy(value as GroupOption)}>
+                  <SelectTrigger id="subs-group" aria-label="Group subscriptions">
+                    <SelectValue placeholder="Group by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No Grouping</SelectItem>
+                    <SelectItem value="date">By Date</SelectItem>
+                    <SelectItem value="alphabetical">Alphabetical</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -392,7 +395,7 @@ export default function SubscriptionList({
         </div>
 
         {/* Subscription List */}
-        <ScrollArea className="flex-1 min-h-0">
+        <ScrollArea className="flex-1 min-h-0 h-full">
           <div className="space-y-3 sm:space-y-4 pr-2 sm:pr-3">
             {/* All Subscriptions Option */}
             {onSelect && (
@@ -441,7 +444,7 @@ export default function SubscriptionList({
                   <Button
                     onClick={() => toggleGroup(group.title)}
                     variant="ghost"
-                    className="w-full justify-between p-3 sm:p-4 h-auto rounded-xl border border-border/50 hover:bg-accent/50 hover:border-accent/80 transition-all duration-200"
+                    className="group-header"
                     aria-expanded={group.isExpanded}
                     aria-controls={`group-${group.title}`}
                   >

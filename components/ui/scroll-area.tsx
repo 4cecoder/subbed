@@ -11,12 +11,12 @@ function ScrollArea({
   return (
     <ScrollAreaPrimitive.Root
       data-slot="scroll-area"
-      className={cn('relative overflow-hidden', className)}
+      className={cn('relative overflow-hidden scroll-area-enhanced', className)}
       {...props}
     >
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
-        className="h-full w-full rounded-[inherit]"
+        className="h-full w-full rounded-[inherit] scroll-smooth-enhanced overscroll-contain overflow-y-auto overflow-x-hidden"
       >
         {children}
       </ScrollAreaPrimitive.Viewport>
@@ -30,24 +30,26 @@ function ScrollBar({
   className,
   orientation = 'vertical',
   ...props
-}: React.ComponentProps<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>) {
+}: React.ComponentProps<typeof ScrollAreaPrimitive.Scrollbar>) {
   return (
-    <ScrollAreaPrimitive.ScrollAreaScrollbar
+    <ScrollAreaPrimitive.Scrollbar
       data-slot="scroll-area-scrollbar"
       orientation={orientation}
       className={cn(
         'flex touch-none select-none transition-colors',
-        orientation === 'vertical' && 'h-full w-2.5 border-l border-l-transparent p-[1px]',
-        orientation === 'horizontal' && 'h-2.5 w-full border-t border-t-transparent p-[1px]',
+        orientation === 'vertical' &&
+          'h-full w-3 border-l border-l-transparent p-[1px] hover:w-3.5',
+        orientation === 'horizontal' &&
+          'h-3 w-full border-t border-t-transparent p-[1px] hover:h-3.5',
         className
       )}
       {...props}
     >
-      <ScrollAreaPrimitive.ScrollAreaThumb
+      <ScrollAreaPrimitive.Thumb
         data-slot="scroll-area-thumb"
-        className="relative flex-1 rounded-full bg-border"
+        className="relative flex-1 rounded-full bg-border/70 hover:bg-border/90 transition-colors duration-200"
       />
-    </ScrollAreaPrimitive.ScrollAreaScrollbar>
+    </ScrollAreaPrimitive.Scrollbar>
   );
 }
 

@@ -305,4 +305,92 @@
   .group-header {
     @apply w-full justify-between p-3 sm:p-4 h-auto rounded-xl border border-border/50 hover:bg-accent/50 hover:border-accent/80 transition-all duration-200;
   }
+
+  /* Enhanced scroll area styling */
+  .scroll-area-enhanced {
+    @apply overflow-hidden;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border) / 0.7) transparent;
+  }
+
+  .scroll-area-enhanced::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  .scroll-area-enhanced::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 6px;
+  }
+
+  .scroll-area-enhanced::-webkit-scrollbar-thumb {
+    background: hsl(var(--border) / 0.7);
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: all 0.2s ease;
+  }
+
+  .scroll-area-enhanced::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--border) / 0.9);
+    background-clip: padding-box;
+  }
+
+  .scroll-area-enhanced::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Smooth scrolling for better UX */
+  .scroll-smooth-enhanced {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Subscription list container improvements */
+  .subscription-list-container {
+    @apply flex-1 min-h-0 overflow-hidden;
+  }
+
+  /* Subscription item hover states */
+  .subscription-item-scroll {
+    @apply transition-all duration-200 hover:shadow-sm hover:scale-[1.01];
+  }
+
+  /* Scroll indicator for better UX */
+  .scroll-indicator {
+    @apply absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-t from-background/80 to-transparent pointer-events-none;
+  }
+}
+
+/* Clerk.js theme integration */
+@layer base {
+  /* Ensure Clerk components inherit the site's theme */
+  .cl-rootBox {
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+  }
+
+  /* Override Clerk's default focus styles to match site theme */
+  .cl-formButtonPrimary:focus,
+  .cl-formFieldInput:focus,
+  .cl-socialButtonsBlockButton:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Ensure proper contrast in both themes */
+  .cl-card {
+    color-scheme: light;
+  }
+
+  .dark .cl-card {
+    color-scheme: dark;
+  }
+
+  /* Smooth transitions for theme changes */
+  .cl-rootBox * {
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
 }

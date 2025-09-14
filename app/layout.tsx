@@ -1,9 +1,9 @@
-import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/header';
 import ConvexClientProvider from '@/lib/context/convex-client-provider';
+import { ClerkThemeProvider } from '@/lib/context/clerk-theme-provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -23,21 +23,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50"
-          >
-            Skip to main content
-          </a>
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50"
+        >
+          Skip to main content
+        </a>
+        <ClerkThemeProvider>
           <ConvexClientProvider>
             <Header />
             {children}
           </ConvexClientProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkThemeProvider>
+      </body>
+    </html>
   );
 }

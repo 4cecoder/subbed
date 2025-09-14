@@ -1,6 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Doc } from '@/convex/_generated/dataModel';
 import { ExternalLink, X, Users } from 'lucide-react';
@@ -34,18 +35,26 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = memo(
 
     return (
       <div
-        className={`flex items-center p-3 sm:p-4 border rounded-xl transition-all duration-200 hover:shadow-md ${
-          isSelected
-            ? 'bg-primary/5 border-primary/20 shadow-sm ring-1 ring-primary/10'
-            : 'hover:bg-accent/50 hover:border-accent/60'
+        className={`flex items-center p-3 sm:p-4 border rounded-xl subscription-item ${
+          isSelected ? 'subscription-item-active' : 'subscription-item-hover'
         } ${className}`}
         role="listitem"
         aria-label={`Subscription: ${subscription.channelName}`}
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {/* Channel Avatar */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted/50 rounded-full flex items-center justify-center flex-shrink-0">
-            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted/50 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+            {subscription.channelLogoUrl ? (
+              <Image
+                src={subscription.channelLogoUrl}
+                alt={`${subscription.channelName} logo`}
+                width={48}
+                height={48}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Users className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+            )}
           </div>
 
           {/* Channel Info */}
@@ -83,7 +92,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = memo(
             asChild
             variant="ghost"
             size="sm"
-            className="h-8 w-8 sm:h-9 sm:w-9 p-0 touch-manipulation hover:bg-blue-100 dark:hover:bg-blue-900"
+            className="h-8 w-8 sm:h-9 sm:w-9 p-0 touch-manipulation hover:bg-accent"
             aria-label={`Open ${subscription.channelName} on YouTube`}
           >
             <a
@@ -91,7 +100,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = memo(
               target="_blank"
               rel="noopener noreferrer"
             >
-              <ExternalLink className="w-4 h-4 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
+              <ExternalLink className="w-4 h-4 sm:w-4 sm:h-4" />
             </a>
           </Button>
 

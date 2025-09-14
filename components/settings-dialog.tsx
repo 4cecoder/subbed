@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -121,13 +122,45 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
       return;
     }
 
+    // Only submit changed fields compared to current settings (explicitly, for strict typing)
+    const changed: Partial<UserSettings> = {};
+    const baseline = settings ?? ({} as Partial<UserSettings>);
+
+    if (draft.per_page !== undefined && draft.per_page !== baseline.per_page) {
+      changed.per_page = draft.per_page;
+    }
+    if (draft.per_channel !== undefined && draft.per_channel !== baseline.per_channel) {
+      changed.per_channel = draft.per_channel;
+    }
+    if (draft.concurrency !== undefined && draft.concurrency !== baseline.concurrency) {
+      changed.concurrency = draft.concurrency;
+    }
+    if (draft.caching_ttl !== undefined && draft.caching_ttl !== baseline.caching_ttl) {
+      changed.caching_ttl = draft.caching_ttl;
+    }
+    if (draft.defaultFeedType !== undefined && draft.defaultFeedType !== baseline.defaultFeedType) {
+      changed.defaultFeedType = draft.defaultFeedType;
+    }
+    if (draft.sortOrder !== undefined && draft.sortOrder !== baseline.sortOrder) {
+      changed.sortOrder = draft.sortOrder;
+    }
+    if (draft.showThumbnails !== undefined && draft.showThumbnails !== baseline.showThumbnails) {
+      changed.showThumbnails = draft.showThumbnails;
+    }
+    if (
+      draft.showDescriptions !== undefined &&
+      draft.showDescriptions !== baseline.showDescriptions
+    ) {
+      changed.showDescriptions = draft.showDescriptions;
+    }
+
     try {
-      await onSave(draft);
+      await onSave(changed);
       onOpenChange(false);
     } catch {
       // Error is handled by the hook and displayed via error prop
     }
-  }, [draft, onSave, onOpenChange, validateSettings]);
+  }, [draft, onSave, onOpenChange, validateSettings, settings]);
 
   const updateDraft = useCallback(
     (updates: Partial<UserSettings>) => {
@@ -154,6 +187,9 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
             <Settings className="w-5 h-5" />
             Settings
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Configure feed, display, filtering, and performance preferences.
+          </DialogDescription>
         </DialogHeader>
 
         {/* Error Display */}

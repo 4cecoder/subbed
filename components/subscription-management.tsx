@@ -81,9 +81,9 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   }, [feed]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full min-h-0">
       {/* Subscription Sidebar */}
-      <div className="lg:col-span-1 space-y-6">
+      <div className="lg:col-span-1 space-y-6 min-h-0">
         {/* Header with controls */}
         <Card>
           <CardHeader>
@@ -115,7 +115,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
         </Card>
 
         {/* Enhanced Subscription List */}
-        <div className="h-[calc(100vh-12rem)]">
+        <div className="h-[calc(100vh-12rem)] min-h-0">
           <EnhancedSubscriptionList
             subs={subs}
             selected={selected}
@@ -129,7 +129,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
       </div>
 
       {/* Main Content Area */}
-      <div className="lg:col-span-2 space-y-6">
+      <div className="lg:col-span-2 space-y-6 min-h-0">
         {viewMode === 'feed' ? (
           <>
             {/* Feed Header */}

@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -127,6 +128,9 @@ export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({ open, onOpen
               </p>
             </div>
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Learn the main features and benefits of Subbed in two quick steps.
+          </DialogDescription>
         </DialogHeader>
 
         {/* Progress Indicator */}
@@ -134,6 +138,7 @@ export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({ open, onOpen
           {Array.from({ length: totalSteps }, (_, i) => (
             <div
               key={i}
+              role="presentation"
               className={`w-2 h-2 rounded-full transition-colors ${
                 i === currentStep ? 'bg-primary' : 'bg-muted'
               }`}
