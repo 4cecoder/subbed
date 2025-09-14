@@ -13,8 +13,8 @@ handle_failure() {
     exit 1
 }
 
-echo "🔍 Step 1/5: Running full test suite..."
-bun test --coverage || handle_failure "Tests failed"
+echo "🔍 Step 1/5: Running full test suite (Jest)..."
+bunx jest --coverage || handle_failure "Tests failed"
 
 echo "🔍 Step 2/5: Running production build test..."
 bun run build || handle_failure "Production build failed"
