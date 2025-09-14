@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const s = await readSettings();
     return NextResponse.json({ settings: s });
-  } catch (e: any) {
+  } catch (e: unknown) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
@@ -13,7 +13,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const allowed: any = {};
+    const allowed: Record<string, unknown> = {};
     if (typeof body.per_page === "number") allowed.per_page = Math.max(1, Math.floor(body.per_page));
     if (typeof body.per_channel === "number") allowed.per_channel = Math.max(1, Math.floor(body.per_channel));
     if (typeof body.showThumbnails === "boolean") allowed.showThumbnails = body.showThumbnails;
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     const updated = await writeSettings(allowed);
     return NextResponse.json({ settings: updated });
-  } catch (e: any) {
+  } catch (e: unknown) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }

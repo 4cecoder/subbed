@@ -2,18 +2,15 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SubscriptionList } from '@/components/subscription-list';
 import { useConvexSubscriptions } from '@/lib/hooks/use-convex-subscriptions';
 import {
   Plus,
-  Search,
   Loader2,
   AlertCircle,
   CheckCircle,
@@ -132,7 +129,7 @@ export const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-6xl lg:max-w-7xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="w-5 h-5" />
@@ -267,25 +264,25 @@ export const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
                     {subscriptions.map((subscription: Doc<"subscriptions">) => (
                       <div
                         key={subscription._id}
-                        className="flex items-center justify-between p-3 border rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        className="flex items-center p-3 border rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full max-w-full"
                       >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <div className="w-10 h-10 bg-muted/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <Users className="w-5 h-5 text-muted-foreground" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">{subscription.channelName}</p>
-                            <p className="text-xs text-muted-foreground font-mono truncate">
-                              {subscription.channelId}
-                            </p>
-                          </div>
+                        <div className="w-10 h-10 bg-muted/50 rounded-full flex items-center justify-center flex-shrink-0 mr-3">
+                          <Users className="w-5 h-5 text-muted-foreground" />
                         </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="flex-1 min-w-0 pr-3 overflow-hidden">
+                          <p className="font-medium text-sm leading-tight overflow-hidden text-ellipsis whitespace-nowrap" title={subscription.channelName}>
+                            {subscription.channelName}
+                          </p>
+                          <p className="text-xs text-muted-foreground font-mono leading-tight overflow-hidden text-ellipsis whitespace-nowrap" title={subscription.channelId}>
+                            {subscription.channelId}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
                           <Button
                             variant="ghost"
                             size="sm"
                             asChild
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 hover:bg-blue-100 dark:hover:bg-blue-900"
                           >
                             <a
                               href={`https://www.youtube.com/channel/${subscription.channelId}`}
@@ -293,7 +290,7 @@ export const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
                               rel="noopener noreferrer"
                               aria-label={`Open ${subscription.channelName} on YouTube`}
                             >
-                              <ExternalLink className="w-4 h-4" />
+                              <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                             </a>
                           </Button>
                           <Button

@@ -8,7 +8,7 @@ async function fetchTextWithTimeout(url: string, timeout = 6000) {
   try {
     const r = await fetch(url, { headers: { "User-Agent": "subbed-app (+https://example)" }, signal: ctrl.signal });
     if (r.ok) return await r.text();
-  } catch (e) {
+  } catch {
     // ignore
   } finally {
     clearTimeout(to);
@@ -58,7 +58,44 @@ async function resolveAuthorUrlToChannel(authorUrl: string) {
     }
     const txt = await fetchTextWithTimeout(authorUrl, 6000);
     return extractChannelIdFromHtml(txt);
-  } catch (e) {
+  } catch {
+    return null;
+  }
+}
+
+async function getChannelNameFromChannelId(channelId: string) {
+  try {
+    const channelUrl = `https://www.youtube.com/channel/${channelId}`;
+    const txt = await fetchTextWithTimeout(channelUrl, 6000);
+    if (!txt) return null;
+
+    // Try various methods to extract channel name
+    let channelName = null;
+
+    // Method 1: og:title meta tag (most reliable)
+    let m = txt.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i);
+    if (m) channelName = m[1];
+
+    // Method 2: title tag
+    if (!channelName) {
+      m = txt.match(/<title>([^<]+?)\s*-\s*YouTube<\/title>/i);
+      if (m) channelName = m[1];
+    }
+
+    // Method 3: JSON data in the page
+    if (!channelName) {
+      m = txt.match(/"title"\s*:\s*"([^"]+)"/);
+      if (m) channelName = m[1];
+    }
+
+    // Method 4: More specific JSON patterns
+    if (!channelName) {
+      m = txt.match(/"channelMetadataRenderer"\s*:\s*{[^}]*"title"\s*:\s*"([^"]+)"/);
+      if (m) channelName = m[1];
+    }
+
+    return channelName ? channelName.trim() : null;
+  } catch {
     return null;
   }
 }
@@ -101,22 +138,25 @@ export async function GET(req: Request) {
     if (r.ok) {
       const j = await r.json();
       const authorUrl = j.author_url;
-      const title = j.title || j.author_name || null;
       if (typeof authorUrl === "string") {
         const m = authorUrl.match(/\/channel\/(UC[A-Za-z0-9_-]{22})/);
         if (m) {
-          return NextResponse.json({ channelId: m[1], title });
+          const channelName = await getChannelNameFromChannelId(m[1]);
+          return NextResponse.json({ channelId: m[1], title: channelName || j.author_name || null });
         }
         // try resolving the author's page to a channel id
         try {
           const resolved = await resolveAuthorUrlToChannel(authorUrl);
-          if (resolved) return NextResponse.json({ channelId: resolved, title });
-        } catch (e) {
+          if (resolved) {
+            const channelName = await getChannelNameFromChannelId(resolved);
+            return NextResponse.json({ channelId: resolved, title: channelName || j.author_name || null });
+          }
+        } catch {
           // ignore and continue
         }
       }
     }
-  } catch (err) {
+  } catch {
     // ignore and try HTML/further fallbacks
   }
 
@@ -127,13 +167,10 @@ export async function GET(req: Request) {
       const txt = await fetchTextWithTimeout(watchUrl, 6000);
       const id = extractChannelIdFromHtml(txt);
       if (id) {
-        const t =
-          txt?.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ||
-          txt?.match(/<title>([^<]+)<\/title>/i)?.[1] ||
-          null;
-        return NextResponse.json({ channelId: id, title: t });
+        const channelName = await getChannelNameFromChannelId(id);
+        return NextResponse.json({ channelId: id, title: channelName });
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
   }
@@ -149,33 +186,24 @@ export async function GET(req: Request) {
         const href = m[1];
         const mm = href.match(/\/channel\/(UC[A-Za-z0-9_-]{22})/);
         if (mm) {
-          const t =
-            txt.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ||
-            txt.match(/<title>([^<]+)<\/title>/i)?.[1] ||
-            null;
-          return NextResponse.json({ channelId: mm[1], title: t });
+          const channelName = await getChannelNameFromChannelId(mm[1]);
+          return NextResponse.json({ channelId: mm[1], title: channelName });
         }
       }
 
       const browse = txt.match(/"browseId"\s*:\s*"(UC[A-Za-z0-9_-]{22})"/);
       if (browse) {
-        const t =
-          txt.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ||
-          txt.match(/<title>([^<]+)<\/title>/i)?.[1] ||
-          null;
-        return NextResponse.json({ channelId: browse[1], title: t });
+        const channelName = await getChannelNameFromChannelId(browse[1]);
+        return NextResponse.json({ channelId: browse[1], title: channelName });
       }
 
       const other = extractChannelIdFromHtml(txt);
       if (other) {
-        const t =
-          txt.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ||
-          txt.match(/<title>([^<]+)<\/title>/i)?.[1] ||
-          null;
-        return NextResponse.json({ channelId: other, title: t });
+        const channelName = await getChannelNameFromChannelId(other);
+        return NextResponse.json({ channelId: other, title: channelName });
       }
     }
-  } catch (err) {
+  } catch {
     // ignore
   }
 

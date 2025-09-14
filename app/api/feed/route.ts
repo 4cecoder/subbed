@@ -14,7 +14,7 @@ const DEFAULT_PER_PAGE = 20;
 const DEFAULT_PER_CHANNEL = 10;
 const MAX_PER_CHANNEL = 50;
 
-function isValidNumber(v: any, fallback: number) {
+function isValidNumber(v: unknown, fallback: number) {
   const n = Number(v);
   return Number.isFinite(n) && n > 0 ? Math.floor(n) : fallback;
 }
@@ -70,7 +70,7 @@ async function createShortDetector() {
       } finally {
         clearTimeout(to);
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
 
@@ -100,7 +100,7 @@ async function createShortDetector() {
       } finally {
         clearTimeout(to2);
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
 
@@ -124,11 +124,11 @@ export async function GET(req: Request) {
 
     const subs = await listSubscriptions();
     // fetch per-channel feeds but limit concurrency
-    let items: any[] = [];
+    let items: unknown[] = [];
 
     const chunks: string[][] = [];
     for (let i = 0; i < subs.length; i += concurrency) {
-      chunks.push(subs.slice(i, i + concurrency).map((s: any) => s.id));
+      chunks.push(subs.slice(i, i + concurrency).map((s: { id: string }) => s.id));
     }
 
     for (const chunk of chunks) {
@@ -144,8 +144,8 @@ export async function GET(req: Request) {
             const r = await fetch(url.toString(), { headers: { "User-Agent": "subbed-app (+https://example)" } });
             if (!r.ok) return;
             const j = await r.json();
-            const channelTitle = j.channelTitle || subs.find((s: any) => s.id === channelId)?.title || null;
-            const from = (j.items || []).map((it: any) => ({ ...it, channelId, channelTitle }));
+            const channelTitle = j.channelTitle || subs.find((s: { id: string; title?: string }) => s.id === channelId)?.title || null;
+            const from = (j.items || []).map((it: unknown) => ({ ...it, channelId, channelTitle }));
             items.push(...from);
           } catch (e) {
             // ignore per-channel errors
@@ -178,8 +178,8 @@ export async function GET(req: Request) {
               const r = await fetch(url.toString(), { headers: { "User-Agent": "subbed-app (+https://example)" } });
               if (!r.ok) return;
               const j = await r.json();
-              const channelTitle = j.channelTitle || subs.find((s: any) => s.id === channelId)?.title || null;
-              const from = (j.items || []).map((it: any) => ({ ...it, channelId, channelTitle }));
+              const channelTitle = j.channelTitle || subs.find((s: { id: string; title?: string }) => s.id === channelId)?.title || null;
+              const from = (j.items || []).map((it: unknown) => ({ ...it, channelId, channelTitle }));
               items.push(...from);
             } catch (e) {
               // ignore
@@ -189,7 +189,7 @@ export async function GET(req: Request) {
       }
 
       // classify items (limit detection work)
-      const classified: any[] = [];
+      const classified: unknown[] = [];
       // limit the number of checks to avoid too many network calls
       const maxChecks = Math.max(50, per_page * 3);
       let checks = 0;

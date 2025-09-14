@@ -3,7 +3,6 @@
 import { useConvexSubscriptions } from "@/lib/hooks/use-convex-subscriptions";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { AdvancedVideoFeed } from "@/components/advanced-video-feed";
-import FeedLoading from "@/components/feed-loading";
 import FeedEmpty from "@/components/feed-empty";
 import { useOnboarding } from "@/lib/hooks/use-onboarding";
 import { Button } from "@/components/ui/button";
@@ -93,7 +92,7 @@ export default function Home() {
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-8 mt-12">
             <h2 className="text-2xl font-semibold mb-4">Ready to take control?</h2>
             <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-              Join thousands of users who've simplified their YouTube experience with Subbed.
+              Join thousands of users who&apos;ve simplified their YouTube experience with Subbed.
             </p>
             <SignInButton mode="modal">
               <Button size="lg" className="px-8">

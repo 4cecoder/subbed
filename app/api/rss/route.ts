@@ -41,7 +41,7 @@ export async function GET(req: Request) {
           const mm = authorUrl && authorUrl.match(/\/channel\/(UC[A-Za-z0-9_-]{22})/);
           if (mm) id = mm[1];
         }
-      } catch (e) {
+      } catch {
         // ignore
       }
 
@@ -204,7 +204,7 @@ export async function GET(req: Request) {
         } finally {
           clearTimeout(to2);
         }
-      } catch (e) {
+      } catch {
         // ignore
       }
 

@@ -17,7 +17,7 @@ export function ThemeToggle({
   variant = 'ghost',
   size = 'icon'
 }: ThemeToggleProps) {
-  const { theme, resolvedTheme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   const getIcon = () => {
     switch (theme) {
@@ -75,7 +75,7 @@ export function ThemeToggleMinimal({
   variant = 'ghost',
   size = 'icon'
 }: ThemeToggleProps) {
-  const { theme, resolvedTheme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   const getIcon = () => {
     switch (theme) {
@@ -115,7 +115,7 @@ export function ThemeToggleFancy({
   variant = 'ghost',
   size = 'icon'
 }: ThemeToggleProps) {
-  const { theme, resolvedTheme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <Button

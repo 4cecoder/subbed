@@ -5,7 +5,6 @@ import Image from "next/image";
 import { EnhancedVirtualList } from "@/components/enhanced-virtual-list";
 import { FeedHeader } from "@/components/feed-header";
 import FeedLoading from "@/components/feed-loading";
-import FeedEmpty from "@/components/feed-empty";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";

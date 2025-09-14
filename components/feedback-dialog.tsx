@@ -194,14 +194,14 @@ export function FeedbackDialog({ trigger }: FeedbackDialogProps) {
                 </p>
               )}
               <p className="text-xs text-muted-foreground">
-                Provide your email if you'd like us to follow up with you
+                Provide your email if you&apos;d like us to follow up with you
               </p>
             </div>
 
             {!isSignedIn && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <p className="text-sm text-blue-800">
-                  You're not signed in. Your feedback will still be submitted anonymously.
+                  You&apos;re not signed in. Your feedback will still be submitted anonymously.
                 </p>
               </div>
             )}
