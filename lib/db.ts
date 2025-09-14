@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'fs';
 import path from 'path';
 import { ConvexHttpClient } from 'convex/browser';
@@ -8,7 +9,6 @@ try {
   api = require('../convex/_generated/api').api;
 } catch {
   // Ignore error during build
-  console.log('Convex API not available during build');
 }
 import { Subscription } from './types';
 
@@ -43,17 +43,14 @@ function writeSubscriptions(subs: Subscription[]) {
 const isNew = !fs.existsSync(SUBSCRIPTIONS_FILE);
 if (isNew) {
   writeSubscriptions([]);
-
-  console.log(`Subbed DB created at ${SUBSCRIPTIONS_FILE}`);
 }
 
 // Check if Convex is available
 async function isConvexAvailable(): Promise<boolean> {
   try {
-    await convex.query(api.subscriptions.getSubscriptions, {});
+    await convex.query((api as any).subscriptions.getSubscriptions, {});
     return true;
-  } catch (error) {
-    console.log('Convex not available, using local storage:', error);
+  } catch {
     return false;
   }
 }
@@ -90,8 +87,8 @@ export async function listSubscriptions(): Promise<Subscription[]> {
 
   if (convexAvailable) {
     try {
-      const convexSubs = await convex.query(api.subscriptions.getSubscriptions, {});
-      return (convexSubs as unknown[]).map(convexToLocalSubscription);
+      const convexSubs = await convex.query((api as any).subscriptions.getSubscriptions, {});
+      return (convexSubs as any[]).map(convexToLocalSubscription);
     } catch (error) {
       console.error('Error fetching from Convex, falling back to local:', error);
     }
@@ -130,12 +127,15 @@ export async function addSubscription({
   // Try to sync with Convex
   if (convexAvailable) {
     try {
-      await convex.mutation(api.subscriptions.addSubscription, localToConvexSubscription(newSub));
+      await convex.mutation(
+        (api as any).subscriptions.addSubscription,
+        localToConvexSubscription(newSub)
+      );
     } catch (error) {
       console.error('Error syncing subscription to Convex:', error);
       // Add to sync queue for later
       try {
-        await convex.mutation(api.sync.addToSyncQueue, {
+        await convex.mutation((api as any).sync.addToSyncQueue, {
           operation: 'create',
           entityType: 'subscription',
           entityId: id,
@@ -158,12 +158,12 @@ export async function removeSubscription(id: string) {
   // Try to sync with Convex
   if (convexAvailable) {
     try {
-      await convex.mutation(api.subscriptions.removeSubscription, { channelId: id });
+      await convex.mutation((api as any).subscriptions.removeSubscription, { channelId: id });
     } catch (error) {
       console.error('Error removing subscription from Convex:', error);
       // Add to sync queue for later
       try {
-        await convex.mutation(api.sync.addToSyncQueue, {
+        await convex.mutation((api as any).sync.addToSyncQueue, {
           operation: 'delete',
           entityType: 'subscription',
           entityId: id,
@@ -185,7 +185,7 @@ export async function clearSubscriptions() {
   // Try to sync with Convex
   if (convexAvailable) {
     try {
-      await convex.mutation(api.subscriptions.clearSubscriptions, {});
+      await convex.mutation((api as any).subscriptions.clearSubscriptions, {});
     } catch (error) {
       console.error('Error clearing subscriptions from Convex:', error);
     }
@@ -199,7 +199,7 @@ export async function syncSubscriptions() {
 
   try {
     const localSubs = readSubscriptions();
-    const convexSubs = await convex.query(api.subscriptions.getSubscriptions, {});
+    const convexSubs = await convex.query((api as any).subscriptions.getSubscriptions, {});
 
     // Sync local subscriptions to Convex
     for (const localSub of localSubs) {
@@ -208,7 +208,7 @@ export async function syncSubscriptions() {
       );
       if (!convexSub) {
         await convex.mutation(
-          api.subscriptions.syncSubscription,
+          (api as any).subscriptions.syncSubscription,
           localToConvexSubscription(localSub)
         );
       }
@@ -225,7 +225,7 @@ export async function syncSubscriptions() {
       }
     }
 
-    console.log('Subscriptions synced successfully');
+    //
   } catch (error) {
     console.error('Error syncing subscriptions:', error);
   }
@@ -237,27 +237,29 @@ export async function processSyncQueue() {
   if (!convexAvailable) return;
 
   try {
-    const pendingOperations = await convex.query(api.sync.getPendingSyncOperations, {});
+    const pendingOperations = await convex.query((api as any).sync.getPendingSyncOperations, {});
 
     for (const operation of pendingOperations) {
       try {
         if (operation.entityType === 'subscription') {
           if (operation.operation === 'create' || operation.operation === 'update') {
-            await convex.mutation(api.subscriptions.syncSubscription, operation.data);
+            await convex.mutation((api as any).subscriptions.syncSubscription, operation.data);
           } else if (operation.operation === 'delete') {
-            await convex.mutation(api.subscriptions.removeSubscription, {
+            await convex.mutation((api as any).subscriptions.removeSubscription, {
               channelId: operation.entityId,
             });
           }
         } else if (operation.entityType === 'setting') {
-          await convex.mutation(api.settings.syncSettings, operation.data);
+          await convex.mutation((api as any).settings.syncSettings, operation.data);
         }
 
         // Mark as processed
-        await convex.mutation(api.sync.markSyncOperationProcessed, { syncId: operation._id });
+        await convex.mutation((api as any).sync.markSyncOperationProcessed, {
+          syncId: operation._id,
+        });
       } catch (error) {
         console.error(`Error processing sync operation ${operation._id}:`, error);
-        await convex.mutation(api.sync.markSyncOperationError, {
+        await convex.mutation((api as any).sync.markSyncOperationError, {
           syncId: operation._id,
           error: String(error),
         });
@@ -265,7 +267,7 @@ export async function processSyncQueue() {
     }
 
     // Clear processed operations
-    await convex.mutation(api.sync.clearProcessedSyncOperations, {});
+    await convex.mutation((api as any).sync.clearProcessedSyncOperations, {});
   } catch (error) {
     console.error('Error processing sync queue:', error);
   }

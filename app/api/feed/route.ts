@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { listSubscriptions } from '../../../lib/db';
 import { readSettings } from '../../../lib/settings';
+import { FeedItem } from '../../../lib/types';
 
 // Aggregated feed endpoint
 // Query params:
@@ -151,7 +152,7 @@ export async function GET(req: Request) {
 
     const subs = await listSubscriptions();
     // fetch per-channel feeds but limit concurrency
-    let items: unknown[] = [];
+    let items: FeedItem[] = [];
 
     const chunks: string[][] = [];
     for (let i = 0; i < subs.length; i += concurrency) {
@@ -174,10 +175,12 @@ export async function GET(req: Request) {
             if (!r.ok) return;
             const j = await r.json();
             const channelTitle =
-              j.channelTitle ||
-              subs.find((s: { id: string; title?: string }) => s.id === channelId)?.title ||
-              null;
-            const from = (j.items || []).map((it: unknown) => ({ ...it, channelId, channelTitle }));
+              j.channelTitle || subs.find(s => s.id === channelId)?.title || null;
+            const from = (j.items || []).map((it: FeedItem) => ({
+              ...it,
+              channelId,
+              channelTitle,
+            }));
             items.push(...from);
           } catch {
             // ignore per-channel errors
@@ -188,9 +191,9 @@ export async function GET(req: Request) {
 
     // apply fallback type filter in case per-channel endpoints didn't fully respect 'type'
     if (type === 'short') {
-      items = items.filter(it => !!it.isShort);
+      items = items.filter((it: FeedItem) => !!it.isShort);
     } else if (type === 'video') {
-      items = items.filter(it => !it.isShort);
+      items = items.filter((it: FeedItem) => !it.isShort);
     }
 
     // if no items found for requested type, try a secondary detection pass (fetch without type and classify)
@@ -213,10 +216,8 @@ export async function GET(req: Request) {
               if (!r.ok) return;
               const j = await r.json();
               const channelTitle =
-                j.channelTitle ||
-                subs.find((s: { id: string; title?: string }) => s.id === channelId)?.title ||
-                null;
-              const from = (j.items || []).map((it: unknown) => ({
+                j.channelTitle || subs.find(s => s.id === channelId)?.title || null;
+              const from = (j.items || []).map((it: FeedItem) => ({
                 ...it,
                 channelId,
                 channelTitle,
@@ -230,7 +231,7 @@ export async function GET(req: Request) {
       }
 
       // classify items (limit detection work)
-      const classified: unknown[] = [];
+      const classified: FeedItem[] = [];
       // limit the number of checks to avoid too many network calls
       const maxChecks = Math.max(50, per_page * 3);
       let checks = 0;
@@ -246,7 +247,7 @@ export async function GET(req: Request) {
     }
 
     // sort globally by published date
-    items.sort((a, b) => {
+    items.sort((a: FeedItem, b: FeedItem) => {
       const ta = new Date(a.published).getTime() || 0;
       const tb = new Date(b.published).getTime() || 0;
       if ((settings?.sortOrder || 'newest') === 'oldest') return ta - tb;

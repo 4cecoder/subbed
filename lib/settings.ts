@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import { ConvexHttpClient } from 'convex/browser';
+import { api as convexApi } from '../convex/_generated/api';
 
 // Dynamic import to avoid build-time issues
-let api: unknown;
+let api: typeof convexApi | null = null;
 
 async function loadApi() {
   if (api) return api;
@@ -11,8 +12,7 @@ async function loadApi() {
     const convexApi = await import('../convex/_generated/api');
     api = convexApi.api;
     return api;
-  } catch (error) {
-    console.log('Convex API not available during build', error);
+  } catch {
     return null;
   }
 }
@@ -80,8 +80,7 @@ async function isConvexAvailable(): Promise<boolean> {
     if (!currentApi) return false;
     await convex.query(currentApi.settings.getSettings, {});
     return true;
-  } catch (error) {
-    console.log('Convex not available, using local storage:', error);
+  } catch {
     return false;
   }
 }
@@ -89,14 +88,14 @@ async function isConvexAvailable(): Promise<boolean> {
 // Convert Convex settings to local format
 function convexToLocalSettings(convexSettings: Record<string, unknown>): Settings {
   return {
-    per_page: convexSettings.per_page,
-    per_channel: convexSettings.per_channel,
-    showThumbnails: convexSettings.showThumbnails,
-    showDescriptions: convexSettings.showDescriptions,
-    defaultFeedType: convexSettings.defaultFeedType,
-    sortOrder: convexSettings.sortOrder,
-    caching_ttl: convexSettings.caching_ttl,
-    concurrency: convexSettings.concurrency,
+    per_page: (convexSettings.per_page as number) || 20,
+    per_channel: (convexSettings.per_channel as number) || 10,
+    showThumbnails: (convexSettings.showThumbnails as boolean) || true,
+    showDescriptions: (convexSettings.showDescriptions as boolean) || true,
+    defaultFeedType: (convexSettings.defaultFeedType as 'all' | 'video' | 'short') || 'all',
+    sortOrder: (convexSettings.sortOrder as 'newest' | 'oldest') || 'newest',
+    caching_ttl: (convexSettings.caching_ttl as number) || 300,
+    concurrency: (convexSettings.concurrency as number) || 6,
   };
 }
 
@@ -170,7 +169,7 @@ export async function syncSettings() {
       writeLocalSettings(merged);
     }
 
-    console.log('Settings synced successfully');
+    //
   } catch (error) {
     console.error('Error syncing settings:', error);
   }

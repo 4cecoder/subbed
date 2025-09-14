@@ -95,7 +95,7 @@ describe('FeedbackDialog', () => {
     const mockSubmitFeedback = mockUseFeedback().submitFeedback;
 
     // Mock successful submission
-    mockSubmitFeedback.mockResolvedValue({
+    (mockSubmitFeedback as jest.Mock).mockResolvedValueOnce({
       success: true,
       message: 'Thank you for your feedback!',
     });

@@ -8,7 +8,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -18,7 +24,7 @@ import {
 } from '@/components/ui/dialog';
 import { SubscriptionItem } from '@/components/subscription-item';
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
-import { Subscription } from '@/lib/types';
+
 import { useSubscriptionManager } from '@/lib/hooks/use-subscription-manager';
 import {
   Plus,
@@ -81,9 +87,15 @@ export const ImprovedSubscriptionManager: React.FC<ImprovedSubscriptionManagerPr
     [state.inputValue, handleAddSubscription]
   );
 
-  const handleRemoveClick = useCallback((subscription: Subscription) => {
-    setShowRemoveConfirm(true, subscription);
-  }, [setShowRemoveConfirm]);
+  const handleRemoveClick = useCallback(
+    (channelId: string) => {
+      const subscription = subscriptions.find(sub => sub.channelId === channelId);
+      if (subscription) {
+        setShowRemoveConfirm(true, subscription);
+      }
+    },
+    [setShowRemoveConfirm, subscriptions]
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -214,7 +226,10 @@ export const ImprovedSubscriptionManager: React.FC<ImprovedSubscriptionManagerPr
                   </div>
 
                   {/* Sort */}
-                  <Select value={state.sortBy} onValueChange={(value: 'newest' | 'oldest' | 'name') => setSortBy(value)}>
+                  <Select
+                    value={state.sortBy}
+                    onValueChange={(value: 'newest' | 'oldest' | 'name') => setSortBy(value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
@@ -226,7 +241,10 @@ export const ImprovedSubscriptionManager: React.FC<ImprovedSubscriptionManagerPr
                   </Select>
 
                   {/* Group */}
-                  <Select value={state.groupBy} onValueChange={(value: 'none' | 'date' | 'alphabetical') => setGroupBy(value)}>
+                  <Select
+                    value={state.groupBy}
+                    onValueChange={(value: 'none' | 'date' | 'alphabetical') => setGroupBy(value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Group by" />
                     </SelectTrigger>
@@ -240,7 +258,8 @@ export const ImprovedSubscriptionManager: React.FC<ImprovedSubscriptionManagerPr
 
                 {filteredAndSortedSubscriptions.length !== subscriptions.length && (
                   <div className="mt-3 text-sm text-muted-foreground">
-                    Showing {filteredAndSortedSubscriptions.length} of {subscriptions.length} subscriptions
+                    Showing {filteredAndSortedSubscriptions.length} of {subscriptions.length}{' '}
+                    subscriptions
                   </div>
                 )}
               </CardContent>
@@ -359,7 +378,7 @@ export const ImprovedSubscriptionManager: React.FC<ImprovedSubscriptionManagerPr
       {/* Remove Individual Subscription Confirmation Dialog */}
       <ConfirmationDialog
         open={state.showRemoveConfirm}
-        onOpenChange={(show) => setShowRemoveConfirm(show)}
+        onOpenChange={show => setShowRemoveConfirm(show)}
         title="Remove Subscription"
         description={`Are you sure you want to remove "${state.selectedForRemoval?.channelName}"? This action cannot be undone.`}
         confirmText="Remove"

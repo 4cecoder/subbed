@@ -89,7 +89,11 @@ class PerformanceMonitor {
     if (typeof window === 'undefined') return null;
 
     // Chrome-specific memory API
-    const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+    const memory = (
+      performance as {
+        memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number };
+      }
+    ).memory;
     if (!memory) return null;
 
     return {
@@ -142,7 +146,10 @@ export function useComponentPerformanceTracking(componentName: string) {
 }
 
 // API call performance tracking
-export function trackApiCall<T extends unknown[], R>(fn: (...args: T) => Promise<R>, label: string) {
+export function trackApiCall<T extends unknown[], R>(
+  fn: (...args: T) => Promise<R>,
+  label: string
+) {
   return async (...args: T): Promise<R> => {
     performanceMonitor.startTiming(`api_${label}`);
     try {

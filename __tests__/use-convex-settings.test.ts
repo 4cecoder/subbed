@@ -6,7 +6,9 @@ import { useQuery, useMutation } from 'convex/react';
 // Mock Convex hooks
 jest.mock('convex/react', () => ({
   useQuery: jest.fn(),
-  useMutation: jest.fn(),
+  useMutation: jest.fn(() => ({
+    withOptimisticUpdate: jest.fn().mockReturnThis(),
+  })),
 }));
 
 jest.mock('../convex/_generated/api', () => ({
@@ -18,8 +20,12 @@ jest.mock('../convex/_generated/api', () => ({
   },
 }));
 
+// Type helper for ReactMutation mock
 describe('useConvexSettings', () => {
-  const mockUpdateSettings = jest.fn();
+  const mockUpdateSettings = {
+    withOptimisticUpdate: jest.fn().mockReturnThis(),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
   const mockConvexSettings = {
     per_page: 20,
     per_channel: 10,

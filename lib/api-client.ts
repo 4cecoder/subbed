@@ -1,4 +1,12 @@
 import { apiCache, requestDeduper, CACHE_KEYS } from './cache';
+import {
+  FeedResponse,
+  RssResponse,
+  SettingsResponse,
+  UserSettings,
+  Subscription,
+  ResolveResponse,
+} from './types';
 
 interface ApiResponse<T> {
   data: T;
@@ -22,7 +30,7 @@ class ApiClient {
     const cached = apiCache.get(cacheKey);
     if (cached) {
       return {
-        data: cached,
+        data: cached as T,
         cached: true,
         timestamp: Date.now(),
       };
@@ -48,12 +56,12 @@ class ApiClient {
     });
   }
 
-  async getSubscriptions(): Promise<ApiResponse<unknown[]>> {
+  async getSubscriptions(): Promise<ApiResponse<Subscription[]>> {
     const url = `${this.baseUrl}/api/subscriptions`;
     return this.fetchWithCache(url, CACHE_KEYS.SUBSCRIPTIONS, 60); // 1 minute cache
   }
 
-  async getSettings(): Promise<ApiResponse<unknown>> {
+  async getSettings(): Promise<ApiResponse<SettingsResponse>> {
     const url = `${this.baseUrl}/api/settings`;
     return this.fetchWithCache(url, CACHE_KEYS.SETTINGS, 300); // 5 minutes cache
   }
@@ -63,7 +71,7 @@ class ApiClient {
     perPage: number,
     query: string,
     type: string
-  ): Promise<ApiResponse<unknown>> {
+  ): Promise<ApiResponse<FeedResponse>> {
     const params = new URLSearchParams({
       page: page.toString(),
       per_page: perPage.toString(),
@@ -75,7 +83,11 @@ class ApiClient {
     return this.fetchWithCache(url, cacheKey, 180); // 3 minutes cache
   }
 
-  async getRssFeed(channelId: string, limit: number, type: string): Promise<ApiResponse<unknown>> {
+  async getRssFeed(
+    channelId: string,
+    limit: number,
+    type: string
+  ): Promise<ApiResponse<RssResponse>> {
     const params = new URLSearchParams({
       id: channelId,
       limit: limit.toString(),
@@ -86,7 +98,7 @@ class ApiClient {
     return this.fetchWithCache(url, cacheKey, 300); // 5 minutes cache
   }
 
-  async resolveChannel(url: string): Promise<unknown> {
+  async resolveChannel(url: string): Promise<ResolveResponse> {
     const response = await fetch(`${this.baseUrl}/api/resolve?url=${encodeURIComponent(url)}`);
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: response.statusText }));
@@ -95,7 +107,7 @@ class ApiClient {
     return response.json();
   }
 
-  async saveSettings(settings: unknown): Promise<unknown> {
+  async saveSettings(settings: Partial<UserSettings>): Promise<SettingsResponse> {
     const response = await fetch(`${this.baseUrl}/api/settings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

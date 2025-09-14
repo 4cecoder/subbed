@@ -23,7 +23,7 @@ export interface SubscriptionManagerState {
 export interface UseSubscriptionManagerReturn {
   // State
   state: SubscriptionManagerState;
-  
+
   // Data
   subscriptions: Doc<'subscriptions'>[];
   loading: boolean;
@@ -33,7 +33,7 @@ export interface UseSubscriptionManagerReturn {
     subscriptions: Doc<'subscriptions'>[];
     isExpanded: boolean;
   }>;
-  
+
   // Actions
   setAddMode: (addMode: boolean) => void;
   setInputValue: (value: string) => void;
@@ -44,7 +44,7 @@ export interface UseSubscriptionManagerReturn {
   toggleGroup: (groupTitle: string) => void;
   setShowClearConfirm: (show: boolean) => void;
   setShowRemoveConfirm: (show: boolean, subscription?: Doc<'subscriptions'>) => void;
-  
+
   // Operations
   handleAddSubscription: () => Promise<void>;
   handleRemoveSubscription: (channelId: string) => Promise<void>;
@@ -53,13 +53,8 @@ export interface UseSubscriptionManagerReturn {
 }
 
 export function useSubscriptionManager(): UseSubscriptionManagerReturn {
-  const {
-    subscriptions,
-    loading,
-    addSubscription,
-    removeSubscription,
-    clearSubscriptions,
-  } = useConvexSubscriptions();
+  const { subscriptions, loading, addSubscription, removeSubscription, clearSubscriptions } =
+    useConvexSubscriptions();
 
   const [state, setState] = useState<SubscriptionManagerState>({
     addMode: false,
@@ -132,9 +127,7 @@ export function useSubscriptionManager(): UseSubscriptionManagerReturn {
         sub => new Date(sub._creationTime) >= thisWeek
       );
       const thisMonthSubs = filteredAndSortedSubscriptions.filter(
-        sub =>
-          new Date(sub._creationTime) >= thisMonth &&
-          new Date(sub._creationTime) < thisWeek
+        sub => new Date(sub._creationTime) >= thisMonth && new Date(sub._creationTime) < thisWeek
       );
       const older = filteredAndSortedSubscriptions.filter(
         sub => new Date(sub._creationTime) < thisMonth
@@ -244,7 +237,9 @@ export function useSubscriptionManager(): UseSubscriptionManagerReturn {
 
     try {
       // Resolve channel info using the API
-      const response = await fetch(`/api/resolve?url=${encodeURIComponent(state.inputValue.trim())}`);
+      const response = await fetch(
+        `/api/resolve?url=${encodeURIComponent(state.inputValue.trim())}`
+      );
       const data = await response.json();
 
       if (!response.ok) {
@@ -297,22 +292,25 @@ export function useSubscriptionManager(): UseSubscriptionManagerReturn {
     }
   }, [state.inputValue, subscriptions, addSubscription]);
 
-  const handleRemoveSubscription = useCallback(async (channelId: string) => {
-    try {
-      await removeSubscription(channelId);
-      setState(prev => ({
-        ...prev,
-        showRemoveConfirm: false,
-        selectedForRemoval: null,
-      }));
-    } catch (error) {
-      console.error('Failed to remove subscription:', error);
-      setState(prev => ({
-        ...prev,
-        resolveError: error instanceof Error ? error.message : 'Failed to remove subscription',
-      }));
-    }
-  }, [removeSubscription]);
+  const handleRemoveSubscription = useCallback(
+    async (channelId: string) => {
+      try {
+        await removeSubscription(channelId);
+        setState(prev => ({
+          ...prev,
+          showRemoveConfirm: false,
+          selectedForRemoval: null,
+        }));
+      } catch (error) {
+        console.error('Failed to remove subscription:', error);
+        setState(prev => ({
+          ...prev,
+          resolveError: error instanceof Error ? error.message : 'Failed to remove subscription',
+        }));
+      }
+    },
+    [removeSubscription]
+  );
 
   const handleClearAll = useCallback(async () => {
     try {

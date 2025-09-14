@@ -48,7 +48,9 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <p id="confirmation-description" className="text-sm text-muted-foreground">{description}</p>
+          <p id="confirmation-description" className="text-sm text-muted-foreground">
+            {description}
+          </p>
         </div>
         <DialogFooter>
           <Button onClick={() => onOpenChange(false)} variant="outline" disabled={loading}>

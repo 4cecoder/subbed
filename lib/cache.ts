@@ -47,7 +47,7 @@ class RequestDeduper {
 
   async dedupe<T>(key: string, requestFn: () => Promise<T>): Promise<T> {
     if (this.pendingRequests.has(key)) {
-      return this.pendingRequests.get(key)!;
+      return this.pendingRequests.get(key)! as Promise<T>;
     }
 
     const promise = requestFn().finally(() => {

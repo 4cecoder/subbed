@@ -53,6 +53,7 @@ const nextConfig: NextConfig = {
     webpack: async (config: Configuration) => {
       if (process.env.NODE_ENV === 'production') {
         // Add bundle analyzer
+        // @ts-expect-error - webpack-bundle-analyzer doesn't have proper TypeScript types
         const { BundleAnalyzerPlugin } = await import('webpack-bundle-analyzer');
         config.plugins?.push(
           new BundleAnalyzerPlugin({

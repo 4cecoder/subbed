@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { FeedItem, UseFeedReturn, UserSettings } from '@/lib/types';
+import { FeedItem, RawFeedItem, UseFeedReturn, UserSettings } from '@/lib/types';
 import { apiClient } from '@/lib/api-client';
 
 export function useFeed(settings: UserSettings | null): UseFeedReturn {
@@ -76,7 +76,7 @@ export function useFeed(settings: UserSettings | null): UseFeedReturn {
         const response = await apiClient.getRssFeed(channelId, limit, feedType);
         const data = response.data;
 
-        const items: FeedItem[] = (data.items || []).map((item: unknown) => ({
+        const items: FeedItem[] = (data.items || []).map((item: RawFeedItem) => ({
           ...item,
           channelId: data.channelId,
           channelTitle: data.channelTitle,

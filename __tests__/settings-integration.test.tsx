@@ -4,6 +4,7 @@ import { useConvexSettings } from '../lib/hooks/use-convex-settings';
 import { useConvexSubscriptions } from '../lib/hooks/use-convex-subscriptions';
 import { useFeed } from '../lib/hooks/use-feed';
 import { useDebouncedSearch } from '../lib/hooks/use-debounced-search';
+import type { Id } from '../convex/_generated/dataModel';
 
 // Mock all the hooks
 jest.mock('../lib/hooks/use-convex-settings');
@@ -25,6 +26,11 @@ const mockUseConvexSubscriptions = useConvexSubscriptions as jest.MockedFunction
 >;
 const mockUseFeed = useFeed as jest.MockedFunction<typeof useFeed>;
 
+// Helper to create mock Id for testing
+const createMockId = (tableName: 'subscriptions', id: string) => {
+  return id as unknown as Id<'subscriptions'>;
+};
+
 describe('Settings Integration', () => {
   const mockSettings = {
     per_page: 20,
@@ -39,7 +45,7 @@ describe('Settings Integration', () => {
 
   const mockSubscriptions = [
     {
-      _id: 'sub1' as string,
+      _id: createMockId('subscriptions', 'sub1'),
       _creationTime: 1704067200000,
       userId: 'user1',
       channelId: 'channel1',
@@ -310,7 +316,9 @@ describe('Settings Integration', () => {
   });
 
   it('allows filtering by search query', async () => {
-    const mockUseDebouncedSearch = useDebouncedSearch as jest.MockedFunction<typeof useDebouncedSearch>;
+    const mockUseDebouncedSearch = useDebouncedSearch as jest.MockedFunction<
+      typeof useDebouncedSearch
+    >;
     mockUseDebouncedSearch.mockReturnValue({
       query: 'Test Video 1',
       debouncedQuery: 'Test Video 1',

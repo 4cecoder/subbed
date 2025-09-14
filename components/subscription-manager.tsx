@@ -11,7 +11,7 @@ interface SubscriptionManagerProps {
 /**
  * @deprecated Use ImprovedSubscriptionManager instead. This component is kept for backward compatibility.
  */
-export const SubscriptionManager: React.FC<SubscriptionManagerProps> = (props) => {
+export const SubscriptionManager: React.FC<SubscriptionManagerProps> = props => {
   return <ImprovedSubscriptionManager {...props} />;
 };
 

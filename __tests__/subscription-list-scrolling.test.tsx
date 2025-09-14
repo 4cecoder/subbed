@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SubscriptionList from '../components/subscription-list';
 import { EnhancedSubscriptionList } from '../components/enhanced-subscription-list';
+import type { Id } from '../convex/_generated/dataModel';
 
 // Mock ScrollArea component to test scrolling behavior
 jest.mock('../components/ui/scroll-area', () => ({
@@ -13,6 +14,10 @@ jest.mock('../components/ui/scroll-area', () => ({
 }));
 
 describe('Subscription List Scrolling', () => {
+  // Helper to create mock Id for testing
+  const createMockId = (tableName: 'subscriptions', id: string) => {
+    return id as unknown as Id<'subscriptions'>;
+  };
   const mockSubscriptions = Array.from({ length: 50 }, (_, i) => ({
     id: `channel-${i}`,
     title: `Test Channel ${i + 1}`,
@@ -21,7 +26,7 @@ describe('Subscription List Scrolling', () => {
   }));
 
   const mockConvexSubscriptions = Array.from({ length: 50 }, (_, i) => ({
-    _id: `convex-${i}` as string,
+    _id: createMockId('subscriptions', `convex-${i}`),
     _creationTime: Date.now() - i * 24 * 60 * 60 * 1000,
     userId: 'test-user',
     channelId: `channel-${i}`,
