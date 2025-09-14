@@ -6,14 +6,16 @@ import { Button } from "./ui/button";
 import { FeedbackDialog } from "./feedback-dialog";
 import { OnboardingDialog } from "./onboarding-dialog";
 import { SettingsDialog } from "./settings-dialog";
+import { SubscriptionManager } from "./subscription-manager";
 import { useOnboarding } from "@/lib/hooks/use-onboarding";
 import { useConvexSettings } from "@/lib/hooks/use-convex-settings";
-import { HelpCircle, Settings } from "lucide-react";
+import { HelpCircle, Settings, Users } from "lucide-react";
 
 export default function Header() {
   const { shouldShowOnboarding, markAsSeen } = useOnboarding();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [subscriptionManagerOpen, setSubscriptionManagerOpen] = useState(false);
   const { settings, loading, error, updateSettings } = useConvexSettings();
 
   useEffect(() => {
@@ -51,6 +53,15 @@ export default function Header() {
           <Button
             variant="ghost"
             size="sm"
+            onClick={() => setSubscriptionManagerOpen(true)}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <Users className="w-4 h-4 mr-1" />
+            Manage
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setSettingsOpen(true)}
             className="text-muted-foreground hover:text-foreground"
           >
@@ -79,6 +90,11 @@ export default function Header() {
         onSave={updateSettings}
         loading={loading}
         error={error}
+      />
+
+      <SubscriptionManager
+        open={subscriptionManagerOpen}
+        onOpenChange={setSubscriptionManagerOpen}
       />
     </header>
   );

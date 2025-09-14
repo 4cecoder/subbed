@@ -1,7 +1,6 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useConvexSubscriptions } from "@/lib/hooks/use-convex-subscriptions";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { AdvancedVideoFeed } from "@/components/advanced-video-feed";
 import FeedLoading from "@/components/feed-loading";
@@ -12,15 +11,14 @@ import { Video, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
-  const subscriptions = useQuery(api.subscriptions.getSubscriptions);
+  const { subscriptions } = useConvexSubscriptions();
   useOnboarding();
 
   return (
     <main id="main-content" className="container mx-auto p-4">
       <SignedIn>
-        {subscriptions === undefined && <FeedLoading />}
-        {subscriptions && subscriptions.length === 0 && <FeedEmpty />}
-        {subscriptions && subscriptions.length > 0 && (
+        {subscriptions.length === 0 && <FeedEmpty />}
+        {subscriptions.length > 0 && (
           <AdvancedVideoFeed />
         )}
       </SignedIn>

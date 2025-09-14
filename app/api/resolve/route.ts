@@ -70,7 +70,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "missing url parameter" }, { status: 400 });
   }
 
-  let input = raw.trim();
+  const input = raw.trim();
 
   if (isChannelId(input)) {
     return NextResponse.json({ channelId: input, title: null });

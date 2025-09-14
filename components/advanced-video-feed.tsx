@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFeed } from "@/lib/hooks/use-feed";
+import { useConvexFeed } from "@/lib/hooks/use-convex-feed";
 import { useConvexSettings } from "@/lib/hooks/use-convex-settings";
 import { useConvexSubscriptions } from "@/lib/hooks/use-convex-subscriptions";
 import { useDebouncedSearch } from "@/lib/hooks/use-debounced-search";
@@ -35,16 +35,16 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
   // Hooks
   const { settings, loading: settingsLoading } = useConvexSettings();
   const { subscriptions, loading: subscriptionsLoading } = useConvexSubscriptions();
-  const { 
-    feed, 
-    loading: feedLoading, 
-    error: feedError, 
-    hasMore, 
-    page, 
-    loadFeed, 
-    loadChannelFeed, 
-    refreshCurrentFeed 
-  } = useFeed(settings || null);
+  const {
+    feed,
+    loading: feedLoading,
+    error: feedError,
+    hasMore,
+    page,
+    loadFeed,
+    loadChannelFeed,
+    refreshCurrentFeed
+  } = useConvexFeed(settings || null);
   
   const { 
     query, 
@@ -176,10 +176,7 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
     );
   }
 
-  // Empty state
-  if (feedSubscriptions.length === 0) {
-    return <FeedEmpty />;
-  }
+  // Note: Empty state is handled by the parent component (app/page.tsx)
 
   // Error state
   if (feedError) {
@@ -219,7 +216,7 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
       />
 
       {/* Filters and Controls */}
-      <Card>
+      <Card className="backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-white/20 shadow-2xl">
         <CardContent className="p-4">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search Bar */}
@@ -230,7 +227,7 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
                   placeholder="Search videos, channels, descriptions..."
                   value={query}
                   onChange={(e) => updateQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/30 focus:border-primary/50 transition-all duration-200"
                 />
                 {isSearching && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -244,38 +241,42 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className="lg:w-auto"
+              className="lg:w-auto backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/30 hover:bg-white/80 dark:hover:bg-gray-700/80 transition-all duration-200"
             >
               <Filter className="w-4 h-4 mr-2" />
               Filters
-              <Badge variant="secondary" className="ml-2">
+              <Badge variant="secondary" className="ml-2 backdrop-blur-sm bg-primary/10 border-primary/20">
                 {feedType !== "all" || sortOrder !== "newest" ? "Active" : "None"}
               </Badge>
             </Button>
 
             {/* Subscription Quick Select */}
             <Select value={selectedSubscription || ""} onValueChange={handleSubscriptionSelect}>
-              <SelectTrigger className="lg:w-64">
-                <SelectValue placeholder="Select subscription" />
+              <SelectTrigger className="lg:w-64 backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/30 focus:border-primary/50 transition-all duration-200">
+                <SelectValue placeholder="Select channel" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="backdrop-blur-md bg-white/90 dark:bg-gray-900/90 border-white/20">
                 <SelectItem value="all">
                   <div className="flex items-center gap-2">
                     <Play className="w-4 h-4" />
-                    All Subscriptions
+                    All Channels
                   </div>
                 </SelectItem>
                 {feedSubscriptions.map((sub) => (
                   <SelectItem key={sub.id} value={sub.id}>
-                    <div className="flex items-center gap-2">
-                      <Image 
-                        src={sub.channelLogoUrl} 
-                        alt={sub.title}
+                    <div className="flex items-center gap-2 max-w-[200px]">
+                      <Image
+                        src={sub.channelLogoUrl}
+                        alt={sub.title || 'Channel'}
                         width={16}
                         height={16}
-                        className="rounded-full"
+                        className="rounded-full flex-shrink-0"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = '/api/placeholder/16/16';
+                        }}
                       />
-                      {sub.title}
+                      <span className="truncate font-medium">{sub.title || `Channel ${sub.id.slice(-8)}`}</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -285,16 +286,16 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
 
           {/* Advanced Filters */}
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-border">
+            <div className="mt-4 pt-4 border-t border-white/20 backdrop-blur-sm">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Content Type Filter */}
                 <div className="space-y-2">
                   <label htmlFor="content-type" className="text-sm font-medium">Content Type</label>
                   <Select value={feedType} onValueChange={handleFeedTypeChange}>
-                    <SelectTrigger id="content-type">
+                    <SelectTrigger id="content-type" className="backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/30">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="backdrop-blur-md bg-white/90 dark:bg-gray-900/90 border-white/20">
                       <SelectItem value="all">
                         <div className="flex items-center gap-2">
                           <Play className="w-4 h-4" />
@@ -321,10 +322,10 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
                 <div className="space-y-2">
                   <label htmlFor="sort-order" className="text-sm font-medium">Sort By</label>
                   <Select value={sortOrder} onValueChange={handleSortOrderChange}>
-                    <SelectTrigger id="sort-order">
+                    <SelectTrigger id="sort-order" className="backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/30">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="backdrop-blur-md bg-white/90 dark:bg-gray-900/90 border-white/20">
                       <SelectItem value="newest">
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4" />
@@ -344,9 +345,14 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
                 {/* Results Info */}
                 <div className="space-y-2">
                   <div className="text-sm font-medium">Results</div>
-                  <div className="text-sm text-muted-foreground p-2 bg-muted rounded" aria-live="polite">
-                    {filteredAndSortedFeed.length} video{filteredAndSortedFeed.length !== 1 ? 's' : ''}
-                    {debouncedQuery && ` matching &quot;${debouncedQuery}&quot;`}
+                  <div className="text-sm text-muted-foreground p-2 backdrop-blur-sm bg-white/40 dark:bg-gray-800/40 border border-white/20 rounded" aria-live="polite">
+                    <span className="font-semibold">{filteredAndSortedFeed.length}</span> video{filteredAndSortedFeed.length !== 1 ? 's' : ''}
+                    {debouncedQuery && (
+                      <>
+                        <br />
+                        <span className="text-xs">matching &quot;<span className="font-medium">{debouncedQuery}</span>&quot;</span>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -354,22 +360,24 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
                 <div className="space-y-2">
                   <div className="text-sm font-medium">Quick Actions</div>
                   <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
+                    <Button
+                      size="sm"
+                      variant="outline"
                       onClick={() => {
                         setFeedType("all");
                         setSortOrder("newest");
                         clearQuery();
                       }}
+                      className="backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/30 hover:bg-white/80 transition-all duration-200"
                     >
                       Reset All
                     </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
+                    <Button
+                      size="sm"
+                      variant="outline"
                       onClick={handleRefresh}
                       disabled={feedLoading}
+                      className="backdrop-blur-sm bg-white/60 dark:bg-gray-800/60 border-white/30 hover:bg-white/80 transition-all duration-200"
                     >
                       <RefreshCw className={`w-4 h-4 ${feedLoading ? 'animate-spin' : ''}`} />
                     </Button>
@@ -389,7 +397,7 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
           showThumbnails={settings?.showThumbnails ?? true}
           showDescriptions={settings?.showDescriptions ?? true}
           onItemClick={handleVideoClick}
-          className="border rounded-lg"
+          className="border border-white/20 rounded-lg backdrop-blur-sm bg-white/50 dark:bg-gray-900/50 shadow-xl"
         />
 
         {/* Load More Button */}
@@ -404,34 +412,34 @@ export const AdvancedVideoFeed: React.FC<AdvancedVideoFeedProps> = React.memo(({
 
       {/* Active Filters Display */}
       {(feedType !== "all" || sortOrder !== "newest" || debouncedQuery) && (
-        <Card>
+        <Card className="backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-white/20 shadow-lg">
           <CardContent className="p-4">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-medium">Active filters:</span>
               {feedType !== "all" && (
-                <Badge variant="secondary">
+                <Badge variant="secondary" className="backdrop-blur-sm bg-primary/10 border-primary/20">
                   {feedType === "video" ? "Videos Only" : "Shorts Only"}
                 </Badge>
               )}
               {sortOrder !== "newest" && (
-                <Badge variant="secondary">
+                <Badge variant="secondary" className="backdrop-blur-sm bg-primary/10 border-primary/20">
                   {sortOrder === "oldest" ? "Oldest First" : "Newest First"}
                 </Badge>
               )}
               {debouncedQuery && (
-                <Badge variant="secondary">
+                <Badge variant="secondary" className="backdrop-blur-sm bg-primary/10 border-primary/20">
                   Search: &quot;{debouncedQuery}&quot;
                 </Badge>
               )}
-              <Button 
-                size="sm" 
-                variant="ghost" 
+              <Button
+                size="sm"
+                variant="ghost"
                 onClick={() => {
                   setFeedType("all");
                   setSortOrder("newest");
                   clearQuery();
                 }}
-                className="h-6 px-2 text-xs"
+                className="h-6 px-2 text-xs backdrop-blur-sm hover:bg-white/60 dark:hover:bg-gray-800/60 transition-all duration-200"
               >
                 Clear All
               </Button>

@@ -4,7 +4,7 @@ import { ConvexHttpClient } from "convex/browser";
 // Dynamic import to avoid build-time issues
 let api: any;
 try {
-  api = require("../../convex/_generated/api").api;
+  api = require("../convex/_generated/api").api;
 } catch (error) {
   console.log("Convex API not available during build");
 }
