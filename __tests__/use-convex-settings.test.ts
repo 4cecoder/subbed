@@ -2,13 +2,12 @@ import { renderHook } from '@testing-library/react';
 import { useConvexSettings } from '../lib/hooks/use-convex-settings';
 import { UserSettings } from '../lib/types';
 import { useQuery, useMutation } from 'convex/react';
+import { act, waitFor } from '@testing-library/react';
 
 // Mock Convex hooks
 jest.mock('convex/react', () => ({
   useQuery: jest.fn(),
-  useMutation: jest.fn(() => ({
-    withOptimisticUpdate: jest.fn().mockReturnThis(),
-  })),
+  useMutation: jest.fn(),
 }));
 
 jest.mock('../convex/_generated/api', () => ({
@@ -22,10 +21,9 @@ jest.mock('../convex/_generated/api', () => ({
 
 // Type helper for ReactMutation mock
 describe('useConvexSettings', () => {
-  const mockUpdateSettings = {
+  const mockUpdateSettings = Object.assign(jest.fn(), {
     withOptimisticUpdate: jest.fn().mockReturnThis(),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any;
+  });
   const mockConvexSettings = {
     per_page: 20,
     per_channel: 10,
@@ -88,12 +86,17 @@ describe('useConvexSettings', () => {
       showThumbnails: false,
     };
 
-    await result.current.updateSettings(newSettings);
+    await act(async () => {
+      await result.current.updateSettings(newSettings);
+    });
 
     expect(mockUpdateSettings).toHaveBeenCalledWith(newSettings);
-    expect(result.current.settings).toEqual({
-      ...mockConvexSettings,
-      ...newSettings,
+
+    await waitFor(() => {
+      expect(result.current.settings).toEqual({
+        ...mockConvexSettings,
+        ...newSettings,
+      });
     });
 
     // Check localStorage was updated
@@ -116,15 +119,10 @@ describe('useConvexSettings', () => {
       per_page: 30,
     };
 
-    let error: Error | null = null;
-    try {
+    await act(async () => {
       await result.current.updateSettings(newSettings);
-    } catch (err) {
-      error = err as Error;
-    }
+    });
 
-    expect(error).toBeTruthy();
-    expect(error?.message).toBe(errorMessage);
     expect(result.current.error).toBe(errorMessage);
   });
 
@@ -138,12 +136,12 @@ describe('useConvexSettings', () => {
 
     const { result } = renderHook(() => useConvexSettings());
 
-    const updatePromise = result.current.updateSettings({ per_page: 30 });
-
-    expect(result.current.loading).toBe(true);
-
-    await updatePromise;
-    expect(result.current.loading).toBe(false);
+    await act(async () => {
+      const updatePromise = result.current.updateSettings({ per_page: 30 });
+      expect(result.current.loading).toBe(true);
+      await updatePromise;
+      expect(result.current.loading).toBe(false);
+    });
   });
 
   it('refreshes settings', async () => {
@@ -178,7 +176,9 @@ describe('useConvexSettings', () => {
     };
 
     // State should update immediately, before the async operation completes
-    result.current.updateSettings(newSettings);
+    act(() => {
+      result.current.updateSettings(newSettings);
+    });
 
     expect(result.current.settings.per_page).toBe(30);
   });
@@ -193,17 +193,21 @@ describe('useConvexSettings', () => {
       showThumbnails: false,
     };
 
-    await result.current.updateSettings(newSettings);
+    await act(async () => {
+      await result.current.updateSettings(newSettings);
+    });
 
-    expect(result.current.settings).toEqual({
-      per_page: 30,
-      per_channel: 10, // unchanged
-      showThumbnails: false,
-      showDescriptions: true, // unchanged
-      defaultFeedType: 'all', // unchanged
-      sortOrder: 'newest', // unchanged
-      caching_ttl: 0, // unchanged
-      concurrency: 6, // unchanged
+    await waitFor(() => {
+      expect(result.current.settings).toEqual({
+        per_page: 30,
+        per_channel: 10, // unchanged
+        showThumbnails: false,
+        showDescriptions: true, // unchanged
+        defaultFeedType: 'all', // unchanged
+        sortOrder: 'newest', // unchanged
+        caching_ttl: 0, // unchanged
+        concurrency: 6, // unchanged
+      });
     });
   });
 

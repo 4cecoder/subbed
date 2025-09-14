@@ -46,16 +46,20 @@ export function useConvexSettings() {
       setError(null);
 
       try {
-        // Update Convex
-        await updateConvexSettings(newSettings);
-
         // Update local state immediately for responsive UI
         const updatedSettings = { ...settings, ...newSettings };
         setSettings(updatedSettings);
 
         // Also save to localStorage as fallback
         localStorage.setItem('user-settings', JSON.stringify(updatedSettings));
+
+        // Update Convex
+        await updateConvexSettings(newSettings);
       } catch (err) {
+        // Revert local state on error
+        setSettings(settings);
+        localStorage.setItem('user-settings', JSON.stringify(settings));
+
         const errorMessage = err instanceof Error ? err.message : 'Failed to save settings';
         setError(errorMessage);
         throw err;

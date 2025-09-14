@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { readSettings, writeSettings } from '../../../lib/settings';
 
+export const runtime = 'nodejs';
+export const preferredRegion = 'iad1';
+export const revalidate = 60;
+
 export async function GET() {
   try {
     const s = await readSettings();

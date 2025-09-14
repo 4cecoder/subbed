@@ -66,7 +66,8 @@ export function useConvexFeed(settings: UserSettings | null): UseFeedReturn {
 
       try {
         const perChannel = settings.per_channel || 10;
-        const concurrency = Math.max(1, Math.min(settings.concurrency || 6, 6));
+        const envConcurrency = Number(process.env.NEXT_PUBLIC_RSS_CONCURRENCY || 0);
+        const concurrency = Math.max(1, Math.min(envConcurrency || settings.concurrency || 6, 6));
 
         // Fetch feeds from all subscribed channels with controlled concurrency
         const allItems: FeedItem[] = [];

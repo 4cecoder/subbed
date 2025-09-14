@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 
+export const runtime = 'nodejs';
+export const preferredRegion = 'iad1';
+export const revalidate = 300;
+
 const isChannelId = (s: string) => /^UC[A-Za-z0-9_-]{22}$/.test(s);
 
 async function fetchTextWithTimeout(url: string, timeout = 6000) {

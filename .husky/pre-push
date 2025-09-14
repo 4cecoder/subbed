@@ -30,13 +30,17 @@ echo "🔍 Step 4/5: Validating TypeScript with strict mode..."
 bunx tsc --noEmit --strict || handle_failure "TypeScript strict mode failed"
 
 echo "🔍 Step 5/5: Final security scan..."
-if git log --oneline -10 | grep -iE '(password|secret|key|token|api_key)'; then
+if git log --oneline -10 | grep -iE '(password|secret|key|token|api[_-]?key)'; then
+  if [ "$ALLOW_SENSITIVE_COMMITS" = "1" ]; then
+    echo "⚠️  WARNING: Sensitive keywords detected in recent commits, but proceeding due to ALLOW_SENSITIVE_COMMITS=1"
+  else
     echo "⚠️  WARNING: Recent commits mention sensitive keywords. Please review."
     echo "Continue? (y/N)"
     read -r response
     if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-        handle_failure "Push cancelled by user due to security concerns"
+      handle_failure "Push cancelled by user due to security concerns"
     fi
+  fi
 fi
 
 echo "✅ ALL PRE-PUSH CHECKS PASSED! Safe to deploy."

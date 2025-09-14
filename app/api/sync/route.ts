@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { syncSubscriptions, processSyncQueue } from '../../../lib/db';
 import { syncSettings } from '../../../lib/settings';
 
+export const runtime = 'nodejs';
+export const preferredRegion = 'iad1';
+
 export async function POST() {
   try {
     // Perform all sync operations

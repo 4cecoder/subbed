@@ -6,6 +6,9 @@ import {
   clearSubscriptions,
 } from '../../../lib/db';
 
+export const runtime = 'nodejs';
+export const preferredRegion = 'iad1';
+
 export async function GET() {
   try {
     const items = await listSubscriptions();

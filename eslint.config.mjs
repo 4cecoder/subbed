@@ -17,8 +17,12 @@ const eslintConfig = [
       '.next/**',
       'out/**',
       'build/**',
+      'dist/**',
+      'coverage/**',
       'next-env.d.ts',
       'convex/_generated/**',
+      '.env*',
+      '*.log',
     ],
   },
 ];

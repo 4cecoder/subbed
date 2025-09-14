@@ -3,6 +3,10 @@ import { listSubscriptions } from '../../../lib/db';
 import { readSettings } from '../../../lib/settings';
 import { FeedItem } from '../../../lib/types';
 
+export const runtime = 'nodejs';
+export const preferredRegion = 'iad1';
+export const revalidate = 300;
+
 // Aggregated feed endpoint
 // Query params:
 // - page: 1-based page number
@@ -170,7 +174,12 @@ export async function GET(req: Request) {
             if (type) url.searchParams.set('type', type);
 
             const r = await fetch(url.toString(), {
-              headers: { 'User-Agent': 'subbed-app (+https://example)' },
+              headers: {
+                'User-Agent': 'subbed-app (+https://subbed.app)',
+                Accept: 'application/json',
+                'Accept-Language': 'en-US,en;q=0.9',
+              },
+              next: { revalidate: 300 },
             });
             if (!r.ok) return;
             const j = await r.json();

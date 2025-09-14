@@ -1,7 +1,36 @@
 import { NextResponse } from 'next/server';
 import { readSettings } from '../../../lib/settings';
 
+export const runtime = 'nodejs';
+export const preferredRegion = 'iad1';
+export const revalidate = 300;
+
 const isChannelId = (s: string) => /^UC[A-Za-z0-9_-]{22}$/.test(s);
+
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit = {},
+  attempts = 3,
+  backoffMs = 400
+): Promise<Response> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const ctrl = new AbortController();
+      const timeout = setTimeout(() => ctrl.abort(), 8000);
+      const res = await fetch(url, { ...options, signal: ctrl.signal });
+      clearTimeout(timeout);
+      if (res.ok) return res;
+      if (res.status >= 400 && res.status < 500 && res.status !== 429) return res;
+      await new Promise(r => setTimeout(r, backoffMs * (i + 1)));
+    } catch (e) {
+      lastErr = e;
+      await new Promise(r => setTimeout(r, backoffMs * (i + 1)));
+    }
+  }
+  if (lastErr) throw lastErr;
+  return fetch(url, options);
+}
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -126,11 +155,24 @@ export async function GET(req: Request) {
 
   const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${id}`;
   try {
-    const r = await fetch(feedUrl, { headers: { 'User-Agent': 'subbed-app (+https://example)' } });
+    const r = await fetchWithRetry(
+      feedUrl,
+      {
+        headers: {
+          'User-Agent': 'subbed-app (+https://subbed.app)',
+          Accept: 'application/atom+xml, application/xml;q=0.9, */*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+        },
+        // Hint Next.js to cache this external request for 5 minutes
+        next: { revalidate: 300 },
+      },
+      3,
+      500
+    );
     if (!r.ok) {
       return NextResponse.json(
         { error: 'failed to fetch feed', status: r.status },
-        { status: 502 }
+        { status: 502, headers: { 'Cache-Control': 'public, max-age=0, s-maxage=60' } }
       );
     }
 
@@ -173,10 +215,15 @@ export async function GET(req: Request) {
         const ctrl = new AbortController();
         const to = setTimeout(() => ctrl.abort(), 5000);
         try {
-          const r = await fetch(`https://www.youtube.com/shorts/${videoId}`, {
-            headers,
-            signal: ctrl.signal,
-          });
+          const r = await fetchWithRetry(
+            `https://www.youtube.com/shorts/${videoId}`,
+            {
+              headers,
+              signal: ctrl.signal,
+            },
+            2,
+            300
+          );
           if (r && r.ok) {
             if (r.url && r.url.includes('/shorts/')) {
               clearTimeout(to);
@@ -217,10 +264,15 @@ export async function GET(req: Request) {
         const ctrl2 = new AbortController();
         const to2 = setTimeout(() => ctrl2.abort(), 5000);
         try {
-          const r2 = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
-            headers,
-            signal: ctrl2.signal,
-          });
+          const r2 = await fetchWithRetry(
+            `https://www.youtube.com/watch?v=${videoId}`,
+            {
+              headers,
+              signal: ctrl2.signal,
+            },
+            2,
+            300
+          );
           if (r2 && r2.ok) {
             const body = await r2.text();
             if (
