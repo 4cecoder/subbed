@@ -7,6 +7,7 @@ import { FeedbackDialog } from "./feedback-dialog";
 import { OnboardingDialog } from "./onboarding-dialog";
 import { SettingsDialog } from "./settings-dialog";
 import { SubscriptionManager } from "./subscription-manager";
+import { ThemeToggleFancy } from "./theme-toggle";
 import { useOnboarding } from "@/lib/hooks/use-onboarding";
 import { useConvexSettings } from "@/lib/hooks/use-convex-settings";
 import { HelpCircle, Settings, Users } from "lucide-react";
@@ -49,6 +50,7 @@ export default function Header() {
       </div>
       
       <div className="flex items-center gap-4">
+        <ThemeToggleFancy className="mr-2" />
         <SignedIn>
           <Button
             variant="ghost"

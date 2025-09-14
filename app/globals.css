@@ -43,6 +43,10 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* Animation delay utilities */
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-600 { animation-delay: 600ms; }
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
