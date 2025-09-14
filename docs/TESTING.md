@@ -34,11 +34,11 @@ Subbed uses a comprehensive testing strategy that includes:
 
 ```javascript
 // jest.config.js
-const nextJest = require('next/jest')
+const nextJest = require('next/jest');
 
 const createJestConfig = nextJest({
   dir: './',
-})
+});
 
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
@@ -46,14 +46,14 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
-}
+};
 
-module.exports = createJestConfig(customJestConfig)
+module.exports = createJestConfig(customJestConfig);
 ```
 
 ```javascript
 // jest.setup.js
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 ```
 
 ### Package.json Scripts
@@ -265,85 +265,85 @@ describe('Feed Integration', () => {
 
 ```typescript
 // api/subscriptions.test.ts
-import { NextRequest } from 'next/server'
-import { GET, POST, DELETE } from '../app/api/subscriptions/route'
+import { NextRequest } from 'next/server';
+import { GET, POST, DELETE } from '../app/api/subscriptions/route';
 
 describe('/api/subscriptions', () => {
   describe('GET', () => {
     it('returns subscriptions array', async () => {
-      const request = new NextRequest('http://localhost:3000/api/subscriptions')
-      const response = await GET(request)
-      const data = await response.json()
+      const request = new NextRequest('http://localhost:3000/api/subscriptions');
+      const response = await GET(request);
+      const data = await response.json();
 
-      expect(response.status).toBe(200)
-      expect(Array.isArray(data)).toBe(true)
-    })
-  })
+      expect(response.status).toBe(200);
+      expect(Array.isArray(data)).toBe(true);
+    });
+  });
 
   describe('POST', () => {
     it('creates new subscription', async () => {
       const subscriptionData = {
         id: 'test-channel',
         title: 'Test Channel',
-        url: 'https://youtube.com/channel/test'
-      }
+        url: 'https://youtube.com/channel/test',
+      };
 
       const request = new NextRequest('http://localhost:3000/api/subscriptions', {
         method: 'POST',
         body: JSON.stringify(subscriptionData),
-        headers: { 'Content-Type': 'application/json' }
-      })
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-      const response = await POST(request)
-      const data = await response.json()
+      const response = await POST(request);
+      const data = await response.json();
 
-      expect(response.status).toBe(200)
-      expect(data).toEqual({ ok: true })
-    })
+      expect(response.status).toBe(200);
+      expect(data).toEqual({ ok: true });
+    });
 
     it('validates required fields', async () => {
-      const invalidData = { title: 'Test Channel' } // Missing id
+      const invalidData = { title: 'Test Channel' }; // Missing id
 
       const request = new NextRequest('http://localhost:3000/api/subscriptions', {
         method: 'POST',
         body: JSON.stringify(invalidData),
-        headers: { 'Content-Type': 'application/json' }
-      })
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-      const response = await POST(request)
-      const data = await response.json()
+      const response = await POST(request);
+      const data = await response.json();
 
-      expect(response.status).toBe(400)
-      expect(data.error).toContain('missing id')
-    })
-  })
+      expect(response.status).toBe(400);
+      expect(data.error).toContain('missing id');
+    });
+  });
 
   describe('DELETE', () => {
     it('removes specific subscription', async () => {
       const request = new NextRequest('http://localhost:3000/api/subscriptions?id=test-channel', {
-        method: 'DELETE'
-      })
+        method: 'DELETE',
+      });
 
-      const response = await DELETE(request)
-      const data = await response.json()
+      const response = await DELETE(request);
+      const data = await response.json();
 
-      expect(response.status).toBe(200)
-      expect(data).toEqual({ ok: true })
-    })
+      expect(response.status).toBe(200);
+      expect(data).toEqual({ ok: true });
+    });
 
     it('clears all subscriptions when no id provided', async () => {
       const request = new NextRequest('http://localhost:3000/api/subscriptions', {
-        method: 'DELETE'
-      })
+        method: 'DELETE',
+      });
 
-      const response = await DELETE(request)
-      const data = await response.json()
+      const response = await DELETE(request);
+      const data = await response.json();
 
-      expect(response.status).toBe(200)
-      expect(data).toEqual({ ok: true })
-    })
-  })
-})
+      expect(response.status).toBe(200);
+      expect(data).toEqual({ ok: true });
+    });
+  });
+});
 ```
 
 ## 🏃 Running Tests
@@ -434,6 +434,7 @@ npm run test -- --verbose --no-coverage
 ### Test Organization
 
 1. **Arrange-Act-Assert Pattern**
+
    ```typescript
    it('should handle user interaction', () => {
      // Arrange
@@ -449,23 +450,25 @@ npm run test -- --verbose --no-coverage
    ```
 
 2. **Descriptive Test Names**
+
    ```typescript
    // ✅ Good
    describe('VideoCard', () => {
-     it('displays video title and channel name')
-     it('shows thumbnail when available')
-     it('handles click events to open video')
-   })
+     it('displays video title and channel name');
+     it('shows thumbnail when available');
+     it('handles click events to open video');
+   });
 
    // ❌ Avoid
    describe('VideoCard', () => {
-     it('works')
-     it('test 1')
-     it('should render')
-   })
+     it('works');
+     it('test 1');
+     it('should render');
+   });
    ```
 
 3. **Test Data Management**
+
    ```typescript
    // Use factories for test data
    const createMockVideo = (overrides = {}) => ({
@@ -485,39 +488,43 @@ npm run test -- --verbose --no-coverage
 ### Mocking Strategies
 
 1. **API Calls**
+
    ```typescript
-   import { rest } from 'msw'
-   import { setupServer } from 'msw/node'
+   import { rest } from 'msw';
+   import { setupServer } from 'msw/node';
 
    const server = setupServer(
      rest.get('/api/subscriptions', (req, res, ctx) => {
-       return res(ctx.json(mockSubscriptions))
+       return res(ctx.json(mockSubscriptions));
      })
-   )
+   );
 
-   beforeAll(() => server.listen())
-   afterEach(() => server.resetHandlers())
-   afterAll(() => server.close())
+   beforeAll(() => server.listen());
+   afterEach(() => server.resetHandlers());
+   afterAll(() => server.close());
    ```
 
 2. **Custom Hooks**
+
    ```typescript
-   jest.mock('../hooks/use-subscriptions')
-   const mockUseSubscriptions = useSubscriptions as jest.MockedFunction<typeof useSubscriptions>
+   jest.mock('../hooks/use-subscriptions');
+   const mockUseSubscriptions = useSubscriptions as jest.MockedFunction<typeof useSubscriptions>;
 
    mockUseSubscriptions.mockReturnValue({
      subscriptions: mockSubscriptions,
      loading: false,
-     error: null
-   })
+     error: null,
+   });
    ```
 
 3. **Context Providers**
    ```typescript
-   const mockContextValue = { /* ... */ }
+   const mockContextValue = {
+     /* ... */
+   };
    jest.mock('../contexts/AppContext', () => ({
-     useAppContext: () => mockContextValue
-   }))
+     useAppContext: () => mockContextValue,
+   }));
    ```
 
 ### Accessibility Testing
@@ -601,7 +608,7 @@ module.exports = {
       statements: 80,
     },
   },
-}
+};
 ```
 
 ### Quality Gates
@@ -615,12 +622,12 @@ module.exports = {
 
 ### Coverage Goals
 
-| Category | Target | Current |
-|----------|--------|---------|
-| Statements | 80% | - |
-| Branches | 80% | - |
-| Functions | 80% | - |
-| Lines | 80% | - |
+| Category   | Target | Current |
+| ---------- | ------ | ------- |
+| Statements | 80%    | -       |
+| Branches   | 80%    | -       |
+| Functions  | 80%    | -       |
+| Lines      | 80%    | -       |
 
 ### Performance Benchmarks
 
@@ -634,6 +641,7 @@ module.exports = {
 ### Common Issues
 
 1. **Async Tests**
+
    ```typescript
    // ✅ Correct
    it('loads data asynchronously', async () => {
@@ -651,17 +659,18 @@ module.exports = {
    ```
 
 2. **Mock Cleanup**
+
    ```typescript
    beforeEach(() => {
-     jest.clearAllMocks()
-   })
+     jest.clearAllMocks();
+   });
    ```
 
 3. **Memory Leaks**
    ```typescript
    afterEach(() => {
-     cleanup()
-   })
+     cleanup();
+   });
    ```
 
 ### Debugging Tools

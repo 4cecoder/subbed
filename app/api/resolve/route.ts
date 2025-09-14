@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
 const isChannelId = (s: string) => /^UC[A-Za-z0-9_-]{22}$/.test(s);
 
@@ -6,7 +6,10 @@ async function fetchTextWithTimeout(url: string, timeout = 6000) {
   const ctrl = new AbortController();
   const to = setTimeout(() => ctrl.abort(), timeout);
   try {
-    const r = await fetch(url, { headers: { "User-Agent": "subbed-app (+https://example)" }, signal: ctrl.signal });
+    const r = await fetch(url, {
+      headers: { 'User-Agent': 'subbed-app (+https://example)' },
+      signal: ctrl.signal,
+    });
     if (r.ok) return await r.text();
   } catch {
     // ignore
@@ -45,7 +48,9 @@ function extractChannelIdFromHtml(txt: string | null) {
   if (m) return m[1];
 
   // meta tag itemprop (sometimes present)
-  m = txt.match(/<meta[^>]*itemprop=["']channelId["'][^>]*content=["'](UC[A-Za-z0-9_-]{22})["'][^>]*>/i);
+  m = txt.match(
+    /<meta[^>]*itemprop=["']channelId["'][^>]*content=["'](UC[A-Za-z0-9_-]{22})["'][^>]*>/i
+  );
   if (m) return m[1];
 
   return null;
@@ -53,8 +58,9 @@ function extractChannelIdFromHtml(txt: string | null) {
 
 async function resolveAuthorUrlToChannel(authorUrl: string) {
   try {
-    if (!authorUrl.startsWith("http")) {
-      authorUrl = "https://www.youtube.com" + (authorUrl.startsWith("/") ? authorUrl : "/" + authorUrl);
+    if (!authorUrl.startsWith('http')) {
+      authorUrl =
+        'https://www.youtube.com' + (authorUrl.startsWith('/') ? authorUrl : '/' + authorUrl);
     }
     const txt = await fetchTextWithTimeout(authorUrl, 6000);
     return extractChannelIdFromHtml(txt);
@@ -102,9 +108,9 @@ async function getChannelNameFromChannelId(channelId: string) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const raw = searchParams.get("url") || searchParams.get("q") || "";
+  const raw = searchParams.get('url') || searchParams.get('q') || '';
   if (!raw) {
-    return NextResponse.json({ error: "missing url parameter" }, { status: 400 });
+    return NextResponse.json({ error: 'missing url parameter' }, { status: 400 });
   }
 
   const input = raw.trim();
@@ -114,11 +120,11 @@ export async function GET(req: Request) {
   }
 
   let asUrl = input;
-  if (!asUrl.startsWith("http")) {
+  if (!asUrl.startsWith('http')) {
     if (
-      asUrl.startsWith("@") ||
-      asUrl.startsWith("user/") ||
-      asUrl.startsWith("c/") ||
+      asUrl.startsWith('@') ||
+      asUrl.startsWith('user/') ||
+      asUrl.startsWith('c/') ||
       /^[A-Za-z0-9_-]+$/.test(asUrl)
     ) {
       asUrl = `https://www.youtube.com/${asUrl}`;
@@ -128,28 +134,35 @@ export async function GET(req: Request) {
   }
 
   // try to detect a video id (watch?v= or youtu.be/)
-  const videoMatch = asUrl.match(/[?&]v=([A-Za-z0-9_-]{11})/) || asUrl.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  const videoMatch =
+    asUrl.match(/[?&]v=([A-Za-z0-9_-]{11})/) || asUrl.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
   const videoId = videoMatch ? videoMatch[1] : null;
 
   // Try oEmbed first (fast and lightweight)
   try {
     const oembed = `https://www.youtube.com/oembed?url=${encodeURIComponent(asUrl)}&format=json`;
-    const r = await fetch(oembed, { headers: { "User-Agent": "subbed-app (+https://example)" } });
+    const r = await fetch(oembed, { headers: { 'User-Agent': 'subbed-app (+https://example)' } });
     if (r.ok) {
       const j = await r.json();
       const authorUrl = j.author_url;
-      if (typeof authorUrl === "string") {
+      if (typeof authorUrl === 'string') {
         const m = authorUrl.match(/\/channel\/(UC[A-Za-z0-9_-]{22})/);
         if (m) {
           const channelName = await getChannelNameFromChannelId(m[1]);
-          return NextResponse.json({ channelId: m[1], title: channelName || j.author_name || null });
+          return NextResponse.json({
+            channelId: m[1],
+            title: channelName || j.author_name || null,
+          });
         }
         // try resolving the author's page to a channel id
         try {
           const resolved = await resolveAuthorUrlToChannel(authorUrl);
           if (resolved) {
             const channelName = await getChannelNameFromChannelId(resolved);
-            return NextResponse.json({ channelId: resolved, title: channelName || j.author_name || null });
+            return NextResponse.json({
+              channelId: resolved,
+              title: channelName || j.author_name || null,
+            });
           }
         } catch {
           // ignore and continue
@@ -177,7 +190,7 @@ export async function GET(req: Request) {
 
   // Final fallback: fetch the provided URL and search for channel id
   try {
-    const r2 = await fetch(asUrl, { headers: { "User-Agent": "subbed-app (+https://example)" } });
+    const r2 = await fetch(asUrl, { headers: { 'User-Agent': 'subbed-app (+https://example)' } });
     if (r2.ok) {
       const txt = await r2.text();
 
@@ -207,5 +220,5 @@ export async function GET(req: Request) {
     // ignore
   }
 
-  return NextResponse.json({ error: "could not resolve channel id" }, { status: 404 });
+  return NextResponse.json({ error: 'could not resolve channel id' }, { status: 404 });
 }

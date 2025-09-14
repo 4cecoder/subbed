@@ -1,5 +1,5 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { query, mutation } from './_generated/server';
+import { v } from 'convex/values';
 
 // Development-only mutation to add sample subscriptions without authentication
 // This should only be used for development/testing purposes
@@ -12,15 +12,12 @@ export const addDevSubscription = mutation({
   },
   handler: async (ctx, args) => {
     // Use a fixed development user ID
-    const devUserId = "dev-user-id";
-    
+    const devUserId = 'dev-user-id';
+
     const existingSubscription = await ctx.db
-      .query("subscriptions")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), devUserId),
-          q.eq(q.field("channelId"), args.channelId)
-        )
+      .query('subscriptions')
+      .filter(q =>
+        q.and(q.eq(q.field('userId'), devUserId), q.eq(q.field('channelId'), args.channelId))
       )
       .first();
 
@@ -36,7 +33,7 @@ export const addDevSubscription = mutation({
     }
 
     // Create new subscription
-    const subscriptionId = await ctx.db.insert("subscriptions", {
+    const subscriptionId = await ctx.db.insert('subscriptions', {
       userId: devUserId,
       channelId: args.channelId,
       channelName: args.channelName,
@@ -45,7 +42,7 @@ export const addDevSubscription = mutation({
       createdAt: new Date().toISOString(),
       lastSyncedAt: new Date().toISOString(),
     });
-    
+
     return subscriptionId;
   },
 });
@@ -53,12 +50,12 @@ export const addDevSubscription = mutation({
 // Development-only query to get all subscriptions (for testing)
 export const getDevSubscriptions = query({
   args: {},
-  handler: async (ctx) => {
-    const devUserId = "dev-user-id";
+  handler: async ctx => {
+    const devUserId = 'dev-user-id';
     return await ctx.db
-      .query("subscriptions")
-      .filter((q) => q.eq(q.field("userId"), devUserId))
-      .order("desc")
+      .query('subscriptions')
+      .filter(q => q.eq(q.field('userId'), devUserId))
+      .order('desc')
       .collect();
   },
 });
@@ -66,17 +63,17 @@ export const getDevSubscriptions = query({
 // Development-only mutation to clear all subscriptions
 export const clearDevSubscriptions = mutation({
   args: {},
-  handler: async (ctx) => {
-    const devUserId = "dev-user-id";
+  handler: async ctx => {
+    const devUserId = 'dev-user-id';
     const subscriptions = await ctx.db
-      .query("subscriptions")
-      .filter((q) => q.eq(q.field("userId"), devUserId))
+      .query('subscriptions')
+      .filter(q => q.eq(q.field('userId'), devUserId))
       .collect();
-    
+
     for (const subscription of subscriptions) {
       await ctx.db.delete(subscription._id);
     }
-    
+
     return { deleted: subscriptions.length };
   },
 });

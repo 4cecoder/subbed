@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
@@ -12,11 +12,7 @@ interface ThemeToggleProps {
   size?: 'default' | 'sm' | 'lg' | 'icon';
 }
 
-export function ThemeToggle({
-  className,
-  variant = 'ghost',
-  size = 'icon'
-}: ThemeToggleProps) {
+export function ThemeToggle({ className, variant = 'ghost', size = 'icon' }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
 
   const getIcon = () => {
@@ -51,20 +47,18 @@ export function ThemeToggle({
       size={size}
       onClick={toggleTheme}
       className={cn(
-        "relative overflow-hidden transition-all duration-300 hover:scale-105",
-        "bg-gradient-to-r from-orange-400 to-pink-400 dark:from-blue-500 dark:to-purple-600",
-        "hover:from-orange-500 hover:to-pink-500 dark:hover:from-blue-600 dark:hover:to-purple-700",
-        "shadow-lg hover:shadow-xl",
-        "border-0 text-white",
+        'relative overflow-hidden transition-all duration-300 hover:scale-105',
+        'bg-gradient-to-r from-orange-400 to-pink-400 dark:from-blue-500 dark:to-purple-600',
+        'hover:from-orange-500 hover:to-pink-500 dark:hover:from-blue-600 dark:hover:to-purple-700',
+        'shadow-lg hover:shadow-xl',
+        'border-0 text-white',
         className
       )}
       title={getTooltip()}
       aria-label={getTooltip()}
     >
       <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
-      <div className="relative z-10 flex items-center justify-center">
-        {getIcon()}
-      </div>
+      <div className="relative z-10 flex items-center justify-center">{getIcon()}</div>
     </Button>
   );
 }
@@ -73,7 +67,7 @@ export function ThemeToggle({
 export function ThemeToggleMinimal({
   className,
   variant = 'ghost',
-  size = 'icon'
+  size = 'icon',
 }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
 
@@ -96,9 +90,9 @@ export function ThemeToggleMinimal({
       size={size}
       onClick={toggleTheme}
       className={cn(
-        "transition-all duration-300 hover:scale-105",
-        "border border-border/50 hover:border-border",
-        "hover:bg-accent/50",
+        'transition-all duration-300 hover:scale-105',
+        'border border-border/50 hover:border-border',
+        'hover:bg-accent/50',
         className
       )}
       title={`Current: ${theme} mode`}
@@ -113,7 +107,7 @@ export function ThemeToggleMinimal({
 export function ThemeToggleFancy({
   className,
   variant = 'ghost',
-  size = 'icon'
+  size = 'icon',
 }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
 
@@ -123,15 +117,15 @@ export function ThemeToggleFancy({
       size={size}
       onClick={toggleTheme}
       className={cn(
-        "relative group overflow-hidden transition-all duration-500",
-        "bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500",
-        "dark:from-slate-800 dark:via-slate-700 dark:to-slate-600",
-        "hover:from-amber-500 hover:via-orange-600 hover:to-pink-600",
-        "dark:hover:from-slate-700 dark:hover:via-slate-600 dark:hover:to-slate-500",
-        "shadow-lg hover:shadow-2xl hover:shadow-orange-500/25 dark:hover:shadow-slate-500/25",
-        "border-0 text-white dark:text-slate-200",
-        "transform hover:scale-110 hover:rotate-3",
-        "animate-pulse hover:animate-none",
+        'relative group overflow-hidden transition-all duration-500',
+        'bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500',
+        'dark:from-slate-800 dark:via-slate-700 dark:to-slate-600',
+        'hover:from-amber-500 hover:via-orange-600 hover:to-pink-600',
+        'dark:hover:from-slate-700 dark:hover:via-slate-600 dark:hover:to-slate-500',
+        'shadow-lg hover:shadow-2xl hover:shadow-orange-500/25 dark:hover:shadow-slate-500/25',
+        'border-0 text-white dark:text-slate-200',
+        'transform hover:scale-110 hover:rotate-3',
+        'animate-pulse hover:animate-none',
         className
       )}
       title={`${theme} mode`}

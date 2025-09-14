@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
-import { UseSyncReturn } from "@/lib/types";
-import { apiClient } from "@/lib/api-client";
+import { useState, useEffect } from 'react';
+import { UseSyncReturn } from '@/lib/types';
+import { apiClient } from '@/lib/api-client';
 
 export function useSync(): UseSyncReturn {
-  const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
+  const [isOnline, setIsOnline] = useState(
+    typeof navigator !== 'undefined' ? navigator.onLine : true
+  );
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);

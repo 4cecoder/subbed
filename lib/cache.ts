@@ -73,8 +73,7 @@ export const CACHE_KEYS = {
   SETTINGS: 'settings',
   FEED: (page: number, perPage: number, query: string, type: string) =>
     `feed_${page}_${perPage}_${query}_${type}`,
-  RSS: (channelId: string, limit: number, type: string) =>
-    `rss_${channelId}_${limit}_${type}`,
+  RSS: (channelId: string, limit: number, type: string) => `rss_${channelId}_${limit}_${type}`,
 } as const;
 
 // Periodic cleanup

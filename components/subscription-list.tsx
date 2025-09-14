@@ -1,18 +1,30 @@
-"use client";
+'use client';
 
 import React, { useMemo, useState, useCallback } from 'react';
 
-import { Doc } from "@/convex/_generated/dataModel";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { RefreshCw, ExternalLink, Trash2, Play, Search, ChevronDown, ChevronUp, Filter, Calendar, Hash, X } from "lucide-react";
-import Image from "next/image";
+import { Doc } from '@/convex/_generated/dataModel';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  RefreshCw,
+  ExternalLink,
+  Trash2,
+  Play,
+  Search,
+  ChevronDown,
+  ChevronUp,
+  Filter,
+  Calendar,
+  Hash,
+  X,
+} from 'lucide-react';
+import Image from 'next/image';
 
 interface SubscriptionListProps {
-  subscriptions: Doc<"subscriptions">[];
+  subscriptions: Doc<'subscriptions'>[];
   selectedId?: string | null;
   loading?: boolean;
   onSelect?: (id: string) => void;
@@ -23,7 +35,7 @@ interface SubscriptionListProps {
 
 interface SubscriptionGroup {
   title: string;
-  subs: Doc<"subscriptions">[];
+  subs: Doc<'subscriptions'>[];
   isExpanded: boolean;
 }
 
@@ -45,23 +57,27 @@ export default function SubscriptionList({
   const [showFilters, setShowFilters] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['all']));
 
-  const handleRemove = useCallback(async (channelId: string) => {
-    try {
-      if (onRemove) {
-        onRemove(channelId);
+  const handleRemove = useCallback(
+    async (channelId: string) => {
+      try {
+        if (onRemove) {
+          onRemove(channelId);
+        }
+      } catch (error) {
+        console.error('Failed to remove subscription:', error);
       }
-    } catch (error) {
-      console.error('Failed to remove subscription:', error);
-    }
-  }, [onRemove]);
+    },
+    [onRemove]
+  );
 
   // Filter and sort subscriptions
   const filteredAndSortedSubs = useMemo(() => {
     const filtered = subscriptions.filter(sub => {
       if (!searchQuery) return true;
       const query = searchQuery.toLowerCase();
-      return sub.channelName.toLowerCase().includes(query) ||
-             sub.channelId.toLowerCase().includes(query);
+      return (
+        sub.channelName.toLowerCase().includes(query) || sub.channelId.toLowerCase().includes(query)
+      );
     });
 
     // Sort
@@ -84,11 +100,13 @@ export default function SubscriptionList({
   // Group subscriptions
   const groupedSubs = useMemo(() => {
     if (groupBy === 'none') {
-      return [{
-        title: 'All Subscriptions',
-        subs: filteredAndSortedSubs,
-        isExpanded: expandedGroups.has('all')
-      }];
+      return [
+        {
+          title: 'All Subscriptions',
+          subs: filteredAndSortedSubs,
+          isExpanded: expandedGroups.has('all'),
+        },
+      ];
     }
 
     const groups: SubscriptionGroup[] = [];
@@ -98,33 +116,32 @@ export default function SubscriptionList({
       const thisWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
       const thisMonth = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-      const recent = filteredAndSortedSubs.filter(sub =>
-        new Date(sub._creationTime) >= thisWeek
+      const recent = filteredAndSortedSubs.filter(sub => new Date(sub._creationTime) >= thisWeek);
+      const thisMonthSubs = filteredAndSortedSubs.filter(
+        sub => new Date(sub._creationTime) >= thisMonth && new Date(sub._creationTime) < thisWeek
       );
-      const thisMonthSubs = filteredAndSortedSubs.filter(sub =>
-        new Date(sub._creationTime) >= thisMonth && new Date(sub._creationTime) < thisWeek
-      );
-      const older = filteredAndSortedSubs.filter(sub =>
-        new Date(sub._creationTime) < thisMonth
-      );
+      const older = filteredAndSortedSubs.filter(sub => new Date(sub._creationTime) < thisMonth);
 
-      if (recent.length > 0) groups.push({
-        title: 'Recent (This Week)',
-        subs: recent,
-        isExpanded: expandedGroups.has('recent')
-      });
-      if (thisMonthSubs.length > 0) groups.push({
-        title: 'This Month',
-        subs: thisMonthSubs,
-        isExpanded: expandedGroups.has('this-month')
-      });
-      if (older.length > 0) groups.push({
-        title: 'Older',
-        subs: older,
-        isExpanded: expandedGroups.has('older')
-      });
+      if (recent.length > 0)
+        groups.push({
+          title: 'Recent (This Week)',
+          subs: recent,
+          isExpanded: expandedGroups.has('recent'),
+        });
+      if (thisMonthSubs.length > 0)
+        groups.push({
+          title: 'This Month',
+          subs: thisMonthSubs,
+          isExpanded: expandedGroups.has('this-month'),
+        });
+      if (older.length > 0)
+        groups.push({
+          title: 'Older',
+          subs: older,
+          isExpanded: expandedGroups.has('older'),
+        });
     } else if (groupBy === 'alphabetical') {
-      const alphabetGroups: { [key: string]: Doc<"subscriptions">[] } = {};
+      const alphabetGroups: { [key: string]: Doc<'subscriptions'>[] } = {};
 
       filteredAndSortedSubs.forEach(sub => {
         const firstLetter = sub.channelName.charAt(0).toUpperCase();
@@ -134,13 +151,15 @@ export default function SubscriptionList({
         alphabetGroups[firstLetter].push(sub);
       });
 
-      Object.keys(alphabetGroups).sort().forEach(letter => {
-        groups.push({
-          title: letter,
-          subs: alphabetGroups[letter],
-          isExpanded: expandedGroups.has(letter)
+      Object.keys(alphabetGroups)
+        .sort()
+        .forEach(letter => {
+          groups.push({
+            title: letter,
+            subs: alphabetGroups[letter],
+            isExpanded: expandedGroups.has(letter),
+          });
         });
-      });
     }
 
     return groups;
@@ -158,83 +177,87 @@ export default function SubscriptionList({
     });
   }, []);
 
-  const SubscriptionItem: React.FC<{ sub: Doc<"subscriptions">; isSelected: boolean }> = React.memo(({ sub, isSelected }) => (
-    <li className={`p-3 sm:p-4 border rounded-xl transition-all duration-200 hover:shadow-md ${
-      isSelected 
-        ? "bg-primary/5 border-primary/20 shadow-sm ring-1 ring-primary/10" 
-        : "hover:bg-accent/50 hover:border-accent/60"
-    }`}>
-      <div className="flex items-center justify-between gap-3 sm:gap-4">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-muted/50 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-            {sub.channelLogoUrl ? (
-              <Image
-                src={sub.channelLogoUrl}
-                alt={`${sub.channelName} logo`}
-                width={40}
-                height={40}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <Play className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-            )}
+  const SubscriptionItem: React.FC<{ sub: Doc<'subscriptions'>; isSelected: boolean }> = React.memo(
+    ({ sub, isSelected }) => (
+      <li
+        className={`p-3 sm:p-4 border rounded-xl transition-all duration-200 hover:shadow-md ${
+          isSelected
+            ? 'bg-primary/5 border-primary/20 shadow-sm ring-1 ring-primary/10'
+            : 'hover:bg-accent/50 hover:border-accent/60'
+        }`}
+      >
+        <div className="flex items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-muted/50 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+              {sub.channelLogoUrl ? (
+                <Image
+                  src={sub.channelLogoUrl}
+                  alt={`${sub.channelName} logo`}
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              {onSelect && (
+                <button
+                  className="text-left w-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg p-1 -m-1 transition-colors"
+                  onClick={() => onSelect(sub.channelId)}
+                  aria-label={`Select subscription ${sub.channelName}`}
+                >
+                  <div className="font-semibold text-sm sm:text-base text-foreground truncate group-hover:text-primary transition-colors">
+                    {sub.channelName}
+                  </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 truncate font-mono">
+                    {sub.channelId}
+                  </div>
+                </button>
+              )}
+              {!onSelect && (
+                <>
+                  <div className="font-semibold text-sm sm:text-base text-foreground truncate">
+                    {sub.channelName}
+                  </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 truncate font-mono">
+                    {sub.channelId}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            {onSelect && (
-              <button
-                className="text-left w-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg p-1 -m-1 transition-colors"
-                onClick={() => onSelect(sub.channelId)}
-                aria-label={`Select subscription ${sub.channelName}`}
-              >
-                <div className="font-semibold text-sm sm:text-base text-foreground truncate group-hover:text-primary transition-colors">
-                  {sub.channelName}
-                </div>
-                <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 truncate font-mono">
-                  {sub.channelId}
-                </div>
-              </button>
-            )}
-            {!onSelect && (
-              <>
-                <div className="font-semibold text-sm sm:text-base text-foreground truncate">
-                  {sub.channelName}
-                </div>
-                <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 truncate font-mono">
-                  {sub.channelId}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="flex gap-1 sm:gap-2 flex-shrink-0">
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 sm:h-9 sm:w-9 p-0 touch-manipulation hover:bg-accent"
-            aria-label={`Open ${sub.channelName} on YouTube`}
-          >
-            <a
-              href={`https://www.youtube.com/channel/${sub.channelId}`}
-              target="_blank"
-              rel="noopener noreferrer"
+          <div className="flex gap-1 sm:gap-2 flex-shrink-0">
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 sm:h-9 sm:w-9 p-0 touch-manipulation hover:bg-accent"
+              aria-label={`Open ${sub.channelName} on YouTube`}
             >
-              <ExternalLink className="w-4 h-4 sm:w-4 sm:h-4" />
-            </a>
-          </Button>
-          <Button
-            onClick={() => handleRemove(sub.channelId)}
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 sm:h-9 sm:w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 touch-manipulation"
-            aria-label={`Remove subscription ${sub.channelName}`}
-          >
-            <Trash2 className="w-4 h-4 sm:w-4 sm:h-4" />
-          </Button>
+              <a
+                href={`https://www.youtube.com/channel/${sub.channelId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLink className="w-4 h-4 sm:w-4 sm:h-4" />
+              </a>
+            </Button>
+            <Button
+              onClick={() => handleRemove(sub.channelId)}
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 sm:h-9 sm:w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 touch-manipulation"
+              aria-label={`Remove subscription ${sub.channelName}`}
+            >
+              <Trash2 className="w-4 h-4 sm:w-4 sm:h-4" />
+            </Button>
+          </div>
         </div>
-      </div>
-    </li>
-  ));
+      </li>
+    )
+  );
 
   SubscriptionItem.displayName = 'SubscriptionItem';
 
@@ -267,7 +290,7 @@ export default function SubscriptionList({
           <Input
             placeholder="Search subscriptions..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10 pr-10 h-9 sm:h-10 text-sm"
             aria-label="Search subscriptions"
           />
@@ -289,13 +312,16 @@ export default function SubscriptionList({
           <div className="space-y-3 p-3 sm:p-4 bg-muted/30 rounded-xl border border-border/50 mt-3 sm:mt-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="sort-select" className="text-sm font-medium mb-1.5 block text-foreground">
+                <label
+                  htmlFor="sort-select"
+                  className="text-sm font-medium mb-1.5 block text-foreground"
+                >
                   Sort by
                 </label>
                 <select
                   id="sort-select"
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as SortOption)}
+                  onChange={e => setSortBy(e.target.value as SortOption)}
                   className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   aria-label="Sort subscriptions"
                 >
@@ -305,13 +331,16 @@ export default function SubscriptionList({
                 </select>
               </div>
               <div>
-                <label htmlFor="group-select" className="text-sm font-medium mb-1.5 block text-foreground">
+                <label
+                  htmlFor="group-select"
+                  className="text-sm font-medium mb-1.5 block text-foreground"
+                >
                   Group by
                 </label>
                 <select
                   id="group-select"
                   value={groupBy}
-                  onChange={(e) => setGroupBy(e.target.value as GroupOption)}
+                  onChange={e => setGroupBy(e.target.value as GroupOption)}
                   className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   aria-label="Group subscriptions"
                 >
@@ -337,15 +366,17 @@ export default function SubscriptionList({
                 size="sm"
                 className="h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4 flex-1 sm:flex-none touch-manipulation"
               >
-                <RefreshCw className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 ${loading ? 'animate-spin' : ''}`}
+                />
                 <span className="hidden sm:inline">Refresh All</span>
                 <span className="sm:hidden">Refresh</span>
               </Button>
             )}
             {onOpenClearConfirm && (
-              <Button 
-                onClick={onOpenClearConfirm} 
-                variant="outline" 
+              <Button
+                onClick={onOpenClearConfirm}
+                variant="outline"
                 size="sm"
                 className="h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4 flex-1 sm:flex-none touch-manipulation"
               >
@@ -365,11 +396,13 @@ export default function SubscriptionList({
           <div className="space-y-3 sm:space-y-4 pr-2 sm:pr-3">
             {/* All Subscriptions Option */}
             {onSelect && (
-              <div className={`p-3 sm:p-4 border rounded-xl transition-all duration-200 hover:shadow-md ${
-                selectedId === "all" 
-                  ? "bg-primary/10 border-primary/30 shadow-sm ring-1 ring-primary/20" 
-                  : "hover:bg-accent/50 hover:border-accent/80"
-              }`}>
+              <div
+                className={`p-3 sm:p-4 border rounded-xl transition-all duration-200 hover:shadow-md ${
+                  selectedId === 'all'
+                    ? 'bg-primary/10 border-primary/30 shadow-sm ring-1 ring-primary/20'
+                    : 'hover:bg-accent/50 hover:border-accent/80'
+                }`}
+              >
                 <div className="flex items-center justify-between gap-3 sm:gap-4">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/15 rounded-full flex items-center justify-center flex-shrink-0">
@@ -377,7 +410,7 @@ export default function SubscriptionList({
                     </div>
                     <button
                       className="text-left flex-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg p-1 -m-1 transition-colors"
-                      onClick={() => onSelect("all")}
+                      onClick={() => onSelect('all')}
                       aria-label="View all subscriptions"
                     >
                       <div className="font-semibold text-sm sm:text-base text-foreground">
@@ -389,7 +422,7 @@ export default function SubscriptionList({
                     </button>
                   </div>
                   <Button
-                    onClick={() => onSelect("all")}
+                    onClick={() => onSelect('all')}
                     variant="ghost"
                     size="sm"
                     className="h-8 sm:h-9 px-3 sm:px-4 text-xs sm:text-sm shrink-0 touch-manipulation"
@@ -402,7 +435,7 @@ export default function SubscriptionList({
             )}
 
             {/* Grouped Subscriptions */}
-            {groupedSubs.map((group) => (
+            {groupedSubs.map(group => (
               <div key={group.title} className="space-y-2 sm:space-y-3">
                 {groupBy !== 'none' && (
                   <Button
@@ -419,19 +452,17 @@ export default function SubscriptionList({
                         {group.subs.length}
                       </Badge>
                     </span>
-                    {group.isExpanded ?
-                      <ChevronUp className="w-4 h-4 text-muted-foreground" /> :
+                    {group.isExpanded ? (
+                      <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                    ) : (
                       <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                    }
+                    )}
                   </Button>
                 )}
 
                 {(groupBy === 'none' || group.isExpanded) && (
-                  <ul
-                    id={`group-${group.title}`}
-                    className="space-y-2 sm:space-y-3"
-                  >
-                    {group.subs.map((sub) => (
+                  <ul id={`group-${group.title}`} className="space-y-2 sm:space-y-3">
+                    {group.subs.map(sub => (
                       <SubscriptionItem
                         key={sub._id}
                         sub={sub}

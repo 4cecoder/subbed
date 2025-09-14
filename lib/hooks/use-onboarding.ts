@@ -54,7 +54,7 @@ export function useOnboarding() {
   const shouldShowOnboarding = () => {
     if (!isLoaded || isLoading) return false;
     if (!isSignedIn) return false;
-    
+
     // Show if never seen or version changed
     return !state.hasSeenOnboarding || state.lastSeenVersion !== CURRENT_VERSION;
   };

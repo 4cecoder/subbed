@@ -1,22 +1,28 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Play, 
-  Plus, 
-  RefreshCw, 
-  Search, 
-  Settings, 
-  Video, 
-  Heart, 
+import React, { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Play,
+  Plus,
+  RefreshCw,
+  Search,
+  Settings,
+  Video,
+  Heart,
   Zap,
   Shield,
   Sparkles,
-  ArrowRight
-} from "lucide-react";
+  ArrowRight,
+} from 'lucide-react';
 
 interface OnboardingDialogProps {
   open: boolean;
@@ -26,56 +32,57 @@ interface OnboardingDialogProps {
 const FEATURES = [
   {
     icon: Plus,
-    title: "Add Subscriptions",
-    description: "Paste YouTube channel URLs, handles (@name), or channel IDs. Your data stays private and local.",
-    color: "bg-blue-500",
-    badge: "Easy Setup"
+    title: 'Add Subscriptions',
+    description:
+      'Paste YouTube channel URLs, handles (@name), or channel IDs. Your data stays private and local.',
+    color: 'bg-blue-500',
+    badge: 'Easy Setup',
   },
   {
     icon: RefreshCw,
-    title: "Refresh Feeds",
-    description: "Load recent videos from all subscriptions with one click. Refresh individual channels as needed.",
-    color: "bg-green-500",
-    badge: "Real-time"
+    title: 'Refresh Feeds',
+    description:
+      'Load recent videos from all subscriptions with one click. Refresh individual channels as needed.',
+    color: 'bg-green-500',
+    badge: 'Real-time',
   },
   {
     icon: Search,
-    title: "Search & Filter",
-    description: "Find specific videos instantly. Customize display options for thumbnails and descriptions.",
-    color: "bg-purple-500",
-    badge: "Powerful"
+    title: 'Search & Filter',
+    description:
+      'Find specific videos instantly. Customize display options for thumbnails and descriptions.',
+    color: 'bg-purple-500',
+    badge: 'Powerful',
   },
   {
     icon: Settings,
-    title: "Customize Experience",
-    description: "Adjust feed limits, content types, and performance settings. Toggle dark mode for comfort.",
-    color: "bg-orange-500",
-    badge: "Flexible"
-  }
+    title: 'Customize Experience',
+    description:
+      'Adjust feed limits, content types, and performance settings. Toggle dark mode for comfort.',
+    color: 'bg-orange-500',
+    badge: 'Flexible',
+  },
 ];
 
 const BENEFITS = [
   {
     icon: Shield,
-    title: "Privacy First",
-    description: "Your data never leaves your browser. No tracking, no ads, no compromises."
+    title: 'Privacy First',
+    description: 'Your data never leaves your browser. No tracking, no ads, no compromises.',
   },
   {
     icon: Zap,
-    title: "Lightning Fast",
-    description: "Optimized performance with smart caching and efficient data handling."
+    title: 'Lightning Fast',
+    description: 'Optimized performance with smart caching and efficient data handling.',
   },
   {
     icon: Heart,
-    title: "Open Source",
-    description: "Built with love by the community. Contribute and help us improve."
-  }
+    title: 'Open Source',
+    description: 'Built with love by the community. Contribute and help us improve.',
+  },
 ];
 
-export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({
-  open,
-  onOpenChange,
-}) => {
+export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({ open, onOpenChange }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const totalSteps = 2;
 
@@ -111,7 +118,9 @@ export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 Welcome to Subbed!
-                <Badge variant="secondary" className="text-xs">Beta</Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Beta
+                </Badge>
               </div>
               <p className="text-sm font-normal text-muted-foreground mt-1">
                 Your personal YouTube subscription manager
@@ -138,7 +147,7 @@ export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({
               <div className="text-center space-y-2">
                 <h2 className="text-xl font-semibold">What is Subbed?</h2>
                 <p className="text-muted-foreground">
-                  A clean, fast, and privacy-focused way to manage your YouTube subscriptions 
+                  A clean, fast, and privacy-focused way to manage your YouTube subscriptions
                   without the clutter of the official platform.
                 </p>
               </div>
@@ -147,8 +156,13 @@ export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({
                 {FEATURES.map((feature, index) => {
                   const Icon = feature.icon;
                   return (
-                    <div key={index} className="flex gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow">
-                      <div className={`w-12 h-12 ${feature.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                    <div
+                      key={index}
+                      className="flex gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow"
+                    >
+                      <div
+                        className={`w-12 h-12 ${feature.color} rounded-lg flex items-center justify-center flex-shrink-0`}
+                      >
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1 space-y-1">
@@ -158,9 +172,7 @@ export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({
                             {feature.badge}
                           </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {feature.description}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{feature.description}</p>
                       </div>
                     </div>
                   );
@@ -187,9 +199,7 @@ export const OnboardingDialog: React.FC<OnboardingDialogProps> = ({
                         <Icon className="w-6 h-6 text-primary" />
                       </div>
                       <h3 className="font-semibold mb-2">{benefit.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {benefit.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{benefit.description}</p>
                     </div>
                   );
                 })}

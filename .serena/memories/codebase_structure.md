@@ -1,4 +1,5 @@
 Rough structure of the codebase:
+
 - app/: Next.js app directory
   - page.tsx: Main home page component with all UI logic
   - layout.tsx: Root layout

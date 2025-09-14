@@ -1,4 +1,5 @@
 Particular guidelines, styles, design patterns:
+
 - Component design: shadcn/ui inspired, using class-variance-authority for variants, Radix UI primitives
 - Responsive design: Mobile-first with Tailwind, sm: breakpoints for larger screens
 - State management: Local component state with React hooks, no global state library

@@ -20,6 +20,7 @@ This document outlines the coding conventions and best practices for the Subbed 
 ## 🔷 TypeScript
 
 ### Strict Mode
+
 - **Strict mode enabled** in `tsconfig.json`
 - All variables and functions must have explicit type annotations
 - Use `unknown` instead of `any` when type is uncertain
@@ -27,9 +28,9 @@ This document outlines the coding conventions and best practices for the Subbed 
 ```typescript
 // ✅ Good
 interface User {
-  id: string
-  name: string
-  email: string
+  id: string;
+  name: string;
+  email: string;
 }
 
 function getUser(id: string): Promise<User> {
@@ -37,43 +38,46 @@ function getUser(id: string): Promise<User> {
 }
 
 // ❌ Avoid
-function getUser(id) {  // Missing type annotation
+function getUser(id) {
+  // Missing type annotation
   // Implementation
 }
 ```
 
 ### Interfaces vs Types
+
 - Use **interfaces** for object shapes that may be extended
 - Use **type aliases** for unions, primitives, and complex types
 
 ```typescript
 // ✅ Good
 interface Subscription {
-  id: string
-  title: string
-  url: string
+  id: string;
+  title: string;
+  url: string;
 }
 
-type FeedType = 'all' | 'video' | 'short'
-type UserSettings = Record<string, unknown>
+type FeedType = 'all' | 'video' | 'short';
+type UserSettings = Record<string, unknown>;
 
 // ❌ Avoid
 type Subscription = {
-  id: string
-  title: string
-  url: string
-}
+  id: string;
+  title: string;
+  url: string;
+};
 ```
 
 ### Generics
+
 - Use descriptive generic names
 - Provide constraints when necessary
 
 ```typescript
 // ✅ Good
 interface ApiResponse<T> {
-  data: T
-  error?: string
+  data: T;
+  error?: string;
 }
 
 function fetchData<T extends { id: string }>(endpoint: string): Promise<T[]> {
@@ -89,6 +93,7 @@ function fetchData<T>(endpoint: string): Promise<T[]> {
 ## ⚛️ React
 
 ### Functional Components
+
 - Use functional components with hooks
 - No class components
 
@@ -116,6 +121,7 @@ class VideoCard extends React.Component {
 ```
 
 ### Hooks
+
 - Use `useState` for local state
 - Use `useEffect` for side effects
 - Custom hooks for reusable logic
@@ -123,29 +129,32 @@ class VideoCard extends React.Component {
 ```typescript
 // ✅ Good
 export function useSubscriptions() {
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
-  const [loading, setLoading] = useState(true)
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchSubscriptions().then(setSubscriptions).finally(() => setLoading(false))
-  }, [])
+    fetchSubscriptions()
+      .then(setSubscriptions)
+      .finally(() => setLoading(false));
+  }, []);
 
-  return { subscriptions, loading }
+  return { subscriptions, loading };
 }
 
 // ❌ Avoid
 export function SubscriptionList() {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     // Side effect mixed with component logic
-  }, [])
+  }, []);
 
   // Component logic mixed with data fetching
 }
 ```
 
 ### Props
+
 - Use destructuring in component parameters
 - Provide default values for optional props
 - Use `forwardRef` for custom components that need refs
@@ -178,36 +187,47 @@ export function Button(props) {
 ## 📝 Naming Conventions
 
 ### Variables and Functions
+
 - Use `camelCase` for variables and functions
 
 ```typescript
 // ✅ Good
-const userName = 'John'
-function getUserData() { /* ... */ }
-const isLoading = false
+const userName = 'John';
+function getUserData() {
+  /* ... */
+}
+const isLoading = false;
 
 // ❌ Avoid
-const user_name = 'John'
-const UserName = 'John'
-function get_user_data() { /* ... */ }
+const user_name = 'John';
+const UserName = 'John';
+function get_user_data() {
+  /* ... */
+}
 ```
 
 ### Components and Types
+
 - Use `PascalCase` for components, interfaces, and types
 
 ```typescript
 // ✅ Good
 interface UserProfile {}
-type VideoItem = {}
-function VideoCard() { /* ... */ }
+type VideoItem = {};
+function VideoCard() {
+  /* ... */
+}
 
 // ❌ Avoid
 interface userProfile {}
-type videoItem = {}
-function videoCard() { /* ... */ }
+type videoItem = {};
+function videoCard() {
+  /* ... */
+}
 ```
 
 ### Files and Directories
+
 - Use `kebab-case` for file names
 - Use `PascalCase` for component files
 
@@ -230,21 +250,23 @@ components/
 ```
 
 ### Constants
+
 - Use `UPPER_SNAKE_CASE` for constants
 
 ```typescript
 // ✅ Good
-const API_BASE_URL = 'https://api.example.com'
-const MAX_RETRIES = 3
+const API_BASE_URL = 'https://api.example.com';
+const MAX_RETRIES = 3;
 
 // ❌ Avoid
-const apiBaseUrl = 'https://api.example.com'
-const maxRetries = 3
+const apiBaseUrl = 'https://api.example.com';
+const maxRetries = 3;
 ```
 
 ## 📦 Imports
 
 ### Import Order
+
 1. React imports
 2. Third-party libraries
 3. Local imports (utilities, hooks, components)
@@ -252,49 +274,52 @@ const maxRetries = 3
 
 ```typescript
 // ✅ Good
-import React, { useState, useEffect } from 'react'
-import { format } from 'date-fns'
+import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
 
-import { useSubscriptions } from '@/hooks/use-subscriptions'
-import { VideoCard } from '@/components/video-card'
-import type { FeedItem } from '@/lib/types'
+import { useSubscriptions } from '@/hooks/use-subscriptions';
+import { VideoCard } from '@/components/video-card';
+import type { FeedItem } from '@/lib/types';
 
 // ❌ Avoid
-import { VideoCard } from '@/components/video-card'
-import React, { useState } from 'react'
-import { format } from 'date-fns'
-import { useSubscriptions } from '@/hooks/use-subscriptions'
+import { VideoCard } from '@/components/video-card';
+import React, { useState } from 'react';
+import { format } from 'date-fns';
+import { useSubscriptions } from '@/hooks/use-subscriptions';
 ```
 
 ### Absolute Imports
+
 - Use `@/` alias for lib and components directories
 
 ```typescript
 // ✅ Good
-import { apiClient } from '@/lib/api-client'
-import { VideoCard } from '@/components/video-card'
-import type { FeedItem } from '@/lib/types'
+import { apiClient } from '@/lib/api-client';
+import { VideoCard } from '@/components/video-card';
+import type { FeedItem } from '@/lib/types';
 
 // ❌ Avoid
-import { apiClient } from '../../../lib/api-client'
-import { VideoCard } from '../components/video-card'
+import { apiClient } from '../../../lib/api-client';
+import { VideoCard } from '../components/video-card';
 ```
 
 ### Import Types
+
 - Use `import type` for type-only imports
 
 ```typescript
 // ✅ Good
-import type { FeedItem, Subscription } from '@/lib/types'
-import { VideoCard } from '@/components/video-card'
+import type { FeedItem, Subscription } from '@/lib/types';
+import { VideoCard } from '@/components/video-card';
 
 // ❌ Avoid
-import { FeedItem, Subscription, VideoCard } from '@/lib/types'
+import { FeedItem, Subscription, VideoCard } from '@/lib/types';
 ```
 
 ## 🔄 Async/Await
 
 ### Preferred Pattern
+
 - Use `async/await` over promise chains
 - Handle errors with try/catch
 
@@ -302,14 +327,14 @@ import { FeedItem, Subscription, VideoCard } from '@/lib/types'
 // ✅ Good
 export async function fetchSubscriptions(): Promise<Subscription[]> {
   try {
-    const response = await fetch('/api/subscriptions')
+    const response = await fetch('/api/subscriptions');
     if (!response.ok) {
-      throw new Error('Failed to fetch subscriptions')
+      throw new Error('Failed to fetch subscriptions');
     }
-    return await response.json()
+    return await response.json();
   } catch (error) {
-    console.error('Error fetching subscriptions:', error)
-    throw error
+    console.error('Error fetching subscriptions:', error);
+    throw error;
   }
 }
 
@@ -318,18 +343,19 @@ export function fetchSubscriptions(): Promise<Subscription[]> {
   return fetch('/api/subscriptions')
     .then(response => {
       if (!response.ok) {
-        throw new Error('Failed to fetch subscriptions')
+        throw new Error('Failed to fetch subscriptions');
       }
-      return response.json()
+      return response.json();
     })
     .catch(error => {
-      console.error('Error fetching subscriptions:', error)
-      throw error
-    })
+      console.error('Error fetching subscriptions:', error);
+      throw error;
+    });
 }
 ```
 
 ### Error Handling in Components
+
 - Use error boundaries for React components
 - Handle async errors gracefully
 
@@ -362,6 +388,7 @@ export function SubscriptionList() {
 ## 🎨 Styling
 
 ### Tailwind CSS
+
 - Use utility-first approach
 - Follow responsive design patterns
 - Use consistent spacing and colors
@@ -397,6 +424,7 @@ export function VideoCard({ video }: VideoCardProps) {
 ```
 
 ### Responsive Design
+
 - Use Tailwind's responsive prefixes
 - Mobile-first approach
 
@@ -413,6 +441,7 @@ export function VideoCard({ video }: VideoCardProps) {
 ```
 
 ### Shadcn/ui Components
+
 - Use shadcn/ui components for consistency
 - Follow the established design system
 
@@ -439,6 +468,7 @@ export function VideoCard({ video }: VideoCardProps) {
 ## 🏗️ Component Structure
 
 ### Component Organization
+
 - Group related components in directories
 - Use index files for clean imports
 
@@ -456,6 +486,7 @@ export { VideoPlayer } from './video-player'
 ```
 
 ### Component Composition
+
 - Prefer composition over inheritance
 - Use render props or children for flexibility
 
@@ -483,41 +514,37 @@ export function FeedContainer({ children, loading, error }: FeedContainerProps) 
 ## 🌐 API Routes
 
 ### Route Structure
+
 - Use Next.js API routes
 - Follow RESTful conventions
 - Return consistent JSON responses
 
 ```typescript
 // app/api/subscriptions/route.ts
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const subscriptions = await getSubscriptions()
-    return NextResponse.json(subscriptions)
+    const subscriptions = await getSubscriptions();
+    return NextResponse.json(subscriptions);
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to fetch subscriptions' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch subscriptions' }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    const subscription = await createSubscription(body)
-    return NextResponse.json(subscription, { status: 201 })
+    const body = await request.json();
+    const subscription = await createSubscription(body);
+    return NextResponse.json(subscription, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to create subscription' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Failed to create subscription' }, { status: 400 });
   }
 }
 ```
 
 ### Error Handling
+
 - Use appropriate HTTP status codes
 - Provide descriptive error messages
 - Log errors for debugging
@@ -526,24 +553,18 @@ export async function POST(request: Request) {
 // ✅ Good
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
+    const body = await request.json();
 
     // Validation
     if (!body.title) {
-      return NextResponse.json(
-        { error: 'Title is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
     }
 
-    const subscription = await createSubscription(body)
-    return NextResponse.json(subscription, { status: 201 })
+    const subscription = await createSubscription(body);
+    return NextResponse.json(subscription, { status: 201 });
   } catch (error) {
-    console.error('Error creating subscription:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    console.error('Error creating subscription:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 ```
@@ -551,6 +572,7 @@ export async function POST(request: Request) {
 ## 📁 File Organization
 
 ### Directory Structure
+
 ```
 app/
 ├── api/           # API routes
@@ -573,6 +595,7 @@ public/            # Static assets
 ```
 
 ### File Naming
+
 - Use descriptive, kebab-case names
 - Group related files together
 
@@ -595,6 +618,7 @@ lib/
 ## 💬 Comments
 
 ### When to Comment
+
 - Complex business logic
 - Non-obvious algorithms
 - API integrations
@@ -604,112 +628,118 @@ lib/
 // ✅ Good
 // Calculate video duration from YouTube API format (PT#H#M#S)
 function parseDuration(duration: string): number {
-  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/)
-  if (!match) return 0
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
 
-  const hours = parseInt(match[1] || '0')
-  const minutes = parseInt(match[2] || '0')
-  const seconds = parseInt(match[3] || '0')
+  const hours = parseInt(match[1] || '0');
+  const minutes = parseInt(match[2] || '0');
+  const seconds = parseInt(match[3] || '0');
 
-  return hours * 3600 + minutes * 60 + seconds
+  return hours * 3600 + minutes * 60 + seconds;
 }
 
 // ❌ Avoid
 // This function parses the duration
 function parseDuration(duration: string): number {
   // Get hours, minutes, seconds
-  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/)
-  if (!match) return 0
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
 
   // Convert to seconds
-  const hours = parseInt(match[1] || '0')
-  const minutes = parseInt(match[2] || '0')
-  const seconds = parseInt(match[3] || '0')
+  const hours = parseInt(match[1] || '0');
+  const minutes = parseInt(match[2] || '0');
+  const seconds = parseInt(match[3] || '0');
 
-  return hours * 3600 + minutes * 60 + seconds
+  return hours * 3600 + minutes * 60 + seconds;
 }
 ```
 
 ### ESLint Disable Comments
+
 - Use sparingly and with explanation
 - Prefer fixing the underlying issue
 
 ```typescript
 // ✅ Good
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Legacy API response type
-const response: any = await fetch('/api/legacy')
+const response: any = await fetch('/api/legacy');
 
 // ❌ Avoid
 // eslint-disable-next-line
-const response = await fetch('/api/legacy')
+const response = await fetch('/api/legacy');
 ```
 
 ## 🎨 Formatting
 
 ### Consistent Indentation
+
 - Use 2 spaces for indentation
 - Consistent spacing around operators and brackets
 
 ```typescript
 // ✅ Good
 interface User {
-  id: string
-  name: string
-  email: string
+  id: string;
+  name: string;
+  email: string;
 }
 
 function getUser(id: string): Promise<User> {
-  return fetch(`/api/users/${id}`)
-    .then(response => response.json())
+  return fetch(`/api/users/${id}`).then(response => response.json());
 }
 
 // ❌ Avoid
-interface User{
-id:string
-name:string
-email:string
+interface User {
+  id: string;
+  name: string;
+  email: string;
 }
 
-function getUser(id:string):Promise<User>{
-  return fetch(`/api/users/${id}`).then(response=>response.json())
+function getUser(id: string): Promise<User> {
+  return fetch(`/api/users/${id}`).then(response => response.json());
 }
 ```
 
 ### Line Length
+
 - Keep lines under 100 characters
 - Break long lines appropriately
 
 ```typescript
 // ✅ Good
 const userProfile = await apiClient.get('/users/profile', {
-  params: { include: 'preferences,settings' }
-})
+  params: { include: 'preferences,settings' },
+});
 
 // ❌ Avoid
-const userProfile = await apiClient.get('/users/profile', { params: { include: 'preferences,settings' } })
+const userProfile = await apiClient.get('/users/profile', {
+  params: { include: 'preferences,settings' },
+});
 ```
 
 ### Semicolons
+
 - Use semicolons consistently
 - Required by TypeScript in some cases
 
 ```typescript
 // ✅ Good
-const name = 'John'
+const name = 'John';
 function greet() {
-  return 'Hello'
+  return 'Hello';
 }
 
 // ❌ Avoid (inconsistent)
-const name = 'John'
+const name = 'John';
 function greet() {
-  return 'Hello'
+  return 'Hello';
 }
 ```
 
 ## 🛠️ Development Tools
 
 ### ESLint Configuration
+
 ```javascript
 // .eslintrc.js
 module.exports = {
@@ -717,12 +747,13 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off',
-    'react-hooks/exhaustive-deps': 'warn'
-  }
-}
+    'react-hooks/exhaustive-deps': 'warn',
+  },
+};
 ```
 
 ### Pre-commit Hooks
+
 ```bash
 # .husky/pre-commit
 #!/bin/sh
@@ -733,6 +764,7 @@ npm run test
 ```
 
 ### VS Code Settings
+
 ```json
 // .vscode/settings.json
 {
@@ -747,11 +779,13 @@ npm run test
 ## 📚 Additional Resources
 
 ### Style Guides
+
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [React Documentation](https://react.dev/)
 - [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)
 
 ### Tools
+
 - [ESLint](https://eslint.org/)
 - [Prettier](https://prettier.io/)
 - [Husky](https://typicode.github.io/husky/)

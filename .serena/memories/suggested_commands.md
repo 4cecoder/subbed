@@ -1,4 +1,5 @@
 Suggested commands for developing this project:
+
 - Development server: `bun run dev` or `npm run dev` (starts Next.js dev server with Turbopack)
 - Build for production: `bun run build` or `npm run build` (builds the app with Turbopack)
 - Start production server: `bun run start` or `npm run start` (serves the built app)

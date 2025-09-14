@@ -180,6 +180,7 @@ Database Tables:
 ### Frontend Patterns
 
 #### 1. Custom Hooks Pattern
+
 ```typescript
 // Custom hook for subscription management
 export function useSubscriptions() {
@@ -206,6 +207,7 @@ export function useSubscriptions() {
 ```
 
 #### 2. Context Provider Pattern
+
 ```typescript
 // App context for global state
 export const AppContext = createContext<AppContextType | null>(null);
@@ -230,6 +232,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 ```
 
 #### 3. Component Composition Pattern
+
 ```typescript
 // Composable video card component
 export function VideoCard({ video, onClick, showChannel = true }) {
@@ -248,21 +251,23 @@ export function VideoCard({ video, onClick, showChannel = true }) {
 ### Backend Patterns
 
 #### 1. Repository Pattern
+
 ```typescript
 // Convex query with repository-like structure
 export const getSubscriptions = query({
   args: {},
-  handler: async (ctx) => {
+  handler: async ctx => {
     const userId = await getCurrentUserId(ctx);
     return await ctx.db
       .query('subscriptions')
-      .withIndex('by_user', (q) => q.eq('userId', userId))
+      .withIndex('by_user', q => q.eq('userId', userId))
       .collect();
   },
 });
 ```
 
 #### 2. Service Layer Pattern
+
 ```typescript
 // Service for subscription operations
 export class SubscriptionService {
@@ -292,50 +297,53 @@ export class SubscriptionService {
 
 ### Frontend Technologies
 
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| **Next.js** | React Framework | 14.x |
-| **React** | UI Library | 18.x |
-| **TypeScript** | Type Safety | 5.x |
-| **Tailwind CSS** | Styling | 3.x |
-| **Shadcn/ui** | UI Components | Latest |
-| **React Query** | Data Fetching | Built-in |
+| Technology       | Purpose         | Version  |
+| ---------------- | --------------- | -------- |
+| **Next.js**      | React Framework | 14.x     |
+| **React**        | UI Library      | 18.x     |
+| **TypeScript**   | Type Safety     | 5.x      |
+| **Tailwind CSS** | Styling         | 3.x      |
+| **Shadcn/ui**    | UI Components   | Latest   |
+| **React Query**  | Data Fetching   | Built-in |
 
 ### Backend Technologies
 
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| **Convex** | Backend-as-a-Service | Latest |
-| **Clerk** | Authentication | Latest |
-| **TypeScript** | Type Safety | 5.x |
+| Technology     | Purpose              | Version |
+| -------------- | -------------------- | ------- |
+| **Convex**     | Backend-as-a-Service | Latest  |
+| **Clerk**      | Authentication       | Latest  |
+| **TypeScript** | Type Safety          | 5.x     |
 
 ### Development Tools
 
-| Tool | Purpose |
-|------|---------|
-| **ESLint** | Code Linting |
-| **Prettier** | Code Formatting |
-| **Jest** | Testing Framework |
+| Tool                      | Purpose           |
+| ------------------------- | ----------------- |
+| **ESLint**                | Code Linting      |
+| **Prettier**              | Code Formatting   |
+| **Jest**                  | Testing Framework |
 | **React Testing Library** | Component Testing |
-| **Playwright** | E2E Testing |
+| **Playwright**            | E2E Testing       |
 
 ## 📊 Performance Architecture
 
 ### Optimization Strategies
 
 #### 1. Bundle Optimization
+
 - **Code Splitting**: Route-based and component-based splitting
 - **Tree Shaking**: Remove unused code automatically
 - **Compression**: Gzip/Brotli compression
 - **Caching**: Aggressive caching strategies
 
 #### 2. Runtime Optimization
+
 - **Virtual Scrolling**: For large lists (>1000 items)
 - **Memoization**: React.memo, useMemo, useCallback
 - **Debouncing**: For search and API calls
 - **Lazy Loading**: Components and images
 
 #### 3. Data Optimization
+
 - **Caching Layer**: Multi-level caching (memory, localStorage)
 - **Request Deduplication**: Prevent duplicate API calls
 - **Batch Operations**: Group multiple operations
@@ -343,24 +351,26 @@ export class SubscriptionService {
 
 ### Performance Metrics
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| **First Contentful Paint** | <1.5s | ~1.2s |
-| **Time to Interactive** | <2.5s | ~2.0s |
-| **Bundle Size** | <400KB | ~320KB |
-| **Lighthouse Score** | >90 | 95+ |
+| Metric                     | Target | Current |
+| -------------------------- | ------ | ------- |
+| **First Contentful Paint** | <1.5s  | ~1.2s   |
+| **Time to Interactive**    | <2.5s  | ~2.0s   |
+| **Bundle Size**            | <400KB | ~320KB  |
+| **Lighthouse Score**       | >90    | 95+     |
 
 ## 🔒 Security Architecture
 
 ### Authentication & Authorization
 
 #### Clerk Integration
+
 - **JWT Tokens**: Secure token-based authentication
 - **User Management**: Profile management and preferences
 - **Social Login**: Google, GitHub, and other providers
 - **Session Management**: Secure session handling
 
 #### Data Security
+
 - **Row-Level Security**: Users can only access their own data
 - **Input Validation**: Server-side validation for all inputs
 - **SQL Injection Protection**: Parameterized queries
@@ -369,6 +379,7 @@ export class SubscriptionService {
 ### API Security
 
 #### Convex Security
+
 - **Type-Safe APIs**: End-to-end type safety
 - **Authentication Required**: All mutations require valid user
 - **Rate Limiting**: Built-in rate limiting
@@ -388,11 +399,13 @@ GitHub → Vercel → Build → Deploy
 ### Environment Management
 
 #### Development
+
 - **Local Development**: `npm run dev`
 - **Hot Reload**: Automatic browser refresh
 - **Debugging**: Source maps and dev tools
 
 #### Production
+
 - **Build Optimization**: Next.js production build
 - **Static Generation**: ISR for dynamic content
 - **CDN**: Global content delivery
@@ -403,16 +416,19 @@ GitHub → Vercel → Build → Deploy
 ### Hybrid Storage System
 
 #### Online Mode
+
 ```
 User Action → Local Storage → ConvexDB → Real-time Sync
 ```
 
 #### Offline Mode
+
 ```
 User Action → Local Storage → Sync Queue → Background Sync (when online)
 ```
 
 #### Conflict Resolution
+
 - **Last-Write-Wins**: Timestamp-based conflict resolution
 - **Manual Resolution**: User can choose which version to keep
 - **Merge Strategy**: Automatic merging for compatible changes
@@ -422,11 +438,13 @@ User Action → Local Storage → Sync Queue → Background Sync (when online)
 ### Application Monitoring
 
 #### Performance Monitoring
+
 - **Core Web Vitals**: FCP, LCP, CLS, FID, TBT
 - **Custom Metrics**: API response times, error rates
 - **User Experience**: Real user monitoring
 
 #### Error Tracking
+
 - **Error Boundaries**: React error boundaries
 - **Global Handlers**: Unhandled error tracking
 - **User Feedback**: Error reporting and feedback collection
@@ -434,11 +452,13 @@ User Action → Local Storage → Sync Queue → Background Sync (when online)
 ### Business Metrics
 
 #### User Engagement
+
 - **Session Duration**: Time spent in app
 - **Feature Usage**: Which features are most used
 - **Conversion Rates**: Subscription additions, settings changes
 
 #### Technical Metrics
+
 - **API Performance**: Response times and success rates
 - **Database Performance**: Query performance and throughput
 - **Cache Hit Rates**: Effectiveness of caching strategies
@@ -448,11 +468,13 @@ User Action → Local Storage → Sync Queue → Background Sync (when online)
 ### Scalability Improvements
 
 #### Database Scaling
+
 - **Read Replicas**: For high-read workloads
 - **Sharding**: Horizontal scaling for large datasets
 - **Caching Layer**: Redis for frequently accessed data
 
 #### API Scaling
+
 - **Edge Computing**: Global API endpoints
 - **Microservices**: Break down monolithic functions
 - **Load Balancing**: Distribute load across regions
@@ -460,12 +482,14 @@ User Action → Local Storage → Sync Queue → Background Sync (when online)
 ### Feature Enhancements
 
 #### Advanced Features
+
 - **Machine Learning**: Personalized recommendations
 - **Real-time Collaboration**: Shared subscription lists
 - **Mobile App**: Native mobile applications
 - **Browser Extension**: Chrome/Firefox extensions
 
 #### Integration Opportunities
+
 - **Third-party APIs**: Additional video platforms
 - **Social Features**: Share subscriptions with friends
 - **Analytics**: Advanced usage analytics

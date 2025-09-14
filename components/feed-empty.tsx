@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { SubscriptionManager } from "@/components/subscription-manager";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Plus, Users, Play, ArrowRight } from "lucide-react";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { ImprovedSubscriptionManager } from '@/components/subscription-manager';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { Plus, Users, Play, ArrowRight } from 'lucide-react';
 
 export default function FeedEmpty() {
   const [subscriptionManagerOpen, setSubscriptionManagerOpen] = useState(false);
@@ -14,11 +14,11 @@ export default function FeedEmpty() {
 
   const handleAddSample = () => {
     addSubscription({
-      channelId: "UC-lHJZR3Gqxm24_Vd_AJ5Yw",
-      channelName: "Google",
+      channelId: 'UC-lHJZR3Gqxm24_Vd_AJ5Yw',
+      channelName: 'Google',
       channelLogoUrl:
-        "https://yt3.ggpht.com/ytc/AAUvwni_LdnpDi-SOIhjp4Kxo2l_yVBoYsfdDCpUM5IK=s88-c-k-c0x00ffffff-no-rj",
-      channelUrl: "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+        'https://yt3.ggpht.com/ytc/AAUvwni_LdnpDi-SOIhjp4Kxo2l_yVBoYsfdDCpUM5IK=s88-c-k-c0x00ffffff-no-rj',
+      channelUrl: 'https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw',
     });
   };
 
@@ -41,15 +41,18 @@ export default function FeedEmpty() {
         {/* Action Cards */}
         <div className="grid md:grid-cols-2 gap-6">
           {/* Primary Action - Manage Subscriptions */}
-          <Card className="backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-white/20 shadow-xl hover:shadow-2xl transition-all duration-200 cursor-pointer group"
-                onClick={() => setSubscriptionManagerOpen(true)}>
+          <Card
+            className="backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-white/20 shadow-xl hover:shadow-2xl transition-all duration-200 cursor-pointer group"
+            onClick={() => setSubscriptionManagerOpen(true)}
+          >
             <CardContent className="p-6 text-center">
               <div className="w-16 h-16 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Plus className="w-8 h-8 text-primary" />
               </div>
               <h3 className="font-semibold text-lg mb-2">Add Subscriptions</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Add channels by URL, handle (@username), or channel ID. Support for all YouTube formats.
+                Add channels by URL, handle (@username), or channel ID. Support for all YouTube
+                formats.
               </p>
               <Button className="w-full" onClick={() => setSubscriptionManagerOpen(true)}>
                 Get Started
@@ -82,32 +85,26 @@ export default function FeedEmpty() {
               <Plus className="w-6 h-6 text-blue-600" />
             </div>
             <h4 className="font-medium mb-1">Easy Setup</h4>
-            <p className="text-xs text-muted-foreground">
-              Supports URLs, handles, and channel IDs
-            </p>
+            <p className="text-xs text-muted-foreground">Supports URLs, handles, and channel IDs</p>
           </div>
           <div className="text-center p-4">
             <div className="w-12 h-12 bg-purple-500/15 rounded-lg flex items-center justify-center mx-auto mb-3">
               <Users className="w-6 h-6 text-purple-600" />
             </div>
             <h4 className="font-medium mb-1">Full Control</h4>
-            <p className="text-xs text-muted-foreground">
-              Add, remove, and organize your channels
-            </p>
+            <p className="text-xs text-muted-foreground">Add, remove, and organize your channels</p>
           </div>
           <div className="text-center p-4">
             <div className="w-12 h-12 bg-green-500/15 rounded-lg flex items-center justify-center mx-auto mb-3">
               <Play className="w-6 h-6 text-green-600" />
             </div>
             <h4 className="font-medium mb-1">No YouTube Account</h4>
-            <p className="text-xs text-muted-foreground">
-              Works without signing in to YouTube
-            </p>
+            <p className="text-xs text-muted-foreground">Works without signing in to YouTube</p>
           </div>
         </div>
       </div>
 
-      <SubscriptionManager
+      <ImprovedSubscriptionManager
         open={subscriptionManagerOpen}
         onOpenChange={setSubscriptionManagerOpen}
       />

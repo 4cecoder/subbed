@@ -7,26 +7,31 @@ This document outlines the improved UI design for the subscription management mo
 ## Design Principles
 
 ### 1. Visual Hierarchy
+
 - **Primary Actions**: Prominent placement with high contrast and larger touch targets
 - **Secondary Actions**: Subtle placement with moderate visual weight
 - **Information Architecture**: Clear grouping and logical flow from general to specific
 
 ### 2. Progressive Disclosure
+
 - **Simple Mode**: Essential features visible by default
 - **Advanced Mode**: Additional features revealed through user interaction
 - **Contextual Relevance**: Features appear based on user needs and actions
 
 ### 3. Consistent Interaction Patterns
+
 - **Standardized Buttons**: Consistent styling, sizing, and behavior
 - **Confirmations**: Unified confirmation dialogs across all destructive actions
 - **Feedback**: Immediate visual and textual feedback for all interactions
 
 ### 4. Responsive Design
+
 - **Mobile-First**: Optimized for mobile devices with progressive enhancement
 - **Desktop Optimization**: Enhanced layouts and interactions for larger screens
 - **Adaptive Components**: Components that adapt to available screen space
 
 ### 5. Accessibility
+
 - **Contrast Compliance**: WCAG 2.1 AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 - **Focus Management**: Clear focus indicators and logical tab order
 - **ARIA Labels**: Comprehensive labeling for screen readers
@@ -34,6 +39,7 @@ This document outlines the improved UI design for the subscription management mo
 ## Layout and Spacing
 
 ### Mobile Layout (≤ 768px)
+
 ```
 ┌─────────────────────────────────────┐
 │ Header: Title + Actions             │
@@ -52,6 +58,7 @@ This document outlines the improved UI design for the subscription management mo
 ```
 
 ### Tablet Layout (769px - 1024px)
+
 ```
 ┌─────────────────────────────────────────────────┐
 │ Header: Title + Actions + View Toggle           │
@@ -68,6 +75,7 @@ This document outlines the improved UI design for the subscription management mo
 ```
 
 ### Desktop Layout (≥ 1025px)
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ Header: Title + Actions + View Toggle + User Info             │
@@ -84,15 +92,16 @@ This document outlines the improved UI design for the subscription management mo
 ```
 
 ### Spacing System
+
 ```css
 /* Base spacing unit: 4px */
---spacing-xs: 4px;    /* 0.25rem */
---spacing-sm: 8px;    /* 0.5rem */
---spacing-md: 16px;   /* 1rem */
---spacing-lg: 24px;   /* 1.5rem */
---spacing-xl: 32px;   /* 2rem */
---spacing-2xl: 48px;  /* 3rem */
---spacing-3xl: 64px;  /* 4rem */
+--spacing-xs: 4px; /* 0.25rem */
+--spacing-sm: 8px; /* 0.5rem */
+--spacing-md: 16px; /* 1rem */
+--spacing-lg: 24px; /* 1.5rem */
+--spacing-xl: 32px; /* 2rem */
+--spacing-2xl: 48px; /* 3rem */
+--spacing-3xl: 64px; /* 4rem */
 
 /* Component-specific spacing */
 --card-padding: var(--spacing-md);
@@ -104,6 +113,7 @@ This document outlines the improved UI design for the subscription management mo
 ## Component Design Patterns
 
 ### 1. Enhanced Subscription Item
+
 ```tsx
 interface SubscriptionItemProps {
   subscription: Subscription;
@@ -119,27 +129,28 @@ const states = {
   default: {
     background: 'bg-background',
     border: 'border-border',
-    shadow: 'shadow-none'
+    shadow: 'shadow-none',
   },
   hover: {
     background: 'hover:bg-accent/50',
     border: 'hover:border-accent/60',
-    shadow: 'hover:shadow-md'
+    shadow: 'hover:shadow-md',
   },
   selected: {
     background: 'bg-primary/5',
     border: 'border-primary/20',
-    shadow: 'shadow-sm ring-1 ring-primary/10'
+    shadow: 'shadow-sm ring-1 ring-primary/10',
   },
   disabled: {
     background: 'bg-muted/30',
     border: 'border-muted/50',
-    opacity: 'opacity-60'
-  }
+    opacity: 'opacity-60',
+  },
 };
 ```
 
 ### 2. Advanced Filter Panel
+
 ```tsx
 interface FilterPanelProps {
   filters: SubscriptionFilters;
@@ -153,27 +164,28 @@ const filterCategories = [
   {
     id: 'content-type',
     label: 'Content Type',
-    options: ['all', 'videos', 'shorts', 'livestreams']
+    options: ['all', 'videos', 'shorts', 'livestreams'],
   },
   {
     id: 'date-range',
     label: 'Date Range',
-    options: ['today', 'this-week', 'this-month', 'this-year', 'all-time']
+    options: ['today', 'this-week', 'this-month', 'this-year', 'all-time'],
   },
   {
     id: 'activity',
     label: 'Activity Level',
-    options: ['active', 'inactive', 'all']
+    options: ['active', 'inactive', 'all'],
   },
   {
     id: 'status',
     label: 'Status',
-    options: ['subscribed', 'unsubscribed', 'pending']
-  }
+    options: ['subscribed', 'unsubscribed', 'pending'],
+  },
 ];
 ```
 
 ### 3. Bulk Actions Toolbar
+
 ```tsx
 interface BulkActionsProps {
   selectedItems: string[];
@@ -181,15 +193,11 @@ interface BulkActionsProps {
   availableActions: BulkAction[];
 }
 
-type BulkAction = 
-  | 'refresh'
-  | 'remove'
-  | 'export'
-  | 'categorize'
-  | 'archive';
+type BulkAction = 'refresh' | 'remove' | 'export' | 'categorize' | 'archive';
 ```
 
 ### 4. Quick Stats Dashboard
+
 ```tsx
 interface QuickStatsProps {
   subscriptions: Subscription[];
@@ -203,7 +211,7 @@ const stats = [
     value: number,
     change: number, // percentage change
     icon: Users,
-    color: 'text-primary'
+    color: 'text-primary',
   },
   {
     id: 'active',
@@ -211,7 +219,7 @@ const stats = [
     value: number,
     change: number,
     icon: Activity,
-    color: 'text-green-600'
+    color: 'text-green-600',
   },
   {
     id: 'new-videos',
@@ -219,7 +227,7 @@ const stats = [
     value: number,
     change: number,
     icon: Play,
-    color: 'text-blue-600'
+    color: 'text-blue-600',
   },
   {
     id: 'storage',
@@ -227,31 +235,32 @@ const stats = [
     value: string, // formatted size
     change: number,
     icon: HardDrive,
-    color: 'text-orange-600'
-  }
+    color: 'text-orange-600',
+  },
 ];
 ```
 
 ## Color Scheme and Typography
 
 ### Color Palette
+
 ```css
 /* Primary Colors (YouTube-inspired) */
---color-primary: oklch(0.55 0.22 25);        /* YouTube red */
+--color-primary: oklch(0.55 0.22 25); /* YouTube red */
 --color-primary-foreground: oklch(0.985 0 0); /* White */
---color-primary-light: oklch(0.65 0.18 25);    /* Lighter red */
---color-primary-dark: oklch(0.45 0.26 25);    /* Darker red */
+--color-primary-light: oklch(0.65 0.18 25); /* Lighter red */
+--color-primary-dark: oklch(0.45 0.26 25); /* Darker red */
 
 /* Semantic Colors */
---color-success: oklch(0.65 0.18 142);       /* Green */
---color-warning: oklch(0.75 0.15 60);         /* Amber */
---color-error: oklch(0.55 0.22 25);           /* Red (same as primary) */
---color-info: oklch(0.65 0.15 220);           /* Blue */
+--color-success: oklch(0.65 0.18 142); /* Green */
+--color-warning: oklch(0.75 0.15 60); /* Amber */
+--color-error: oklch(0.55 0.22 25); /* Red (same as primary) */
+--color-info: oklch(0.65 0.15 220); /* Blue */
 
 /* Neutral Colors */
---color-background: oklch(1 0 0);            /* White */
---color-surface: oklch(0.98 0.01 285);        /* Off-white */
---color-border: oklch(0.92 0.004 286.32);     /* Light gray */
+--color-background: oklch(1 0 0); /* White */
+--color-surface: oklch(0.98 0.01 285); /* Off-white */
+--color-border: oklch(0.92 0.004 286.32); /* Light gray */
 --color-text-primary: oklch(0.141 0.005 285.823); /* Near black */
 --color-text-secondary: oklch(0.552 0.016 285.938); /* Medium gray */
 --color-text-tertiary: oklch(0.705 0.015 286.067); /* Light gray */
@@ -268,16 +277,17 @@ const stats = [
 ```
 
 ### Typography System
+
 ```css
 /* Font Scale */
---font-size-xs: 0.75rem;   /* 12px */
---font-size-sm: 0.875rem;  /* 14px */
---font-size-base: 1rem;    /* 16px */
---font-size-lg: 1.125rem;  /* 18px */
---font-size-xl: 1.25rem;   /* 20px */
---font-size-2xl: 1.5rem;   /* 24px */
+--font-size-xs: 0.75rem; /* 12px */
+--font-size-sm: 0.875rem; /* 14px */
+--font-size-base: 1rem; /* 16px */
+--font-size-lg: 1.125rem; /* 18px */
+--font-size-xl: 1.25rem; /* 20px */
+--font-size-2xl: 1.5rem; /* 24px */
 --font-size-3xl: 1.875rem; /* 30px */
---font-size-4xl: 2.25rem;  /* 36px */
+--font-size-4xl: 2.25rem; /* 36px */
 
 /* Line Heights */
 --line-height-tight: 1.25;
@@ -349,6 +359,7 @@ const stats = [
 ## Iconography and Visual Elements
 
 ### Icon System
+
 ```typescript
 // Icon Categories
 const iconCategories = {
@@ -358,7 +369,7 @@ const iconCategories = {
     { name: 'chevron-up', component: ChevronUp },
     { name: 'chevron-down', component: ChevronDown },
     { name: 'menu', component: Menu },
-    { name: 'close', component: X }
+    { name: 'close', component: X },
   ],
   actions: [
     { name: 'add', component: Plus },
@@ -368,7 +379,7 @@ const iconCategories = {
     { name: 'search', component: Search },
     { name: 'filter', component: Filter },
     { name: 'download', component: Download },
-    { name: 'upload', component: Upload }
+    { name: 'upload', component: Upload },
   ],
   content: [
     { name: 'play', component: Play },
@@ -377,30 +388,41 @@ const iconCategories = {
     { name: 'channel', component: Radio },
     { name: 'video', component: Video },
     { name: 'shorts', component: Square },
-    { name: 'livestream', component: Radio }
+    { name: 'livestream', component: Radio },
   ],
   status: [
     { name: 'success', component: CheckCircle },
     { name: 'warning', component: AlertTriangle },
     { name: 'error', component: XCircle },
     { name: 'info', component: Info },
-    { name: 'loading', component: Loader2 }
-  ]
+    { name: 'loading', component: Loader2 },
+  ],
 };
 ```
 
 ### Visual Elements
+
 ```css
 /* Avatar System */
 .avatar {
   @apply relative overflow-hidden rounded-full bg-muted flex items-center justify-center;
 }
 
-.avatar-xs { @apply w-6 h-6; }
-.avatar-sm { @apply w-8 h-8; }
-.avatar-md { @apply w-10 h-10; }
-.avatar-lg { @apply w-12 h-12; }
-.avatar-xl { @apply w-16 h-16; }
+.avatar-xs {
+  @apply w-6 h-6;
+}
+.avatar-sm {
+  @apply w-8 h-8;
+}
+.avatar-md {
+  @apply w-10 h-10;
+}
+.avatar-lg {
+  @apply w-12 h-12;
+}
+.avatar-xl {
+  @apply w-16 h-16;
+}
 
 /* Badge System */
 .badge {
@@ -457,6 +479,7 @@ const iconCategories = {
 ## Responsive Breakpoints
 
 ### Breakpoint System
+
 ```css
 /* Mobile-first breakpoints */
 --breakpoint-xs: 0px;      /* Extra small devices */
@@ -498,6 +521,7 @@ const iconCategories = {
 ```
 
 ### Responsive Typography
+
 ```css
 /* Responsive text sizing */
 .text-responsive-xs {
@@ -528,6 +552,7 @@ const iconCategories = {
 ## Micro-interactions and Animations
 
 ### Animation System
+
 ```css
 /* Animation durations */
 --duration-fast: 150ms;
@@ -554,17 +579,28 @@ const iconCategories = {
 
 /* Loading animations */
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .animate-spin {
@@ -577,12 +613,13 @@ const iconCategories = {
 
 .animate-shimmer {
   animation: shimmer 2s linear infinite;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   background-size: 200% 100%;
 }
 ```
 
 ### Interactive States
+
 ```css
 /* Button states */
 .button {
@@ -616,6 +653,7 @@ const iconCategories = {
 ## Implementation-Ready Design System
 
 ### Component Library Structure
+
 ```
 components/
 ├── ui/
@@ -645,6 +683,7 @@ components/
 ```
 
 ### Design Tokens
+
 ```typescript
 // tokens.ts
 export const designTokens = {
@@ -655,12 +694,12 @@ export const designTokens = {
     lg: '24px',
     xl: '32px',
     '2xl': '48px',
-    '3xl': '64px'
+    '3xl': '64px',
   },
   typography: {
     fontFamily: {
       sans: ['Inter', 'system-ui', 'sans-serif'],
-      mono: ['JetBrains Mono', 'monospace']
+      mono: ['JetBrains Mono', 'monospace'],
     },
     fontSize: {
       xs: '0.75rem',
@@ -670,14 +709,14 @@ export const designTokens = {
       xl: '1.25rem',
       '2xl': '1.5rem',
       '3xl': '1.875rem',
-      '4xl': '2.25rem'
+      '4xl': '2.25rem',
     },
     fontWeight: {
       normal: 400,
       medium: 500,
       semibold: 600,
-      bold: 700
-    }
+      bold: 700,
+    },
   },
   colors: {
     primary: {
@@ -690,7 +729,7 @@ export const designTokens = {
       600: '#dc2626',
       700: '#b91c1c',
       800: '#991b1b',
-      900: '#7f1d1d'
+      900: '#7f1d1d',
     },
     neutral: {
       50: '#fafafa',
@@ -702,8 +741,8 @@ export const designTokens = {
       600: '#52525b',
       700: '#3f3f46',
       800: '#27272a',
-      900: '#18181b'
-    }
+      900: '#18181b',
+    },
   },
   borderRadius: {
     sm: '0.25rem',
@@ -711,44 +750,45 @@ export const designTokens = {
     lg: '0.5rem',
     xl: '0.75rem',
     '2xl': '1rem',
-    full: '9999px'
+    full: '9999px',
   },
   shadows: {
     sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
     md: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
-    xl: '0 20px 25px -5px rgb(0 0 0 / 0.1)'
-  }
+    xl: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
+  },
 };
 ```
 
 ### Accessibility Guidelines
+
 ```typescript
 // accessibility.ts
 export const accessibilityGuidelines = {
   // Minimum contrast ratios
   contrastRatios: {
-    normalText: 4.5,    // WCAG AA
-    largeText: 3,       // WCAG AA
-    uiComponents: 3,    // WCAG AA
-    nonText: 3          // WCAG AA
+    normalText: 4.5, // WCAG AA
+    largeText: 3, // WCAG AA
+    uiComponents: 3, // WCAG AA
+    nonText: 3, // WCAG AA
   },
-  
+
   // Touch target sizes
   touchTargets: {
-    minimum: 44,        // iOS HIG
-    recommended: 48,    // Material Design
-    comfortable: 56     // Large touch targets
+    minimum: 44, // iOS HIG
+    recommended: 48, // Material Design
+    comfortable: 56, // Large touch targets
   },
-  
+
   // Focus management
   focusStyles: {
     outlineWidth: '2px',
     outlineOffset: '2px',
     outlineColor: 'var(--color-primary)',
-    transition: 'outline-offset 0.2s ease'
+    transition: 'outline-offset 0.2s ease',
   },
-  
+
   // ARIA labels
   ariaLabels: {
     subscriptionItem: (title: string) => `Subscription: ${title}`,
@@ -757,32 +797,36 @@ export const accessibilityGuidelines = {
     refreshButton: 'Refresh all subscriptions',
     clearAllButton: 'Clear all subscriptions',
     searchInput: 'Search subscriptions',
-    filterButton: 'Filter subscriptions'
-  }
+    filterButton: 'Filter subscriptions',
+  },
 };
 ```
 
 ## Implementation Recommendations
 
 ### 1. Component Implementation Order
+
 1. **Foundation Components**: Button, Input, Dialog, Card
 2. **Layout Components**: Subscription Modal, Subscription List
 3. **Interactive Components**: Subscription Item, Filters, Bulk Actions
 4. **Supporting Components**: Quick Stats, Empty States, Loading States
 
 ### 2. Performance Optimizations
+
 - **Virtual Scrolling**: For large subscription lists
 - **Lazy Loading**: Images and additional content
 - **Debouncing**: Search input and filter changes
 - **Memoization**: Expensive calculations and component renders
 
 ### 3. Testing Strategy
+
 - **Unit Tests**: Individual component functionality
 - **Integration Tests**: Component interactions
 - **Accessibility Tests**: Screen reader and keyboard navigation
 - **Visual Regression Tests**: Design consistency across updates
 
 ### 4. Migration Path
+
 1. **Phase 1**: Implement new design system tokens and base components
 2. **Phase 2**: Replace existing subscription management components
 3. **Phase 3**: Add advanced features and progressive disclosure

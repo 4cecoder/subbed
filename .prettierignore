@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Generated files
+convex/_generated/
+.convex/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env*
+
+# Package manager
+pnpm-lock.yaml
+yarn.lock
+bun.lockb
+
+# Other
+*.tsbuildinfo

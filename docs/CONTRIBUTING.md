@@ -27,17 +27,20 @@ Before you begin, ensure you have:
 ### Quick Setup
 
 1. **Fork the repository**
+
    ```bash
    git clone https://github.com/your-username/subbed.git
    cd subbed
    ```
 
 2. **Install dependencies**
+
    ```bash
    bun install  # or npm install
    ```
 
 3. **Set up environment**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your credentials
@@ -69,11 +72,13 @@ NODE_ENV=development
 ### Convex Setup
 
 1. **Install Convex CLI**
+
    ```bash
    npm install -g convex
    ```
 
 2. **Initialize Convex**
+
    ```bash
    npx convex dev
    ```
@@ -100,6 +105,7 @@ We welcome the following types of contributions:
 
 1. **Choose an issue** from our [GitHub Issues](https://github.com/your-username/subbed/issues)
 2. **Create a branch** for your work
+
    ```bash
    git checkout -b feature/your-feature-name
    # or
@@ -223,7 +229,7 @@ describe('VideoCard', () => {
   it('renders video title', () => {
     const video = { title: 'Test Video', description: 'Test Description' };
     render(<VideoCard video={video} />);
-    
+
     expect(screen.getByText('Test Video')).toBeInTheDocument();
   });
 });
@@ -232,6 +238,7 @@ describe('VideoCard', () => {
 ### Test Coverage
 
 Aim for high test coverage:
+
 - **Components**: Unit tests for all user-facing components
 - **Hooks**: Test custom hooks with React Testing Library
 - **Utils**: Unit tests for utility functions
@@ -242,12 +249,14 @@ Aim for high test coverage:
 ### Pull Request Process
 
 1. **Ensure your branch is up to date**
+
    ```bash
    git fetch origin
    git rebase origin/main
    ```
 
 2. **Run tests and linting**
+
    ```bash
    npm run test
    npm run lint
@@ -260,25 +269,31 @@ Aim for high test coverage:
    - Add screenshots for UI changes
 
 4. **Pull Request Template**
+
    ```markdown
    ## Description
+
    Brief description of the changes made.
 
    ## Type of Change
+
    - [ ] Bug fix
    - [ ] New feature
    - [ ] Breaking change
    - [ ] Documentation update
 
    ## Testing
+
    - [ ] Unit tests added/updated
    - [ ] Integration tests added/updated
    - [ ] Manual testing completed
 
    ## Screenshots (if applicable)
+
    Add screenshots of UI changes.
 
    ## Checklist
+
    - [ ] Code follows project style guidelines
    - [ ] Tests pass
    - [ ] Documentation updated

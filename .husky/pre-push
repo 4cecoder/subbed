@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+
+echo "🔥 SUPER STRICT PRE-PUSH: FINAL QUALITY GATE..."
+echo "==============================================="
+
+# Set strict error handling
+set -e
+
+# Function to handle failures
+handle_failure() {
+    echo "❌ PUSH REJECTED: $1"
+    echo "Fix all issues before pushing. No exceptions."
+    exit 1
+}
+
+echo "🔍 Step 1/5: Running full test suite..."
+bun test --coverage || handle_failure "Tests failed"
+
+echo "🔍 Step 2/5: Running production build test..."
+bun run build || handle_failure "Production build failed"
+
+echo "🔍 Step 3/5: Running final linting check..."
+bunx eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 0 || handle_failure "ESLint issues found"
+
+echo "🔍 Step 4/5: Validating TypeScript with strict mode..."
+bunx tsc --noEmit --strict || handle_failure "TypeScript strict mode failed"
+
+echo "🔍 Step 5/5: Final security scan..."
+if git log --oneline -10 | grep -iE '(password|secret|key|token|api_key)'; then
+    echo "⚠️  WARNING: Recent commits mention sensitive keywords. Please review."
+    echo "Continue? (y/N)"
+    read -r response
+    if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+        handle_failure "Push cancelled by user due to security concerns"
+    fi
+fi
+
+echo "✅ ALL PRE-PUSH CHECKS PASSED! Safe to deploy."
+echo "==============================================="

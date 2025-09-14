@@ -1,12 +1,18 @@
-"use client";
+'use client';
 
-import React, { useState, useCallback } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { UserSettings, FeedType, SortOrder } from "@/lib/types";
-import { Settings, RefreshCw, CheckCircle, Play, AlertCircle, Save } from "lucide-react";
+import React, { useState, useCallback } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { UserSettings, FeedType, SortOrder } from '@/lib/types';
+import { Settings, RefreshCw, CheckCircle, Play, AlertCircle, Save } from 'lucide-react';
 
 interface SettingsDialogProps {
   open: boolean;
@@ -37,55 +43,74 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
   }, [open, settings]);
 
   // Validate settings before saving
-  const validateSettings = useCallback((settingsToValidate: Partial<UserSettings>): Record<string, string> => {
-    const errors: Record<string, string> = {};
+  const validateSettings = useCallback(
+    (settingsToValidate: Partial<UserSettings>): Record<string, string> => {
+      const errors: Record<string, string> = {};
 
-    // Validate per_page
-    if (settingsToValidate.per_page !== undefined) {
-      if (typeof settingsToValidate.per_page !== 'number' || settingsToValidate.per_page < 1 || settingsToValidate.per_page > 100) {
-        errors.per_page = 'Videos per page must be between 1 and 100';
+      // Validate per_page
+      if (settingsToValidate.per_page !== undefined) {
+        if (
+          typeof settingsToValidate.per_page !== 'number' ||
+          settingsToValidate.per_page < 1 ||
+          settingsToValidate.per_page > 100
+        ) {
+          errors.per_page = 'Videos per page must be between 1 and 100';
+        }
       }
-    }
 
-    // Validate per_channel
-    if (settingsToValidate.per_channel !== undefined) {
-      if (typeof settingsToValidate.per_channel !== 'number' || settingsToValidate.per_channel < 1 || settingsToValidate.per_channel > 50) {
-        errors.per_channel = 'Videos per channel must be between 1 and 50';
+      // Validate per_channel
+      if (settingsToValidate.per_channel !== undefined) {
+        if (
+          typeof settingsToValidate.per_channel !== 'number' ||
+          settingsToValidate.per_channel < 1 ||
+          settingsToValidate.per_channel > 50
+        ) {
+          errors.per_channel = 'Videos per channel must be between 1 and 50';
+        }
       }
-    }
 
-    // Validate concurrency
-    if (settingsToValidate.concurrency !== undefined) {
-      if (typeof settingsToValidate.concurrency !== 'number' || settingsToValidate.concurrency < 1 || settingsToValidate.concurrency > 20) {
-        errors.concurrency = 'Concurrency must be between 1 and 20';
+      // Validate concurrency
+      if (settingsToValidate.concurrency !== undefined) {
+        if (
+          typeof settingsToValidate.concurrency !== 'number' ||
+          settingsToValidate.concurrency < 1 ||
+          settingsToValidate.concurrency > 20
+        ) {
+          errors.concurrency = 'Concurrency must be between 1 and 20';
+        }
       }
-    }
 
-    // Validate caching_ttl
-    if (settingsToValidate.caching_ttl !== undefined) {
-      if (typeof settingsToValidate.caching_ttl !== 'number' || settingsToValidate.caching_ttl < 0 || settingsToValidate.caching_ttl > 86400) {
-        errors.caching_ttl = 'Cache duration must be between 0 and 86400 seconds';
+      // Validate caching_ttl
+      if (settingsToValidate.caching_ttl !== undefined) {
+        if (
+          typeof settingsToValidate.caching_ttl !== 'number' ||
+          settingsToValidate.caching_ttl < 0 ||
+          settingsToValidate.caching_ttl > 86400
+        ) {
+          errors.caching_ttl = 'Cache duration must be between 0 and 86400 seconds';
+        }
       }
-    }
 
-    // Validate defaultFeedType
-    if (settingsToValidate.defaultFeedType !== undefined) {
-      const validFeedTypes: FeedType[] = ['all', 'video', 'short'];
-      if (!validFeedTypes.includes(settingsToValidate.defaultFeedType)) {
-        errors.defaultFeedType = 'Invalid feed type';
+      // Validate defaultFeedType
+      if (settingsToValidate.defaultFeedType !== undefined) {
+        const validFeedTypes: FeedType[] = ['all', 'video', 'short'];
+        if (!validFeedTypes.includes(settingsToValidate.defaultFeedType)) {
+          errors.defaultFeedType = 'Invalid feed type';
+        }
       }
-    }
 
-    // Validate sortOrder
-    if (settingsToValidate.sortOrder !== undefined) {
-      const validSortOrders: SortOrder[] = ['newest', 'oldest'];
-      if (!validSortOrders.includes(settingsToValidate.sortOrder)) {
-        errors.sortOrder = 'Invalid sort order';
+      // Validate sortOrder
+      if (settingsToValidate.sortOrder !== undefined) {
+        const validSortOrders: SortOrder[] = ['newest', 'oldest'];
+        if (!validSortOrders.includes(settingsToValidate.sortOrder)) {
+          errors.sortOrder = 'Invalid sort order';
+        }
       }
-    }
 
-    return errors;
-  }, []);
+      return errors;
+    },
+    []
+  );
 
   const handleSave = useCallback(async () => {
     // Validate settings
@@ -99,24 +124,27 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
     try {
       await onSave(draft);
       onOpenChange(false);
-    } catch (error) {
+    } catch {
       // Error is handled by the hook and displayed via error prop
     }
   }, [draft, onSave, onOpenChange, validateSettings]);
 
-  const updateDraft = useCallback((updates: Partial<UserSettings>) => {
-    setDraft((prev) => {
-      const newDraft = { ...prev, ...updates };
-      // Clear validation errors for the updated fields
-      const updatedFields = Object.keys(updates);
-      const newErrors = { ...validationErrors };
-      updatedFields.forEach(field => {
-        delete newErrors[field];
+  const updateDraft = useCallback(
+    (updates: Partial<UserSettings>) => {
+      setDraft(prev => {
+        const newDraft = { ...prev, ...updates };
+        // Clear validation errors for the updated fields
+        const updatedFields = Object.keys(updates);
+        const newErrors = { ...validationErrors };
+        updatedFields.forEach(field => {
+          delete newErrors[field];
+        });
+        setValidationErrors(newErrors);
+        return newDraft;
       });
-      setValidationErrors(newErrors);
-      return newDraft;
-    });
-  }, [validationErrors]);
+    },
+    [validationErrors]
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -155,7 +183,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   min="1"
                   max="100"
                   value={draft.per_page ?? settings?.per_page ?? 20}
-                  onChange={(e) => updateDraft({ per_page: Number(e.target.value) })}
+                  onChange={e => updateDraft({ per_page: Number(e.target.value) })}
                   className={validationErrors.per_page ? 'border-destructive' : ''}
                 />
                 {validationErrors.per_page && (
@@ -166,7 +194,10 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 </p>
               </div>
               <div className="space-y-2">
-                <label htmlFor="per-channel" className="text-sm font-medium flex items-center gap-2">
+                <label
+                  htmlFor="per-channel"
+                  className="text-sm font-medium flex items-center gap-2"
+                >
                   <Play className="w-4 h-4" />
                   Videos per channel
                 </label>
@@ -176,7 +207,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   min="1"
                   max="50"
                   value={draft.per_channel ?? settings?.per_channel ?? 10}
-                  onChange={(e) => updateDraft({ per_channel: Number(e.target.value) })}
+                  onChange={e => updateDraft({ per_channel: Number(e.target.value) })}
                   className={validationErrors.per_channel ? 'border-destructive' : ''}
                 />
                 {validationErrors.per_channel && (
@@ -200,7 +231,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 <input
                   type="checkbox"
                   checked={draft.showThumbnails ?? settings?.showThumbnails ?? true}
-                  onChange={(e) => updateDraft({ showThumbnails: e.target.checked })}
+                  onChange={e => updateDraft({ showThumbnails: e.target.checked })}
                   className="rounded"
                 />
                 <span className="text-sm">Show video thumbnails</span>
@@ -209,7 +240,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 <input
                   type="checkbox"
                   checked={draft.showDescriptions ?? settings?.showDescriptions ?? true}
-                  onChange={(e) => updateDraft({ showDescriptions: e.target.checked })}
+                  onChange={e => updateDraft({ showDescriptions: e.target.checked })}
                   className="rounded"
                 />
                 <span className="text-sm">Show video descriptions</span>
@@ -231,8 +262,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 <select
                   id="default-feed-type"
                   className="w-full border rounded px-3 py-2 text-sm bg-background"
-                  value={draft.defaultFeedType ?? settings?.defaultFeedType ?? "all"}
-                  onChange={(e) => updateDraft({ defaultFeedType: e.target.value as FeedType })}
+                  value={draft.defaultFeedType ?? settings?.defaultFeedType ?? 'all'}
+                  onChange={e => updateDraft({ defaultFeedType: e.target.value as FeedType })}
                 >
                   <option value="all">All videos</option>
                   <option value="video">Regular videos only</option>
@@ -246,8 +277,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                 <select
                   id="sort-order"
                   className="w-full border rounded px-3 py-2 text-sm bg-background"
-                  value={draft.sortOrder ?? settings?.sortOrder ?? "newest"}
-                  onChange={(e) => updateDraft({ sortOrder: e.target.value as SortOrder })}
+                  value={draft.sortOrder ?? settings?.sortOrder ?? 'newest'}
+                  onChange={e => updateDraft({ sortOrder: e.target.value as SortOrder })}
                 >
                   <option value="newest">Newest first</option>
                   <option value="oldest">Oldest first</option>
@@ -273,7 +304,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   min="1"
                   max="20"
                   value={draft.concurrency ?? settings?.concurrency ?? 6}
-                  onChange={(e) => updateDraft({ concurrency: Number(e.target.value) })}
+                  onChange={e => updateDraft({ concurrency: Number(e.target.value) })}
                   className={validationErrors.concurrency ? 'border-destructive' : ''}
                 />
                 {validationErrors.concurrency && (
@@ -293,7 +324,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                   min="0"
                   max="86400"
                   value={draft.caching_ttl ?? settings?.caching_ttl ?? 0}
-                  onChange={(e) => updateDraft({ caching_ttl: Number(e.target.value) })}
+                  onChange={e => updateDraft({ caching_ttl: Number(e.target.value) })}
                   className={validationErrors.caching_ttl ? 'border-destructive' : ''}
                 />
                 {validationErrors.caching_ttl && (
@@ -311,8 +342,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
           <Button onClick={() => onOpenChange(false)} variant="outline" disabled={loading}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             disabled={loading || Object.keys(validationErrors).length > 0}
             className="min-w-[100px]"
           >

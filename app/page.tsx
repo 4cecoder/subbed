@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useConvexSubscriptions } from "@/lib/hooks/use-convex-subscriptions";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { AdvancedVideoFeed } from "@/components/advanced-video-feed";
-import FeedEmpty from "@/components/feed-empty";
-import { useOnboarding } from "@/lib/hooks/use-onboarding";
-import { Button } from "@/components/ui/button";
-import { Video, Plus, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { useConvexSubscriptions } from '@/lib/hooks/use-convex-subscriptions';
+import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
+import { AdvancedVideoFeed } from '@/components/advanced-video-feed';
+import FeedEmpty from '@/components/feed-empty';
+import { useOnboarding } from '@/lib/hooks/use-onboarding';
+import { Button } from '@/components/ui/button';
+import { Video, Plus, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   const { subscriptions } = useConvexSubscriptions();
@@ -17,22 +17,20 @@ export default function Home() {
     <main id="main-content" className="container mx-auto p-4">
       <SignedIn>
         {subscriptions.length === 0 && <FeedEmpty />}
-        {subscriptions.length > 0 && (
-          <AdvancedVideoFeed />
-        )}
+        {subscriptions.length > 0 && <AdvancedVideoFeed />}
       </SignedIn>
       <SignedOut>
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Hero Section */}
           <div className="space-y-6">
-<div className="flex items-center justify-center gap-3">
-            <Video className="w-10 h-10 text-red-500" />
-            <h1 className="text-4xl font-bold">Welcome to Subbed</h1>
-          </div>
-            
+            <div className="flex items-center justify-center gap-3">
+              <Video className="w-10 h-10 text-red-500" />
+              <h1 className="text-4xl font-bold">Welcome to Subbed</h1>
+            </div>
+
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              A clean, fast, and privacy-focused way to manage your YouTube subscriptions 
-              without the clutter of the official platform.
+              A clean, fast, and privacy-focused way to manage your YouTube subscriptions without
+              the clutter of the official platform.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -42,7 +40,7 @@ export default function Home() {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </SignInButton>
-              
+
               <Button variant="outline" size="lg" asChild>
                 <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
                   View on GitHub
@@ -59,14 +57,25 @@ export default function Home() {
               </div>
               <h3 className="font-semibold mb-2">Easy Setup</h3>
               <p className="text-sm text-muted-foreground">
-                Add YouTube channels with URLs, handles, or channel IDs. No YouTube account required.
+                Add YouTube channels with URLs, handles, or channel IDs. No YouTube account
+                required.
               </p>
             </div>
 
             <div className="text-center p-6 rounded-lg border bg-card">
               <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
                 </svg>
               </div>
               <h3 className="font-semibold mb-2">Lightning Fast</h3>
@@ -77,8 +86,18 @@ export default function Home() {
 
             <div className="text-center p-6 rounded-lg border bg-card">
               <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
                 </svg>
               </div>
               <h3 className="font-semibold mb-2">Privacy First</h3>

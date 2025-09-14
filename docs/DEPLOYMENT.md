@@ -17,11 +17,13 @@ Before deploying, ensure you have:
 ### 1. Vercel Deployment
 
 #### Option A: One-Click Deploy
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/subbed)
 
 #### Option B: Manual Setup
 
 1. **Import Project**
+
    ```bash
    # In Vercel dashboard
    # Click "New Project" → "Import Git Repository"
@@ -29,6 +31,7 @@ Before deploying, ensure you have:
    ```
 
 2. **Configure Build Settings**
+
    ```json
    {
      "buildCommand": "npm run build",
@@ -53,16 +56,19 @@ Before deploying, ensure you have:
 ### 2. Convex Backend Setup
 
 1. **Install Convex CLI**
+
    ```bash
    npm install -g convex
    ```
 
 2. **Initialize Convex**
+
    ```bash
    npx convex dev
    ```
 
 3. **Deploy to Convex**
+
    ```bash
    npx convex deploy
    ```
@@ -76,6 +82,7 @@ Before deploying, ensure you have:
 ### 3. Clerk Authentication Setup
 
 1. **Create Clerk Application**
+
    ```bash
    # In Clerk dashboard
    # Create new application
@@ -117,12 +124,14 @@ NEXT_PUBLIC_ANALYTICS_ID=your_analytics_id
 ### Environment-Specific Variables
 
 #### Development
+
 ```bash
 NODE_ENV=development
 NEXT_PUBLIC_CONVEX_URL=http://localhost:3210
 ```
 
 #### Production
+
 ```bash
 NODE_ENV=production
 NEXT_PUBLIC_CONVEX_URL=https://your-production-url.convex.cloud
@@ -181,11 +190,13 @@ export default nextConfig
 ### Convex Schema Deployment
 
 1. **Push Schema to Convex**
+
    ```bash
    npx convex deploy
    ```
 
 2. **Verify Schema**
+
    ```bash
    npx convex dashboard
    # Check tables: subscriptions, settings, syncQueue
@@ -201,12 +212,14 @@ export default nextConfig
 ### Custom Domain Setup
 
 1. **Add Domain in Vercel**
+
    ```bash
    # In Vercel project settings
    # Domains → Add your-domain.com
    ```
 
 2. **Configure DNS**
+
    ```bash
    # Add CNAME record
    # your-domain.com → cname.vercel-dns.com
@@ -228,11 +241,13 @@ export default nextConfig
 ### Build Optimizations
 
 1. **Enable Turbopack**
+
    ```bash
    npm run build  # Uses --turbopack flag
    ```
 
 2. **Bundle Analysis**
+
    ```bash
    ANALYZE=true npm run build
    ```
@@ -257,7 +272,7 @@ export default nextConfig
        headers: {
          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=86400',
        },
-     })
+     });
    }
    ```
 
@@ -266,6 +281,7 @@ export default nextConfig
 ### Vercel Analytics
 
 1. **Enable Analytics**
+
    ```bash
    # In Vercel project settings
    # Analytics → Enable
@@ -284,6 +300,7 @@ export default nextConfig
    - Real user monitoring
 
 2. **Custom Error Handling**
+
    ```typescript
    // In _app.tsx or layout.tsx
    import { ErrorBoundary } from '@/components/error-boundary'
@@ -302,6 +319,7 @@ export default nextConfig
 ### Environment Security
 
 1. **Never Commit Secrets**
+
    ```bash
    # .gitignore
    .env.local
@@ -340,6 +358,7 @@ export default nextConfig
 ### Database Backup
 
 1. **Convex Backup**
+
    ```bash
    npx convex export
    ```
@@ -351,6 +370,7 @@ export default nextConfig
 ### Data Migration
 
 1. **Export Data**
+
    ```bash
    npx convex run exportData
    ```
@@ -365,6 +385,7 @@ export default nextConfig
 ### Common Deployment Issues
 
 #### Build Failures
+
 ```bash
 # Check build logs in Vercel dashboard
 # Verify environment variables are set
@@ -372,6 +393,7 @@ export default nextConfig
 ```
 
 #### Runtime Errors
+
 ```bash
 # Check Convex function logs
 npx convex logs
@@ -381,6 +403,7 @@ npx convex logs
 ```
 
 #### Performance Issues
+
 ```bash
 # Enable Vercel analytics
 # Check Core Web Vitals
@@ -390,6 +413,7 @@ npx convex logs
 ### Rollback Strategy
 
 1. **Vercel Rollback**
+
    ```bash
    # In Vercel dashboard
    # Deployments → Rollback to previous version
@@ -405,6 +429,7 @@ npx convex logs
 ### Regular Tasks
 
 1. **Update Dependencies**
+
    ```bash
    npm audit
    npm update

@@ -1,12 +1,13 @@
-import { renderHook } from '@testing-library/react'
-import { useConvexSettings } from '../lib/hooks/use-convex-settings'
-import { UserSettings } from '../lib/types'
+import { renderHook } from '@testing-library/react';
+import { useConvexSettings } from '../lib/hooks/use-convex-settings';
+import { UserSettings } from '../lib/types';
+import { useQuery, useMutation } from 'convex/react';
 
 // Mock Convex hooks
 jest.mock('convex/react', () => ({
   useQuery: jest.fn(),
   useMutation: jest.fn(),
-}))
+}));
 
 jest.mock('../convex/_generated/api', () => ({
   api: {
@@ -15,10 +16,10 @@ jest.mock('../convex/_generated/api', () => ({
       updateSettings: 'updateSettings',
     },
   },
-}))
+}));
 
 describe('useConvexSettings', () => {
-  const mockUpdateSettings = jest.fn()
+  const mockUpdateSettings = jest.fn();
   const mockConvexSettings = {
     per_page: 20,
     per_channel: 10,
@@ -28,25 +29,26 @@ describe('useConvexSettings', () => {
     sortOrder: 'newest' as const,
     caching_ttl: 0,
     concurrency: 6,
-  }
+  };
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    
+    jest.clearAllMocks();
+
     // Reset localStorage
-    localStorage.clear()
-    
+    localStorage.clear();
+
     // Mock Convex hooks
-    const { useQuery, useMutation } = require('convex/react')
-    useQuery.mockReturnValue(mockConvexSettings)
-    useMutation.mockReturnValue(mockUpdateSettings)
-  })
+    const mockUseQuery = useQuery as jest.MockedFunction<typeof useQuery>;
+    const mockUseMutation = useMutation as jest.MockedFunction<typeof useMutation>;
+    mockUseQuery.mockReturnValue(mockConvexSettings);
+    mockUseMutation.mockReturnValue(mockUpdateSettings);
+  });
 
   it('initializes with default settings when no Convex settings', () => {
-    const { useQuery } = require('convex/react')
-    useQuery.mockReturnValue(null)
+    const mockUseQuery = useQuery as jest.MockedFunction<typeof useQuery>;
+    mockUseQuery.mockReturnValue(null);
 
-    const { result } = renderHook(() => useConvexSettings())
+    const { result } = renderHook(() => useConvexSettings());
 
     expect(result.current.settings).toEqual({
       per_page: 20,
@@ -57,130 +59,135 @@ describe('useConvexSettings', () => {
       sortOrder: 'newest',
       caching_ttl: 0,
       concurrency: 6,
-    })
-    expect(result.current.loading).toBe(false)
-    expect(result.current.error).toBe(null)
-  })
+    });
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
 
   it('loads settings from Convex when available', () => {
-    const { result } = renderHook(() => useConvexSettings())
+    const { result } = renderHook(() => useConvexSettings());
 
-    expect(result.current.settings).toEqual(mockConvexSettings)
-    expect(result.current.loading).toBe(false)
-    expect(result.current.error).toBe(null)
-  })
+    expect(result.current.settings).toEqual(mockConvexSettings);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
 
   it('updates settings successfully', async () => {
-    mockUpdateSettings.mockResolvedValue({})
+    mockUpdateSettings.mockResolvedValue({});
 
-    const { result } = renderHook(() => useConvexSettings())
-    
+    const { result } = renderHook(() => useConvexSettings());
+
     const newSettings: Partial<UserSettings> = {
       per_page: 30,
       showThumbnails: false,
-    }
+    };
 
-    await result.current.updateSettings(newSettings)
+    await result.current.updateSettings(newSettings);
 
-    expect(mockUpdateSettings).toHaveBeenCalledWith(newSettings)
+    expect(mockUpdateSettings).toHaveBeenCalledWith(newSettings);
     expect(result.current.settings).toEqual({
       ...mockConvexSettings,
       ...newSettings,
-    })
-    
+    });
+
     // Check localStorage was updated
-    const savedSettings = localStorage.getItem('user-settings')
-    expect(savedSettings).toBe(JSON.stringify({
-      ...mockConvexSettings,
-      ...newSettings,
-    }))
-  })
+    const savedSettings = localStorage.getItem('user-settings');
+    expect(savedSettings).toBe(
+      JSON.stringify({
+        ...mockConvexSettings,
+        ...newSettings,
+      })
+    );
+  });
 
   it('handles update settings error', async () => {
-    const errorMessage = 'Failed to update settings'
-    mockUpdateSettings.mockRejectedValue(new Error(errorMessage))
+    const errorMessage = 'Failed to update settings';
+    mockUpdateSettings.mockRejectedValue(new Error(errorMessage));
 
-    const { result } = renderHook(() => useConvexSettings())
-    
+    const { result } = renderHook(() => useConvexSettings());
+
     const newSettings: Partial<UserSettings> = {
       per_page: 30,
-    }
+    };
 
-    let error: Error | null = null
+    let error: Error | null = null;
     try {
-      await result.current.updateSettings(newSettings)
+      await result.current.updateSettings(newSettings);
     } catch (err) {
-      error = err as Error
+      error = err as Error;
     }
 
-    expect(error).toBeTruthy()
-    expect(error?.message).toBe(errorMessage)
-    expect(result.current.error).toBe(errorMessage)
-  })
+    expect(error).toBeTruthy();
+    expect(error?.message).toBe(errorMessage);
+    expect(result.current.error).toBe(errorMessage);
+  });
 
   it('sets loading state during update', async () => {
-    mockUpdateSettings.mockImplementation(() => new Promise(resolve => {
-      setTimeout(resolve, 100)
-    }))
+    mockUpdateSettings.mockImplementation(
+      () =>
+        new Promise(resolve => {
+          setTimeout(resolve, 100);
+        })
+    );
 
-    const { result } = renderHook(() => useConvexSettings())
-    
-    const updatePromise = result.current.updateSettings({ per_page: 30 })
-    
-    expect(result.current.loading).toBe(true)
-    
-    await updatePromise
-    expect(result.current.loading).toBe(false)
-  })
+    const { result } = renderHook(() => useConvexSettings());
+
+    const updatePromise = result.current.updateSettings({ per_page: 30 });
+
+    expect(result.current.loading).toBe(true);
+
+    await updatePromise;
+    expect(result.current.loading).toBe(false);
+  });
 
   it('refreshes settings', async () => {
-    const { result } = renderHook(() => useConvexSettings())
-    
-    await result.current.refreshSettings()
+    const { result } = renderHook(() => useConvexSettings());
+
+    await result.current.refreshSettings();
 
     // Should not throw error and should maintain current settings
-    expect(result.current.settings).toEqual(mockConvexSettings)
-  })
+    expect(result.current.settings).toEqual(mockConvexSettings);
+  });
 
   it('handles refresh settings error', async () => {
-    const { useQuery } = require('convex/react')
-    useQuery.mockImplementation(() => {
-      throw new Error('Failed to fetch settings')
-    })
+    const mockUseQuery = useQuery as jest.MockedFunction<typeof useQuery>;
+    mockUseQuery.mockImplementation(() => {
+      throw new Error('Failed to fetch settings');
+    });
 
-    const { result } = renderHook(() => useConvexSettings())
-    
-    await result.current.refreshSettings()
+    const { result } = renderHook(() => useConvexSettings());
 
-    expect(result.current.error).toBe('Failed to fetch settings')
-  })
+    await result.current.refreshSettings();
+
+    expect(result.current.error).toBe('Failed to fetch settings');
+  });
 
   it('updates local state immediately for responsive UI', async () => {
-    mockUpdateSettings.mockResolvedValue({})
+    mockUpdateSettings.mockResolvedValue({});
 
-    const { result } = renderHook(() => useConvexSettings())
-    
+    const { result } = renderHook(() => useConvexSettings());
+
     const newSettings: Partial<UserSettings> = {
       per_page: 30,
-    }
+    };
 
     // State should update immediately, before the async operation completes
-    result.current.updateSettings(newSettings)
+    result.current.updateSettings(newSettings);
 
-    expect(result.current.settings.per_page).toBe(30)
-  })
+    expect(result.current.settings.per_page).toBe(30);
+  });
 
   it('merges settings correctly', async () => {
-    mockUpdateSettings.mockResolvedValue({})
+    mockUpdateSettings.mockResolvedValue({});
 
-    const { result } = renderHook(() => useConvexSettings())
-    
+    const { result } = renderHook(() => useConvexSettings());
+
     const newSettings: Partial<UserSettings> = {
       per_page: 30,
       showThumbnails: false,
-    }
+    };
 
-    await result.current.updateSettings(newSettings)
+    await result.current.updateSettings(newSettings);
 
     expect(result.current.settings).toEqual({
       per_page: 30,
@@ -191,21 +198,21 @@ describe('useConvexSettings', () => {
       sortOrder: 'newest', // unchanged
       caching_ttl: 0, // unchanged
       concurrency: 6, // unchanged
-    })
-  })
+    });
+  });
 
   it('falls back to localStorage when Convex is not available', () => {
-    const { useQuery } = require('convex/react')
-    useQuery.mockReturnValue(null)
+    const mockUseQuery = useQuery as jest.MockedFunction<typeof useQuery>;
+    mockUseQuery.mockReturnValue(null);
 
     // Set localStorage with custom settings
     const localStorageSettings = {
       per_page: 15,
       showThumbnails: false,
-    }
-    localStorage.setItem('user-settings', JSON.stringify(localStorageSettings))
+    };
+    localStorage.setItem('user-settings', JSON.stringify(localStorageSettings));
 
-    const { result } = renderHook(() => useConvexSettings())
+    const { result } = renderHook(() => useConvexSettings());
 
     expect(result.current.settings).toEqual({
       per_page: 15,
@@ -216,16 +223,16 @@ describe('useConvexSettings', () => {
       sortOrder: 'newest', // default
       caching_ttl: 0, // default
       concurrency: 6, // default
-    })
-  })
+    });
+  });
 
   it('handles malformed localStorage gracefully', () => {
-    const { useQuery } = require('convex/react')
-    useQuery.mockReturnValue(null)
+    const mockUseQuery = useQuery as jest.MockedFunction<typeof useQuery>;
+    mockUseQuery.mockReturnValue(null);
 
-    localStorage.setItem('user-settings', 'invalid-json')
+    localStorage.setItem('user-settings', 'invalid-json');
 
-    const { result } = renderHook(() => useConvexSettings())
+    const { result } = renderHook(() => useConvexSettings());
 
     // Should fall back to defaults
     expect(result.current.settings).toEqual({
@@ -237,28 +244,28 @@ describe('useConvexSettings', () => {
       sortOrder: 'newest',
       caching_ttl: 0,
       concurrency: 6,
-    })
-  })
+    });
+  });
 
   it('reacts to Convex settings changes', async () => {
-    const { useQuery } = require('convex/react')
-    let mockSettings = mockConvexSettings
-    useQuery.mockReturnValue(mockSettings)
+    const mockUseQuery = useQuery as jest.MockedFunction<typeof useQuery>;
+    let mockSettings = mockConvexSettings;
+    mockUseQuery.mockReturnValue(mockSettings);
 
-    const { result, rerender } = renderHook(() => useConvexSettings())
+    const { result, rerender } = renderHook(() => useConvexSettings());
 
-    expect(result.current.settings).toEqual(mockSettings)
+    expect(result.current.settings).toEqual(mockSettings);
 
     // Simulate Convex settings update
     mockSettings = {
       ...mockSettings,
       per_page: 50,
       showThumbnails: false,
-    }
-    useQuery.mockReturnValue(mockSettings)
+    };
+    mockUseQuery.mockReturnValue(mockSettings);
 
-    rerender()
+    rerender();
 
-    expect(result.current.settings).toEqual(mockSettings)
-  })
-})
+    expect(result.current.settings).toEqual(mockSettings);
+  });
+});

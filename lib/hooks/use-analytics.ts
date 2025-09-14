@@ -47,8 +47,14 @@ class AnalyticsTracker {
 
   private calculateSessionDuration(): number {
     if (this.events.length === 0) return 0;
-    const firstEvent = Math.min(...this.events.map(e => (e as any).timestamp));
-    const lastEvent = Math.max(...this.events.map(e => (e as any).timestamp));
+    const eventTimestamps = this.events
+      .map(e => e.timestamp)
+      .filter((timestamp): timestamp is number => timestamp !== undefined);
+
+    if (eventTimestamps.length === 0) return 0;
+
+    const firstEvent = Math.min(...eventTimestamps);
+    const lastEvent = Math.max(...eventTimestamps);
     return lastEvent - firstEvent;
   }
 
@@ -68,39 +74,51 @@ export function useAnalytics() {
     analyticsTracker.trackEvent(event);
   }, []);
 
-  const trackPageView = useCallback((page: string) => {
-    trackEvent({
-      category: 'navigation',
-      action: 'page_view',
-      label: page,
-    });
-  }, [trackEvent]);
+  const trackPageView = useCallback(
+    (page: string) => {
+      trackEvent({
+        category: 'navigation',
+        action: 'page_view',
+        label: page,
+      });
+    },
+    [trackEvent]
+  );
 
-  const trackUserAction = useCallback((action: string, label?: string, value?: number) => {
-    trackEvent({
-      category: 'user_action',
-      action,
-      label,
-      value,
-    });
-  }, [trackEvent]);
+  const trackUserAction = useCallback(
+    (action: string, label?: string, value?: number) => {
+      trackEvent({
+        category: 'user_action',
+        action,
+        label,
+        value,
+      });
+    },
+    [trackEvent]
+  );
 
-  const trackError = useCallback((error: string, context?: string) => {
-    trackEvent({
-      category: 'error',
-      action: 'occurred',
-      label: `${context || 'unknown'}: ${error}`,
-    });
-  }, [trackEvent]);
+  const trackError = useCallback(
+    (error: string, context?: string) => {
+      trackEvent({
+        category: 'error',
+        action: 'occurred',
+        label: `${context || 'unknown'}: ${error}`,
+      });
+    },
+    [trackEvent]
+  );
 
-  const trackPerformance = useCallback((metric: string, value: number) => {
-    trackEvent({
-      category: 'performance',
-      action: 'metric',
-      label: metric,
-      value,
-    });
-  }, [trackEvent]);
+  const trackPerformance = useCallback(
+    (metric: string, value: number) => {
+      trackEvent({
+        category: 'performance',
+        action: 'metric',
+        label: metric,
+        value,
+      });
+    },
+    [trackEvent]
+  );
 
   return {
     trackEvent,
@@ -115,9 +133,12 @@ export function useAnalytics() {
 export function useComponentAnalytics(componentName: string) {
   const { trackUserAction } = useAnalytics();
 
-  const trackClick = useCallback((element: string) => {
-    trackUserAction('click', `${componentName}:${element}`);
-  }, [trackUserAction, componentName]);
+  const trackClick = useCallback(
+    (element: string) => {
+      trackUserAction('click', `${componentName}:${element}`);
+    },
+    [trackUserAction, componentName]
+  );
 
   const trackView = useCallback(() => {
     trackUserAction('view', componentName);

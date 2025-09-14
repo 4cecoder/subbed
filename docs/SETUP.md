@@ -67,6 +67,7 @@ npx convex dev
 ```
 
 Follow the prompts to:
+
 1. Create a new Convex project or link to existing
 2. Set up your deployment environment
 3. Configure authentication
@@ -157,19 +158,19 @@ subbed/
 
 ### Required Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
+| Variable                            | Description           | Example       |
+| ----------------------------------- | --------------------- | ------------- |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key | `pk_test_...` |
-| `CLERK_SECRET_KEY` | Clerk secret key | `sk_test_...` |
-| `NEXT_PUBLIC_CONVEX_URL` | Convex deployment URL | `https://...` |
+| `CLERK_SECRET_KEY`                  | Clerk secret key      | `sk_test_...` |
+| `NEXT_PUBLIC_CONVEX_URL`            | Convex deployment URL | `https://...` |
 
 ### Optional Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_ANALYTICS_ID` | Analytics tracking ID | - |
-| `NODE_ENV` | Environment mode | `development` |
-| `NEXT_PUBLIC_API_URL` | Custom API URL | Convex URL |
+| Variable                   | Description           | Default       |
+| -------------------------- | --------------------- | ------------- |
+| `NEXT_PUBLIC_ANALYTICS_ID` | Analytics tracking ID | -             |
+| `NODE_ENV`                 | Environment mode      | `development` |
+| `NEXT_PUBLIC_API_URL`      | Custom API URL        | Convex URL    |
 
 ## Database Setup
 
@@ -234,6 +235,7 @@ npm run test -- __tests__/component.test.tsx
 ### Test Configuration
 
 Tests are configured in `jest.config.js` and `jest.setup.js`. The setup includes:
+
 - React Testing Library configuration
 - Convex mock setup
 - Custom test utilities
@@ -243,6 +245,7 @@ Tests are configured in `jest.config.js` and `jest.setup.js`. The setup includes
 ### Common Issues
 
 1. **Convex Connection Issues**
+
    ```bash
    # Check Convex status
    npx convex status
@@ -257,6 +260,7 @@ Tests are configured in `jest.config.js` and `jest.setup.js`. The setup includes
    - Ensure URLs match between Clerk and app
 
 3. **Build Issues**
+
    ```bash
    # Clear Next.js cache
    rm -rf .next
@@ -269,6 +273,7 @@ Tests are configured in `jest.config.js` and `jest.setup.js`. The setup includes
 ### Getting Help
 
 If you encounter issues:
+
 1. Check the [Troubleshooting Guide](../TROUBLESHOOTING.md)
 2. Search existing GitHub issues
 3. Open a new issue with detailed information

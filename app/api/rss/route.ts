@@ -1,20 +1,23 @@
-import { NextResponse } from "next/server";
-import { readSettings } from "../../../lib/settings";
+import { NextResponse } from 'next/server';
+import { readSettings } from '../../../lib/settings';
 
 const isChannelId = (s: string) => /^UC[A-Za-z0-9_-]{22}$/.test(s);
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  let id = (searchParams.get("id") || searchParams.get("channel") || "").trim();
+  let id = (searchParams.get('id') || searchParams.get('channel') || '').trim();
 
   const settings = await readSettings();
   const defaultLimit = settings?.per_channel || 10;
-  const limit = Math.max(1, Math.min(50, Number(searchParams.get("limit") || String(defaultLimit))));
-  const q = (searchParams.get("q") || "").trim().toLowerCase();
-  const type = (searchParams.get("type") || settings?.defaultFeedType || "all").toLowerCase();
+  const limit = Math.max(
+    1,
+    Math.min(50, Number(searchParams.get('limit') || String(defaultLimit)))
+  );
+  const q = (searchParams.get('q') || '').trim().toLowerCase();
+  const type = (searchParams.get('type') || settings?.defaultFeedType || 'all').toLowerCase();
 
   if (!id) {
-    return NextResponse.json({ error: "missing id" }, { status: 400 });
+    return NextResponse.json({ error: 'missing id' }, { status: 400 });
   }
 
   if (!isChannelId(id)) {
@@ -24,8 +27,13 @@ export async function GET(req: Request) {
     } else {
       // Build absolute URL for various input forms
       let asUrl = id;
-      if (!asUrl.startsWith("http")) {
-        if (asUrl.startsWith("@") || asUrl.startsWith("user/") || asUrl.startsWith("c/") || /^[A-Za-z0-9_-]+$/.test(asUrl)) {
+      if (!asUrl.startsWith('http')) {
+        if (
+          asUrl.startsWith('@') ||
+          asUrl.startsWith('user/') ||
+          asUrl.startsWith('c/') ||
+          /^[A-Za-z0-9_-]+$/.test(asUrl)
+        ) {
           asUrl = `https://www.youtube.com/${asUrl}`;
         } else {
           asUrl = `https://${asUrl}`;
@@ -34,7 +42,10 @@ export async function GET(req: Request) {
 
       // try oEmbed to find author_url
       try {
-        const r = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(asUrl)}&format=json`, { headers: { "User-Agent": "subbed-app" } });
+        const r = await fetch(
+          `https://www.youtube.com/oembed?url=${encodeURIComponent(asUrl)}&format=json`,
+          { headers: { 'User-Agent': 'subbed-app' } }
+        );
         if (r.ok) {
           const j = await r.json();
           const authorUrl = j.author_url;
@@ -47,11 +58,14 @@ export async function GET(req: Request) {
 
       // if still unresolved, try resolving from a video link (watch?v= or youtu.be)
       if (!isChannelId(id)) {
-        const videoMatch = asUrl.match(/[?&]v=([A-Za-z0-9_-]{11})/) || asUrl.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+        const videoMatch =
+          asUrl.match(/[?&]v=([A-Za-z0-9_-]{11})/) || asUrl.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
         const videoId = videoMatch ? videoMatch[1] : null;
         if (videoId) {
           try {
-            const r2 = await fetch(`https://www.youtube.com/watch?v=${videoId}`, { headers: { "User-Agent": "subbed-app (+https://example)" } });
+            const r2 = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
+              headers: { 'User-Agent': 'subbed-app (+https://example)' },
+            });
             if (r2.ok) {
               const txt = await r2.text();
               // look for common channel id patterns
@@ -79,7 +93,9 @@ export async function GET(req: Request) {
       // final attempt: fetch the provided URL and try to extract channel info
       if (!isChannelId(id)) {
         try {
-          const pageTxt = await fetch(asUrl, { headers: { "User-Agent": "subbed-app (+https://example)" } });
+          const pageTxt = await fetch(asUrl, {
+            headers: { 'User-Agent': 'subbed-app (+https://example)' },
+          });
           if (pageTxt.ok) {
             const txt = await pageTxt.text();
             const can = txt.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i);
@@ -105,14 +121,17 @@ export async function GET(req: Request) {
   }
 
   if (!isChannelId(id)) {
-    return NextResponse.json({ error: "invalid or unresolved channel id" }, { status: 400 });
+    return NextResponse.json({ error: 'invalid or unresolved channel id' }, { status: 400 });
   }
 
   const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${id}`;
   try {
-    const r = await fetch(feedUrl, { headers: { "User-Agent": "subbed-app (+https://example)" } });
+    const r = await fetch(feedUrl, { headers: { 'User-Agent': 'subbed-app (+https://example)' } });
     if (!r.ok) {
-      return NextResponse.json({ error: "failed to fetch feed", status: r.status }, { status: 502 });
+      return NextResponse.json(
+        { error: 'failed to fetch feed', status: r.status },
+        { status: 502 }
+      );
     }
 
     const xml = await r.text();
@@ -120,17 +139,23 @@ export async function GET(req: Request) {
     const channelTitleMatch = xml.match(/<title>([^<]+)<\/title>/i);
     const channelTitle = channelTitleMatch ? channelTitleMatch[1] : null;
 
-    const entries = Array.from(xml.matchAll(/<entry>([\s\S]*?)<\/entry>/gi)).map((m) => m[1]);
+    const entries = Array.from(xml.matchAll(/<entry>([\s\S]*?)<\/entry>/gi)).map(m => m[1]);
 
     // per-request cache to avoid repeated network checks
     const shortCache = new Map<string, boolean>();
 
-    async function checkIsShort(videoId: string | undefined, link: string | undefined, hay: string) {
+    async function checkIsShort(
+      videoId: string | undefined,
+      link: string | undefined,
+      hay: string
+    ) {
       const key = videoId || link || hay;
       if (shortCache.has(key)) return shortCache.get(key);
 
       // basic heuristic
-      const basic = Boolean((link || "").includes("/shorts/") || /#shorts\b/i.test(hay) || /\bshorts\b/i.test(hay));
+      const basic = Boolean(
+        (link || '').includes('/shorts/') || /#shorts\b/i.test(hay) || /\bshorts\b/i.test(hay)
+      );
       if (basic) {
         shortCache.set(key, true);
         return true;
@@ -141,22 +166,30 @@ export async function GET(req: Request) {
         return false;
       }
 
-      const headers = { "User-Agent": "subbed-app (+https://example)" };
+      const headers = { 'User-Agent': 'subbed-app (+https://example)' };
 
       // try the shorts URL first (fast check)
       try {
         const ctrl = new AbortController();
         const to = setTimeout(() => ctrl.abort(), 5000);
         try {
-          const r = await fetch(`https://www.youtube.com/shorts/${videoId}`, { headers, signal: ctrl.signal });
+          const r = await fetch(`https://www.youtube.com/shorts/${videoId}`, {
+            headers,
+            signal: ctrl.signal,
+          });
           if (r && r.ok) {
-            if (r.url && r.url.includes("/shorts/")) {
+            if (r.url && r.url.includes('/shorts/')) {
               clearTimeout(to);
               shortCache.set(key, true);
               return true;
             }
             const text = await r.text();
-            if (/<link[^>]*rel=["']canonical["'][^>]*href=["'][^"']*\/shorts\//i.test(text) || /property=["']og:url["'][^>]*content=["'][^"']*\/shorts\//i.test(text) || /"isShorts":\s*true/i.test(text) || /"url":"https:\/\/www\.youtube\.com\/shorts\//i.test(text)) {
+            if (
+              /<link[^>]*rel=["']canonical["'][^>]*href=["'][^"']*\/shorts\//i.test(text) ||
+              /property=["']og:url["'][^>]*content=["'][^"']*\/shorts\//i.test(text) ||
+              /"isShorts":\s*true/i.test(text) ||
+              /"url":"https:\/\/www\.youtube\.com\/shorts\//i.test(text)
+            ) {
               clearTimeout(to);
               shortCache.set(key, true);
               return true;
@@ -184,10 +217,18 @@ export async function GET(req: Request) {
         const ctrl2 = new AbortController();
         const to2 = setTimeout(() => ctrl2.abort(), 5000);
         try {
-          const r2 = await fetch(`https://www.youtube.com/watch?v=${videoId}`, { headers, signal: ctrl2.signal });
+          const r2 = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
+            headers,
+            signal: ctrl2.signal,
+          });
           if (r2 && r2.ok) {
             const body = await r2.text();
-            if (/<link[^>]*rel=["']canonical["'][^>]*href=["'][^"']*\/shorts\//i.test(body) || /property=["']og:url["'][^>]*content=["'][^"']*\/shorts\//i.test(body) || /"isShorts":\s*true/i.test(body) || /"url":"https:\/\/www\.youtube\.com\/shorts\//i.test(body)) {
+            if (
+              /<link[^>]*rel=["']canonical["'][^>]*href=["'][^"']*\/shorts\//i.test(body) ||
+              /property=["']og:url["'][^>]*content=["'][^"']*\/shorts\//i.test(body) ||
+              /"isShorts":\s*true/i.test(body) ||
+              /"url":"https:\/\/www\.youtube\.com\/shorts\//i.test(body)
+            ) {
               shortCache.set(key, true);
               return true;
             }
@@ -214,33 +255,76 @@ export async function GET(req: Request) {
 
     const items = [];
     for (const entry of entries) {
-      const title = (entry.match(/<title>(.*?)<\/title>/i) || [null, ""])[1];
-      const link = (entry.match(/<link[^>]*href=["']([^"']+)["']?/i) || [null, ""])[1];
-      const published = (entry.match(/<published>(.*?)<\/published>/i) || [null, ""])[1];
-      const videoId = (entry.match(/<yt:videoId>(.*?)<\/yt:videoId>/i) || [null, ""])[1];
-      const thumbnail = (entry.match(/<media:thumbnail[^>]*url=["']([^"']+)["']/i) || [null, ""])[1];
-      const description = (entry.match(/<media:description[^>]*>([\s\S]*?)<\/media:description>/i) || [null, ""])[1] || "";
-      const hay = `${title || ""} ${description || ""}`;
+      const title = (entry.match(/<title>(.*?)<\/title>/i) || [null, ''])[1];
+      const link = (entry.match(/<link[^>]*href=["']([^"']+)["']?/i) || [null, ''])[1];
+      const published = (entry.match(/<published>(.*?)<\/published>/i) || [null, ''])[1];
+      const videoId = (entry.match(/<yt:videoId>(.*?)<\/yt:videoId>/i) || [null, ''])[1];
+      const thumbnail = (entry.match(/<media:thumbnail[^>]*url=["']([^"']+)["']/i) || [
+        null,
+        '',
+      ])[1];
+      const description =
+        (entry.match(/<media:description[^>]*>([\s\S]*?)<\/media:description>/i) || [
+          null,
+          '',
+        ])[1] || '';
+      const hay = `${title || ''} ${description || ''}`;
 
       if (q) {
         if (!hay.toLowerCase().includes(q)) continue;
       }
 
-      const initialIsShort = Boolean((link || "").includes("/shorts/") || /#shorts\b/i.test(hay) || /\bshorts\b/i.test(hay));
+      const initialIsShort = Boolean(
+        (link || '').includes('/shorts/') || /#shorts\b/i.test(hay) || /\bshorts\b/i.test(hay)
+      );
 
-      if (type === "all") {
-        items.push({ id: videoId || title, title, link, published, thumbnail, description, isShort: initialIsShort });
-      } else if (type === "short") {
+      if (type === 'all') {
+        items.push({
+          id: videoId || title,
+          title,
+          link,
+          published,
+          thumbnail,
+          description,
+          isShort: initialIsShort,
+        });
+      } else if (type === 'short') {
         if (initialIsShort) {
-          items.push({ id: videoId || title, title, link, published, thumbnail, description, isShort: true });
+          items.push({
+            id: videoId || title,
+            title,
+            link,
+            published,
+            thumbnail,
+            description,
+            isShort: true,
+          });
         } else {
           const detected = await checkIsShort(videoId, link, hay);
-          if (detected) items.push({ id: videoId || title, title, link, published, thumbnail, description, isShort: true });
+          if (detected)
+            items.push({
+              id: videoId || title,
+              title,
+              link,
+              published,
+              thumbnail,
+              description,
+              isShort: true,
+            });
         }
-      } else if (type === "video") {
+      } else if (type === 'video') {
         if (!initialIsShort) {
           const detected = await checkIsShort(videoId, link, hay);
-          if (!detected) items.push({ id: videoId || title, title, link, published, thumbnail, description, isShort: false });
+          if (!detected)
+            items.push({
+              id: videoId || title,
+              title,
+              link,
+              published,
+              thumbnail,
+              description,
+              isShort: false,
+            });
         }
       }
 
@@ -249,6 +333,9 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ channelId: id, channelTitle, items });
   } catch (err) {
-    return NextResponse.json({ error: "error fetching/parsing feed", detail: String(err) }, { status: 500 });
+    return NextResponse.json(
+      { error: 'error fetching/parsing feed', detail: String(err) },
+      { status: 500 }
+    );
   }
 }

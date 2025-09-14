@@ -1,4 +1,54 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-npx --no -- commitlint --edit $1
+echo "🔍 SUPER STRICT COMMIT MESSAGE VALIDATION..."
+echo "============================================="
+
+# Set strict error handling
+set -e
+
+# Function to handle failures
+handle_failure() {
+    echo "❌ COMMIT MESSAGE REJECTED: $1"
+    echo "Please follow conventional commit format strictly."
+    echo "Examples:"
+    echo "  feat: add user authentication"
+    echo "  fix: resolve memory leak in video player"
+    echo "  docs: update API documentation"
+    exit 1
+}
+
+# Run commitlint with strict validation
+echo "🔍 Step 1/3: Running commitlint validation..."
+bunx commitlint --edit $1 || handle_failure "commitlint validation failed"
+
+# Additional strict checks
+COMMIT_MSG=$(cat $1)
+
+echo "🔍 Step 2/3: Validating message length and format..."
+
+# Check if message is too short (less than 10 characters)
+if [ ${#COMMIT_MSG} -lt 10 ]; then
+    handle_failure "Commit message too short (minimum 10 characters)"
+fi
+
+# Check if message is too long (more than 100 characters for first line)
+FIRST_LINE=$(echo "$COMMIT_MSG" | head -n1)
+if [ ${#FIRST_LINE} -gt 100 ]; then
+    handle_failure "First line too long (maximum 100 characters)"
+fi
+
+# Ensure no uppercase letters in subject (except after colon)
+SUBJECT=$(echo "$FIRST_LINE" | cut -d: -f2- | sed 's/^ *//')
+if echo "$SUBJECT" | grep -q '^[A-Z]'; then
+    handle_failure "Subject should start with lowercase letter"
+fi
+
+echo "🔍 Step 3/3: Validating content quality..."
+
+# Check for vague commit messages
+if echo "$COMMIT_MSG" | grep -qiE "(fix|update|change|modify).{0,5}$"; then
+    handle_failure "Commit message too vague - be more specific about what was changed"
+fi
+
+echo "✅ COMMIT MESSAGE APPROVED! Meets all quality standards."
+echo "============================================="

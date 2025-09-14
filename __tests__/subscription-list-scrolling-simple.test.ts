@@ -5,22 +5,22 @@ describe('Subscription List Scrolling Implementation', () => {
   test('SubscriptionList component should have proper height constraints', () => {
     // This test verifies the component structure by checking the implementation
     // In a real environment, you would use testing-library to render and check
-    
+
     // Expected structure:
     // - Card with h-full flex flex-col classes
     // - CardHeader with pb-4 flex-shrink-0
     // - CardContent with flex-1 flex flex-col min-h-0
     // - ScrollArea with flex-1
     // - ul with space-y classes and pr-2 for scrollbar space
-    
+
     const expectedClasses = {
       card: 'h-full flex flex-col',
       cardHeader: 'pb-4',
       cardContent: 'flex-1 flex flex-col min-h-0',
       scrollArea: 'flex-1',
-      list: 'space-y-2 sm:space-y-3 pr-2'
+      list: 'space-y-2 sm:space-y-3 pr-2',
     };
-    
+
     // Verify the expected classes are present in the component
     expect(expectedClasses.card).toContain('h-full');
     expect(expectedClasses.card).toContain('flex');
@@ -37,16 +37,16 @@ describe('Subscription List Scrolling Implementation', () => {
     // - Action buttons with flex-shrink-0
     // - ScrollArea with flex-1 min-h-0
     // - Content div with space-y-4 pr-2
-    
+
     const expectedClasses = {
       card: 'h-full flex flex-col max-h-[calc(100vh-200px)]',
       cardHeader: 'pb-4 flex-shrink-0',
       cardContent: 'flex-1 flex flex-col min-h-0',
       actionButtons: 'flex-shrink-0',
       scrollArea: 'flex-1 min-h-0',
-      content: 'space-y-4 pr-2'
+      content: 'space-y-4 pr-2',
     };
-    
+
     // Verify the expected classes are present
     expect(expectedClasses.card).toContain('max-h-[calc(100vh-200px)]');
     expect(expectedClasses.cardHeader).toContain('flex-shrink-0');
@@ -59,12 +59,12 @@ describe('Subscription List Scrolling Implementation', () => {
     // Expected structure:
     // - aside with md:col-span-1 h-full
     // - Grid with cols={3} gap={6}
-    
+
     const expectedClasses = {
       aside: 'md:col-span-1 h-full',
-      grid: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
+      grid: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6',
     };
-    
+
     // Verify the expected classes
     expect(expectedClasses.aside).toContain('h-full');
     expect(expectedClasses.grid).toContain('gap-6');
@@ -74,12 +74,12 @@ describe('Subscription List Scrolling Implementation', () => {
     // ScrollArea from Radix UI should have:
     // - Root with relative overflow-hidden
     // - Viewport with h-full w-full rounded-[inherit]
-    
+
     const expectedClasses = {
       root: 'relative overflow-hidden',
-      viewport: 'h-full w-full rounded-[inherit]'
+      viewport: 'h-full w-full rounded-[inherit]',
     };
-    
+
     // Verify ScrollArea structure
     expect(expectedClasses.root).toContain('overflow-hidden');
     expect(expectedClasses.viewport).toContain('h-full');
@@ -91,13 +91,9 @@ describe('Subscription List Scrolling Implementation', () => {
     // - sm:space-y-3 for list items
     // - sm:flex-row for action buttons
     // - md:col-span-1 for sidebar
-    
-    const responsiveClasses = [
-      'sm:space-y-3',
-      'sm:flex-row',
-      'md:col-span-1'
-    ];
-    
+
+    const responsiveClasses = ['sm:space-y-3', 'sm:flex-row', 'md:col-span-1'];
+
     // Verify responsive classes exist
     responsiveClasses.forEach(cls => {
       expect(cls).toMatch(/sm:|md:|lg:|xl:/);
@@ -110,14 +106,9 @@ describe('Subscription List Scrolling Implementation', () => {
     // - Proper key props for lists
     // - min-h-0 to prevent flex container issues
     // - flex-shrink-0 for non-scrollable areas
-    
-    const performanceOptimizations = [
-      'React.memo',
-      'min-h-0',
-      'flex-shrink-0',
-      'key='
-    ];
-    
+
+    const performanceOptimizations = ['React.memo', 'min-h-0', 'flex-shrink-0', 'key='];
+
     // Verify performance optimizations are in place
     performanceOptimizations.forEach(opt => {
       expect(opt).toBeDefined();

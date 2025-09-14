@@ -1,4 +1,5 @@
 Commands to run when a task is completed:
+
 - Linting: `bun run lint` or `npm run lint` to check for code quality issues
 - Build: `bun run build` or `npm run build` to ensure the app builds successfully
 - No explicit testing setup, so manual testing by running dev server and checking functionality

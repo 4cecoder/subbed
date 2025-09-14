@@ -1,15 +1,26 @@
-import fs from "fs";
-import path from "path";
-import { ConvexHttpClient } from "convex/browser";
+import fs from 'fs';
+import path from 'path';
+import { ConvexHttpClient } from 'convex/browser';
+
 // Dynamic import to avoid build-time issues
 let api: unknown;
-try {
-  api = require("../convex/_generated/api").api;
-} catch (error) {
-  console.log("Convex API not available during build");
+
+async function loadApi() {
+  if (api) return api;
+  try {
+    const convexApi = await import('../convex/_generated/api');
+    api = convexApi.api;
+    return api;
+  } catch (error) {
+    console.log('Convex API not available during build', error);
+    return null;
+  }
 }
 
-const SETTINGS_FILE = process.env.SUBBED_SETTINGS_FILE || path.resolve(process.cwd(), "data", "settings.json");
+const SETTINGS_FILE =
+  process.env.SUBBED_SETTINGS_FILE || path.resolve(process.cwd(), 'data', 'settings.json');
+
+// Ensure data directory exists
 const dataDir = path.dirname(SETTINGS_FILE);
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
@@ -18,8 +29,8 @@ type Settings = {
   per_channel: number;
   showThumbnails: boolean;
   showDescriptions: boolean;
-  defaultFeedType: "all" | "video" | "short";
-  sortOrder: "newest" | "oldest";
+  defaultFeedType: 'all' | 'video' | 'short';
+  sortOrder: 'newest' | 'oldest';
   caching_ttl: number;
   concurrency: number;
 };
@@ -29,8 +40,8 @@ const DEFAULT_SETTINGS: Settings = {
   per_channel: 10,
   showThumbnails: true,
   showDescriptions: true,
-  defaultFeedType: "all",
-  sortOrder: "newest",
+  defaultFeedType: 'all',
+  sortOrder: 'newest',
   caching_ttl: 0,
   concurrency: 6,
 };
@@ -42,8 +53,8 @@ function readLocalSettings(): Settings {
     return DEFAULT_SETTINGS;
   }
   try {
-    const raw = fs.readFileSync(SETTINGS_FILE, "utf8");
-    const parsed = JSON.parse(raw || "{}");
+    const raw = fs.readFileSync(SETTINGS_FILE, 'utf8');
+    const parsed = JSON.parse(raw || '{}');
     return { ...DEFAULT_SETTINGS, ...(parsed || {}) };
   } catch {
     return DEFAULT_SETTINGS;
@@ -51,7 +62,10 @@ function readLocalSettings(): Settings {
 }
 
 function writeLocalSettings(s: Partial<Settings>): Settings {
-  const merged: Settings = { ...DEFAULT_SETTINGS, ...(s || {}) as Record<string, unknown> } as Settings;
+  const merged: Settings = {
+    ...DEFAULT_SETTINGS,
+    ...((s || {}) as Record<string, unknown>),
+  } as Settings;
   fs.writeFileSync(SETTINGS_FILE, JSON.stringify(merged, null, 2));
   return merged;
 }
@@ -62,8 +76,9 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 // Check if Convex is available
 async function isConvexAvailable(): Promise<boolean> {
   try {
-    if (!api) return false;
-    await convex.query(api.settings.getSettings, {});
+    const currentApi = await loadApi();
+    if (!currentApi) return false;
+    await convex.query(currentApi.settings.getSettings, {});
     return true;
   } catch (error) {
     console.log('Convex not available, using local storage:', error);
@@ -88,10 +103,11 @@ function convexToLocalSettings(convexSettings: Record<string, unknown>): Setting
 // Hybrid functions that try Convex first, fallback to local
 export async function readSettings(): Promise<Settings> {
   const convexAvailable = await isConvexAvailable();
-  
-  if (convexAvailable && api) {
+  const currentApi = await loadApi();
+
+  if (convexAvailable && currentApi) {
     try {
-      const convexSettings = await convex.query(api.settings.getSettings, {});
+      const convexSettings = await convex.query(currentApi.settings.getSettings, {});
       if (convexSettings) {
         return convexToLocalSettings(convexSettings);
       }
@@ -99,29 +115,30 @@ export async function readSettings(): Promise<Settings> {
       console.error('Error fetching settings from Convex, falling back to local:', error);
     }
   }
-  
+
   // Fallback to local storage
   return readLocalSettings();
 }
 
 export async function writeSettings(s: Partial<Settings>): Promise<Settings> {
   const convexAvailable = await isConvexAvailable();
-  
+  const currentApi = await loadApi();
+
   // Update local storage immediately
   const merged = writeLocalSettings(s);
-  
+
   // Try to sync with Convex
-  if (convexAvailable && api) {
+  if (convexAvailable && currentApi) {
     try {
-      await convex.mutation(api.settings.updateSettings, merged);
+      await convex.mutation(currentApi.settings.updateSettings, merged);
     } catch (error) {
       console.error('Error syncing settings to Convex:', error);
       // Add to sync queue for later
       try {
-        await convex.mutation(api.sync.addToSyncQueue, {
-          operation: "update",
-          entityType: "setting",
-          entityId: "user-settings",
+        await convex.mutation(currentApi.sync.addToSyncQueue, {
+          operation: 'update',
+          entityType: 'setting',
+          entityId: 'user-settings',
           data: merged,
         });
       } catch (queueError) {
@@ -129,29 +146,30 @@ export async function writeSettings(s: Partial<Settings>): Promise<Settings> {
       }
     }
   }
-  
+
   return merged;
 }
 
 // Sync functions
 export async function syncSettings() {
   const convexAvailable = await isConvexAvailable();
-  if (!convexAvailable || !api) return;
-  
+  const currentApi = await loadApi();
+  if (!convexAvailable || !currentApi) return;
+
   try {
     const localSettings = readLocalSettings();
-    const convexSettings = await convex.query(api.settings.getSettings, {});
-    
+    const convexSettings = await convex.query(currentApi.settings.getSettings, {});
+
     if (!convexSettings) {
       // No settings in Convex, sync local settings
-      await convex.mutation(api.settings.syncSettings, localSettings);
+      await convex.mutation(currentApi.settings.syncSettings, localSettings);
     } else {
       // Merge settings (local takes precedence)
       const merged = { ...convexToLocalSettings(convexSettings), ...localSettings };
-      await convex.mutation(api.settings.syncSettings, merged);
+      await convex.mutation(currentApi.settings.syncSettings, merged);
       writeLocalSettings(merged);
     }
-    
+
     console.log('Settings synced successfully');
   } catch (error) {
     console.error('Error syncing settings:', error);

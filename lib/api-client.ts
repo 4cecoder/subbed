@@ -75,11 +75,7 @@ class ApiClient {
     return this.fetchWithCache(url, cacheKey, 180); // 3 minutes cache
   }
 
-  async getRssFeed(
-    channelId: string,
-    limit: number,
-    type: string
-  ): Promise<ApiResponse<unknown>> {
+  async getRssFeed(channelId: string, limit: number, type: string): Promise<ApiResponse<unknown>> {
     const params = new URLSearchParams({
       id: channelId,
       limit: limit.toString(),
@@ -118,7 +114,11 @@ class ApiClient {
     return data;
   }
 
-  async addSubscription(subscription: { id: string; title: string | null; url: string }): Promise<unknown> {
+  async addSubscription(subscription: {
+    id: string;
+    title: string | null;
+    url: string;
+  }): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/subscriptions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -178,7 +178,7 @@ class ApiClient {
     }
 
     const data = await response.json();
-    
+
     // Clear all caches after sync
     this.clearCache();
 

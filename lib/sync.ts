@@ -39,7 +39,7 @@ export class SyncManager {
   private startSync() {
     // Immediate sync when coming online
     this.performSync();
-    
+
     // Set up periodic sync
     this.syncInterval = setInterval(() => {
       this.performSync();
@@ -58,16 +58,16 @@ export class SyncManager {
 
     try {
       console.log('Performing sync...');
-      
+
       // Sync subscriptions
       await syncSubscriptions();
-      
+
       // Sync settings
       await syncSettings();
-      
+
       // Process sync queue
       await processSyncQueue();
-      
+
       console.log('Sync completed successfully');
     } catch (error) {
       console.error('Sync failed:', error);
@@ -97,7 +97,7 @@ export class SyncManager {
 // Hook for using sync manager in React components
 export function useSync() {
   const syncManager = SyncManager.getInstance();
-  
+
   return {
     isOnline: syncManager.isAppOnline(),
     forceSync: () => syncManager.forceSync(),

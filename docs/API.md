@@ -15,6 +15,7 @@ https://your-domain.com/api
 ## Authentication
 
 Most endpoints work in both authenticated and development modes:
+
 - **Authenticated Mode**: Uses Clerk JWT tokens for user-specific data
 - **Development Mode**: Uses development user ID for testing
 
@@ -27,6 +28,7 @@ Most endpoints work in both authenticated and development modes:
 Retrieves all subscriptions for the current user.
 
 **Response:**
+
 ```json
 [
   {
@@ -40,6 +42,7 @@ Retrieves all subscriptions for the current user.
 ```
 
 **Error Response:**
+
 ```json
 {
   "error": "Error message"
@@ -51,6 +54,7 @@ Retrieves all subscriptions for the current user.
 Adds a new subscription.
 
 **Request Body:**
+
 ```json
 {
   "id": "UCsBjURrPoezykLs9EqgamOA",
@@ -60,6 +64,7 @@ Adds a new subscription.
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true
@@ -71,9 +76,11 @@ Adds a new subscription.
 Removes a specific subscription or clears all subscriptions.
 
 **Parameters:**
+
 - `id` (optional): Channel ID to remove. If omitted, clears all subscriptions.
 
 **Response:**
+
 ```json
 {
   "ok": true
@@ -87,6 +94,7 @@ Removes a specific subscription or clears all subscriptions.
 Retrieves user settings.
 
 **Response:**
+
 ```json
 {
   "settings": {
@@ -107,6 +115,7 @@ Retrieves user settings.
 Updates user settings.
 
 **Request Body:**
+
 ```json
 {
   "per_page": 25,
@@ -121,6 +130,7 @@ Updates user settings.
 ```
 
 **Response:**
+
 ```json
 {
   "settings": {
@@ -143,6 +153,7 @@ Updates user settings.
 Retrieves aggregated feed content from all subscriptions.
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `per_page` (number): Items per page (default: from settings or 20)
 - `per_channel` (number): Max items per channel (default: from settings or 10, max: 50)
@@ -150,6 +161,7 @@ Retrieves aggregated feed content from all subscriptions.
 - `type` (string): Content type filter - "all", "video", or "short"
 
 **Response:**
+
 ```json
 {
   "page": 1,
@@ -178,12 +190,14 @@ Retrieves aggregated feed content from all subscriptions.
 Retrieves RSS feed data for a specific YouTube channel.
 
 **Query Parameters:**
+
 - `id` (string, required): YouTube channel ID (UC...) or channel URL
 - `limit` (number): Maximum items to return (default: from settings or 10, max: 50)
 - `q` (string): Search query to filter content
 - `type` (string): Content type filter - "all", "video", or "short"
 
 **Supported Input Formats for `id`:**
+
 - Channel ID: `UCsBjURrPoezykLs9EqgamOA`
 - Channel URL: `https://www.youtube.com/channel/UCsBjURrPoezykLs9EqgamOA`
 - Username: `@username`
@@ -191,6 +205,7 @@ Retrieves RSS feed data for a specific YouTube channel.
 - Video URL: `https://www.youtube.com/watch?v=VIDEO_ID`
 
 **Response:**
+
 ```json
 {
   "channelId": "UCsBjURrPoezykLs9EqgamOA",
@@ -216,6 +231,7 @@ Retrieves RSS feed data for a specific YouTube channel.
 Triggers manual synchronization of data between local storage and ConvexDB.
 
 **Response (Success):**
+
 ```json
 {
   "success": true,
@@ -224,6 +240,7 @@ Triggers manual synchronization of data between local storage and ConvexDB.
 ```
 
 **Response (Error):**
+
 ```json
 {
   "success": false,
@@ -236,6 +253,7 @@ Triggers manual synchronization of data between local storage and ConvexDB.
 Returns sync status information.
 
 **Response:**
+
 ```json
 {
   "status": "ready",
@@ -250,6 +268,7 @@ Returns sync status information.
 Submits user feedback.
 
 **Request Body:**
+
 ```json
 {
   "type": "bug|feature|general",
@@ -259,6 +278,7 @@ Submits user feedback.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -273,9 +293,11 @@ Submits user feedback.
 Resolves various YouTube URL formats to channel information.
 
 **Query Parameters:**
+
 - `url` (string, required): YouTube URL to resolve
 
 **Response:**
+
 ```json
 {
   "channelId": "UCsBjURrPoezykLs9EqgamOA",
@@ -287,6 +309,7 @@ Resolves various YouTube URL formats to channel information.
 ## Data Models
 
 ### Subscription
+
 ```typescript
 {
   id: string;           // YouTube channel ID
@@ -298,6 +321,7 @@ Resolves various YouTube URL formats to channel information.
 ```
 
 ### Feed Item
+
 ```typescript
 {
   id: string;           // Video ID
@@ -313,16 +337,17 @@ Resolves various YouTube URL formats to channel information.
 ```
 
 ### Settings
+
 ```typescript
 {
-  per_page: number;        // Items per page (1-100)
-  per_channel: number;     // Items per channel (1-50)
+  per_page: number; // Items per page (1-100)
+  per_channel: number; // Items per channel (1-50)
   showThumbnails: boolean; // Display thumbnails
   showDescriptions: boolean; // Display descriptions
-  defaultFeedType: "all" | "video" | "short";
-  sortOrder: "newest" | "oldest";
-  caching_ttl: number;     // Cache TTL in seconds
-  concurrency: number;     // Concurrent requests (1-10)
+  defaultFeedType: 'all' | 'video' | 'short';
+  sortOrder: 'newest' | 'oldest';
+  caching_ttl: number; // Cache TTL in seconds
+  concurrency: number; // Concurrent requests (1-10)
 }
 ```
 
@@ -352,12 +377,14 @@ Error responses include an `error` field with a descriptive message.
 ## Examples
 
 ### Get User Subscriptions
+
 ```bash
 curl -X GET "https://your-domain.com/api/subscriptions" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ### Add a Subscription
+
 ```bash
 curl -X POST "https://your-domain.com/api/subscriptions" \
   -H "Content-Type: application/json" \
@@ -369,11 +396,13 @@ curl -X POST "https://your-domain.com/api/subscriptions" \
 ```
 
 ### Get Feed with Search
+
 ```bash
 curl -X GET "https://your-domain.com/api/feed?page=1&per_page=10&q=react&type=video"
 ```
 
 ### Update Settings
+
 ```bash
 curl -X POST "https://your-domain.com/api/settings" \
   -H "Content-Type: application/json" \

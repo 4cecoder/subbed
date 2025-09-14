@@ -1,6 +1,47 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-npm run lint
-npm run type-check 2>/dev/null || npx tsc --noEmit
-npm run test -- --passWithNoTests
+echo "🔥 SUPER STRICT PRE-COMMIT: ZERO TOLERANCE FOR ANY ISSUES..."
+echo "=================================================="
+
+# Set strict error handling
+set -e
+
+# Function to handle failures
+handle_failure() {
+    echo "❌ COMMIT REJECTED: $1"
+    echo "Fix all issues before committing. No exceptions."
+    exit 1
+}
+
+echo "🔍 Step 1/8: Running lint-staged (Prettier + ESLint)..."
+bunx lint-staged || handle_failure "lint-staged failed"
+
+echo "🔍 Step 2/8: Running TypeScript strict compilation check..."
+bunx tsc --noEmit --strict || handle_failure "TypeScript compilation failed"
+
+echo "🔍 Step 3/8: Running ESLint with zero warnings tolerance..."
+bunx eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 0 || handle_failure "ESLint found issues"
+
+echo "🔍 Step 4/8: Running Prettier format validation..."
+bunx prettier --check . || handle_failure "Code is not properly formatted"
+
+echo "🔍 Step 5/8: Running tests..."
+bun test || handle_failure "Tests failed"
+
+echo "🔍 Step 6/8: Validating no console.log statements..."
+if git diff --cached --name-only | grep -E '\.(ts|tsx|js|jsx)$' | xargs grep -l 'console\.log' 2>/dev/null; then
+    handle_failure "console.log statements found in staged files"
+fi
+
+echo "🔍 Step 7/8: Validating no TODO comments in new code..."
+if git diff --cached | grep -E '^\+.*TODO|^\+.*FIXME|^\+.*XXX' 2>/dev/null; then
+    handle_failure "TODO/FIXME/XXX comments found in staged changes"
+fi
+
+echo "🔍 Step 8/8: Checking for secrets or sensitive data..."
+if git diff --cached | grep -iE '(password|secret|key|token).*=.*["\'][^"\']{8,}' 2>/dev/null; then
+    handle_failure "Potential secrets detected in staged changes"
+fi
+
+echo "✅ ALL CHECKS PASSED! Your code meets the highest standards."
+echo "=================================================="

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { Button } from "./ui/button";
-import { FeedbackDialog } from "./feedback-dialog";
-import { OnboardingDialog } from "./onboarding-dialog";
-import { SettingsDialog } from "./settings-dialog";
-import { SubscriptionManager } from "./subscription-manager";
-import { ThemeToggleFancy } from "./theme-toggle";
-import { useOnboarding } from "@/lib/hooks/use-onboarding";
-import { useConvexSettings } from "@/lib/hooks/use-convex-settings";
-import { HelpCircle, Settings, Users } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { Button } from './ui/button';
+import { FeedbackDialog } from './feedback-dialog';
+import { OnboardingDialog } from './onboarding-dialog';
+import { SettingsDialog } from './settings-dialog';
+import { ImprovedSubscriptionManager } from './subscription-manager';
+import { ThemeToggleFancy } from './theme-toggle';
+import { useOnboarding } from '@/lib/hooks/use-onboarding';
+import { useConvexSettings } from '@/lib/hooks/use-convex-settings';
+import { HelpCircle, Settings, Users } from 'lucide-react';
 
 export default function Header() {
   const { shouldShowOnboarding, markAsSeen } = useOnboarding();
@@ -48,7 +48,7 @@ export default function Header() {
           </Button>
         </SignedIn>
       </div>
-      
+
       <div className="flex items-center gap-4">
         <ThemeToggleFancy className="mr-2" />
         <SignedIn>
@@ -80,11 +80,8 @@ export default function Header() {
         </SignedOut>
       </div>
 
-      <OnboardingDialog 
-        open={showOnboarding} 
-        onOpenChange={handleOnboardingClose}
-      />
-      
+      <OnboardingDialog open={showOnboarding} onOpenChange={handleOnboardingClose} />
+
       <SettingsDialog
         open={settingsOpen}
         onOpenChange={setSettingsOpen}
@@ -94,7 +91,7 @@ export default function Header() {
         error={error}
       />
 
-      <SubscriptionManager
+      <ImprovedSubscriptionManager
         open={subscriptionManagerOpen}
         onOpenChange={setSubscriptionManagerOpen}
       />

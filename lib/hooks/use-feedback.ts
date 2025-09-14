@@ -59,7 +59,7 @@ export function useFeedback() {
         setSubmissionResult(fallbackResult);
         return fallbackResult;
       }
-    } catch (error) {
+    } catch {
       // Fallback to console logging if network error
       console.log('Feedback submitted (fallback):', feedback);
       const errorResult: FeedbackSubmission = {

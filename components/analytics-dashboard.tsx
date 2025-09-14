@@ -1,19 +1,10 @@
-"use client";
+'use client';
 
 import React, { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Clock, 
-  Users, 
-  Video, 
-  Activity,
-  Zap,
-  Target
-} from 'lucide-react';
+import { BarChart3, TrendingUp, Clock, Users, Video, Activity, Zap, Target } from 'lucide-react';
 import { FeedItem, Subscription } from '@/lib/types';
 
 interface AnalyticsDashboardProps {
@@ -41,7 +32,7 @@ interface ContentTimeline {
 export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   feed,
   subscriptions,
-  loading = false
+  loading = false,
 }) => {
   // Calculate comprehensive analytics
   const analytics = useMemo(() => {
@@ -60,13 +51,13 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         contentDistribution: {
           shorts: 0,
           regular: 0,
-          shortsPercentage: 0
+          shortsPercentage: 0,
         },
         activityMetrics: {
           videosPerDay: 0,
           mostActiveDay: null as string | null,
-          leastActiveDay: null as string | null
-        }
+          leastActiveDay: null as string | null,
+        },
       };
     }
 
@@ -74,22 +65,23 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     const shortVideos = feed.filter(item => item.isShort).length;
     const regularVideos = totalVideos - shortVideos;
     const channelsWithContent = new Set(feed.map(item => item.channelId)).size;
-    
+
     const videoDates = feed.map(item => new Date(item.published).getTime());
     const oldestVideo = new Date(Math.min(...videoDates));
     const newestVideo = new Date(Math.max(...videoDates));
-    
-    const averageVideosPerChannel = channelsWithContent > 0 ? Math.round(totalVideos / channelsWithContent) : 0;
+
+    const averageVideosPerChannel =
+      channelsWithContent > 0 ? Math.round(totalVideos / channelsWithContent) : 0;
 
     // Channel analytics
     const channelMap = new Map<string, ChannelAnalytics>();
-    
+
     feed.forEach(item => {
       if (!item.channelId) return;
-      
+
       const existing = channelMap.get(item.channelId);
       const videoDate = new Date(item.published);
-      
+
       if (existing) {
         existing.videoCount++;
         if (item.isShort) existing.shortCount++;
@@ -108,7 +100,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
           shortCount: item.isShort ? 1 : 0,
           latestVideo: videoDate,
           oldestVideo: videoDate,
-          averageDaysBetweenVideos: 0
+          averageDaysBetweenVideos: 0,
         });
       }
     });
@@ -118,10 +110,11 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       if (channel.videoCount <= 1) {
         return { ...channel, averageDaysBetweenVideos: 0 };
       }
-      
-      const daysDiff = (channel.latestVideo!.getTime() - channel.oldestVideo!.getTime()) / (1000 * 60 * 60 * 24);
+
+      const daysDiff =
+        (channel.latestVideo!.getTime() - channel.oldestVideo!.getTime()) / (1000 * 60 * 60 * 24);
       const averageDays = daysDiff / (channel.videoCount - 1);
-      
+
       return { ...channel, averageDaysBetweenVideos: Math.round(averageDays) };
     });
 
@@ -133,23 +126,23 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     // Content timeline (last 30 days)
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    
+
     const recentVideos = feed.filter(item => new Date(item.published) >= thirtyDaysAgo);
-    
+
     const contentTimeline: ContentTimeline[] = [];
     for (let i = 0; i < 30; i += 5) {
       const periodStart = new Date(now.getTime() - (i + 5) * 24 * 60 * 60 * 1000);
       const periodEnd = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-      
+
       const periodVideos = recentVideos.filter(item => {
         const videoDate = new Date(item.published);
         return videoDate >= periodStart && videoDate < periodEnd;
       });
-      
+
       contentTimeline.unshift({
         period: `${periodStart.toLocaleDateString()} - ${periodEnd.toLocaleDateString()}`,
         videoCount: periodVideos.length,
-        shortCount: periodVideos.filter(v => v.isShort).length
+        shortCount: periodVideos.filter(v => v.isShort).length,
       });
     }
 
@@ -163,7 +156,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       const day = new Date(item.published).toLocaleDateString('en-US', { weekday: 'long' });
       dayCounts.set(day, (dayCounts.get(day) || 0) + 1);
     });
-    
+
     const sortedDays = Array.from(dayCounts.entries()).sort((a, b) => b[1] - a[1]);
     const mostActiveDay = sortedDays.length > 0 ? sortedDays[0][0] : null;
     const leastActiveDay = sortedDays.length > 0 ? sortedDays[sortedDays.length - 1][0] : null;
@@ -182,13 +175,13 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       contentDistribution: {
         shorts: shortVideos,
         regular: regularVideos,
-        shortsPercentage: totalVideos > 0 ? Math.round((shortVideos / totalVideos) * 100) : 0
+        shortsPercentage: totalVideos > 0 ? Math.round((shortVideos / totalVideos) * 100) : 0,
       },
       activityMetrics: {
         videosPerDay,
         mostActiveDay,
-        leastActiveDay
-      }
+        leastActiveDay,
+      },
     };
   }, [feed, subscriptions]);
 
@@ -206,7 +199,11 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} data-testid="loading-skeleton" className="h-24 bg-muted rounded-lg animate-pulse" />
+                  <div
+                    key={i}
+                    data-testid="loading-skeleton"
+                    className="h-24 bg-muted rounded-lg animate-pulse"
+                  />
                 ))}
               </div>
             </div>
@@ -257,7 +254,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               </div>
               <div className="text-sm text-muted-foreground">Total Videos</div>
             </div>
-            
+
             <div className="text-center p-4 bg-secondary/50 rounded-lg border">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Users className="w-4 h-4" />
@@ -265,7 +262,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               </div>
               <div className="text-sm text-muted-foreground">Active Channels</div>
             </div>
-            
+
             <div className="text-center p-4 bg-accent/50 rounded-lg border">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Zap className="w-4 h-4 text-orange-500" />
@@ -273,11 +270,13 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               </div>
               <div className="text-sm text-muted-foreground">Short Videos</div>
             </div>
-            
+
             <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <TrendingUp className="w-4 h-4 text-green-600" />
-                <div className="text-2xl font-bold text-green-600">{analytics.averageVideosPerChannel}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {analytics.averageVideosPerChannel}
+                </div>
               </div>
               <div className="text-sm text-muted-foreground">Avg per Channel</div>
             </div>
@@ -298,15 +297,11 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Content Type Breakdown</span>
               <div className="flex gap-2">
-                <Badge variant="secondary">
-                  {analytics.contentDistribution.shorts} Shorts
-                </Badge>
-                <Badge variant="outline">
-                  {analytics.contentDistribution.regular} Videos
-                </Badge>
+                <Badge variant="secondary">{analytics.contentDistribution.shorts} Shorts</Badge>
+                <Badge variant="outline">{analytics.contentDistribution.regular} Videos</Badge>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>Short Videos</span>
@@ -314,13 +309,16 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               </div>
               <Progress value={analytics.contentDistribution.shortsPercentage} className="h-2" />
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>Regular Videos</span>
                 <span>{100 - analytics.contentDistribution.shortsPercentage}%</span>
               </div>
-              <Progress value={100 - analytics.contentDistribution.shortsPercentage} className="h-2" />
+              <Progress
+                value={100 - analytics.contentDistribution.shortsPercentage}
+                className="h-2"
+              />
             </div>
           </div>
         </CardContent>
@@ -347,7 +345,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                   <div className="font-medium">{analytics.newestVideo?.toLocaleDateString()}</div>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="text-sm font-medium">Activity Metrics</div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
@@ -357,7 +355,9 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                   </div>
                   <div>
                     <div className="text-muted-foreground">Most active day</div>
-                    <div className="font-medium">{analytics.activityMetrics.mostActiveDay || 'N/A'}</div>
+                    <div className="font-medium">
+                      {analytics.activityMetrics.mostActiveDay || 'N/A'}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -375,14 +375,17 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
           <CardContent>
             <div className="space-y-3">
               {analytics.contentTimeline.map((period, index) => (
-                <div key={index} className="flex items-center justify-between py-2 border-b last:border-b-0">
+                <div
+                  key={index}
+                  className="flex items-center justify-between py-2 border-b last:border-b-0"
+                >
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">{period.period}</div>
                     <div className="text-xs text-muted-foreground">
                       {period.shortCount} shorts, {period.videoCount - period.shortCount} videos
                     </div>
                   </div>
-                  <Badge variant={period.videoCount > 0 ? "default" : "secondary"}>
+                  <Badge variant={period.videoCount > 0 ? 'default' : 'secondary'}>
                     {period.videoCount}
                   </Badge>
                 </div>
@@ -403,7 +406,10 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         <CardContent>
           <div className="space-y-3">
             {analytics.topActiveChannels.map((channel, index) => (
-              <div key={channel.id} className="flex items-center justify-between py-3 border-b last:border-b-0">
+              <div
+                key={channel.id}
+                className="flex items-center justify-between py-3 border-b last:border-b-0"
+              >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-xs font-medium text-primary">
@@ -412,9 +418,12 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                     <div>
                       <div className="font-medium truncate">{channel.title}</div>
                       <div className="text-sm text-muted-foreground">
-                        {channel.shortCount} shorts, {channel.videoCount - channel.shortCount} videos
+                        {channel.shortCount} shorts, {channel.videoCount - channel.shortCount}{' '}
+                        videos
                         {channel.averageDaysBetweenVideos > 0 && (
-                          <span className="ml-2">• Avg: {channel.averageDaysBetweenVideos} days between videos</span>
+                          <span className="ml-2">
+                            • Avg: {channel.averageDaysBetweenVideos} days between videos
+                          </span>
                         )}
                       </div>
                     </div>

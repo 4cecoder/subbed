@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
-import { AnalyticsDashboard } from '../components/analytics-dashboard'
-import { FeedItem, Subscription } from '../lib/types'
+import { render, screen } from '@testing-library/react';
+import { AnalyticsDashboard } from '../components/analytics-dashboard';
+import { FeedItem, Subscription } from '../lib/types';
 
 describe('AnalyticsDashboard', () => {
   const mockSubscriptions: Subscription[] = [
@@ -8,15 +8,15 @@ describe('AnalyticsDashboard', () => {
       id: 'channel1',
       title: 'Test Channel 1',
       url: 'https://youtube.com/channel1',
-      created_at: '2024-01-01T00:00:00Z'
+      created_at: '2024-01-01T00:00:00Z',
     },
     {
       id: 'channel2',
       title: 'Test Channel 2',
       url: 'https://youtube.com/channel2',
-      created_at: '2024-01-02T00:00:00Z'
-    }
-  ]
+      created_at: '2024-01-02T00:00:00Z',
+    },
+  ];
 
   const mockFeed: FeedItem[] = [
     {
@@ -28,7 +28,7 @@ describe('AnalyticsDashboard', () => {
       description: 'Test description 1',
       channelId: 'channel1',
       channelTitle: 'Test Channel 1',
-      isShort: false
+      isShort: false,
     },
     {
       id: 'video2',
@@ -39,7 +39,7 @@ describe('AnalyticsDashboard', () => {
       description: 'Test short description 1',
       channelId: 'channel1',
       channelTitle: 'Test Channel 1',
-      isShort: true
+      isShort: true,
     },
     {
       id: 'video3',
@@ -50,141 +50,105 @@ describe('AnalyticsDashboard', () => {
       description: 'Test description 2',
       channelId: 'channel2',
       channelTitle: 'Test Channel 2',
-      isShort: false
-    }
-  ]
+      isShort: false,
+    },
+  ];
 
   it('renders loading state', () => {
-    render(
-      <AnalyticsDashboard 
-        feed={[]} 
-        subscriptions={mockSubscriptions} 
-        loading={true} 
-      />
-    )
+    render(<AnalyticsDashboard feed={[]} subscriptions={mockSubscriptions} loading={true} />);
 
-    expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument()
-    expect(screen.getAllByTestId('loading-skeleton')).toHaveLength(4) // 4 loading skeletons
-  })
+    expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument();
+    expect(screen.getAllByTestId('loading-skeleton')).toHaveLength(4); // 4 loading skeletons
+  });
 
   it('renders empty state when no feed data', () => {
-    render(
-      <AnalyticsDashboard 
-        feed={[]} 
-        subscriptions={mockSubscriptions} 
-        loading={false} 
-      />
-    )
+    render(<AnalyticsDashboard feed={[]} subscriptions={mockSubscriptions} loading={false} />);
 
-    expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument()
-    expect(screen.getByText('No Data to Analyze')).toBeInTheDocument()
-    expect(screen.getByText(/Subscribe to some channels/)).toBeInTheDocument()
-  })
+    expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('No Data to Analyze')).toBeInTheDocument();
+    expect(screen.getByText(/Subscribe to some channels/)).toBeInTheDocument();
+  });
 
   it('renders analytics overview with data', () => {
     render(
-      <AnalyticsDashboard 
-        feed={mockFeed} 
-        subscriptions={mockSubscriptions} 
-        loading={false} 
-      />
-    )
+      <AnalyticsDashboard feed={mockFeed} subscriptions={mockSubscriptions} loading={false} />
+    );
 
-    expect(screen.getByText('Overview')).toBeInTheDocument()
-    
+    expect(screen.getByText('Overview')).toBeInTheDocument();
+
     // Check overview cards
-    expect(screen.getByText('Total Videos')).toBeInTheDocument()
-    expect(screen.getByText('3')).toBeInTheDocument() // Total videos
-    expect(screen.getByText('Active Channels')).toBeInTheDocument()
-    expect(screen.getByText('Short Videos')).toBeInTheDocument()
-    expect(screen.getByText('1')).toBeInTheDocument() // Short videos
-    expect(screen.getByText('Avg per Channel')).toBeInTheDocument()
-  })
+    expect(screen.getByText('Total Videos')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument(); // Total videos
+    expect(screen.getByText('Active Channels')).toBeInTheDocument();
+    expect(screen.getByText('Short Videos')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument(); // Short videos
+    expect(screen.getByText('Avg per Channel')).toBeInTheDocument();
+  });
 
   it('renders content distribution correctly', () => {
     render(
-      <AnalyticsDashboard 
-        feed={mockFeed} 
-        subscriptions={mockSubscriptions} 
-        loading={false} 
-      />
-    )
+      <AnalyticsDashboard feed={mockFeed} subscriptions={mockSubscriptions} loading={false} />
+    );
 
-    expect(screen.getByText('Content Distribution')).toBeInTheDocument()
-    expect(screen.getByText('Content Type Breakdown')).toBeInTheDocument()
-    expect(screen.getByText('1 Shorts')).toBeInTheDocument()
-    expect(screen.getByText('2 Videos')).toBeInTheDocument()
-    expect(screen.getByText('33%')).toBeInTheDocument() // Shorts percentage
-  })
+    expect(screen.getByText('Content Distribution')).toBeInTheDocument();
+    expect(screen.getByText('Content Type Breakdown')).toBeInTheDocument();
+    expect(screen.getByText('1 Shorts')).toBeInTheDocument();
+    expect(screen.getByText('2 Videos')).toBeInTheDocument();
+    expect(screen.getByText('33%')).toBeInTheDocument(); // Shorts percentage
+  });
 
   it('renders content timeline correctly', () => {
     render(
-      <AnalyticsDashboard 
-        feed={mockFeed} 
-        subscriptions={mockSubscriptions} 
-        loading={false} 
-      />
-    )
+      <AnalyticsDashboard feed={mockFeed} subscriptions={mockSubscriptions} loading={false} />
+    );
 
-    expect(screen.getByText('Content Timeline')).toBeInTheDocument()
-    expect(screen.getByText('Oldest Content')).toBeInTheDocument()
-    expect(screen.getByText('Newest Content')).toBeInTheDocument()
-    
+    expect(screen.getByText('Content Timeline')).toBeInTheDocument();
+    expect(screen.getByText('Oldest Content')).toBeInTheDocument();
+    expect(screen.getByText('Newest Content')).toBeInTheDocument();
+
     // Check for dates using more flexible matching
-    const dateElements = screen.getAllByText(/2024/)
-    expect(dateElements.length).toBeGreaterThan(0)
-  })
+    const dateElements = screen.getAllByText(/2024/);
+    expect(dateElements.length).toBeGreaterThan(0);
+  });
 
   it('renders activity metrics correctly', () => {
     render(
-      <AnalyticsDashboard 
-        feed={mockFeed} 
-        subscriptions={mockSubscriptions} 
-        loading={false} 
-      />
-    )
+      <AnalyticsDashboard feed={mockFeed} subscriptions={mockSubscriptions} loading={false} />
+    );
 
-    expect(screen.getByText('Videos per day')).toBeInTheDocument()
-    expect(screen.getByText('Most active day')).toBeInTheDocument()
-  })
+    expect(screen.getByText('Videos per day')).toBeInTheDocument();
+    expect(screen.getByText('Most active day')).toBeInTheDocument();
+  });
 
   it('renders recent activity section', () => {
     render(
-      <AnalyticsDashboard 
-        feed={mockFeed} 
-        subscriptions={mockSubscriptions} 
-        loading={false} 
-      />
-    )
+      <AnalyticsDashboard feed={mockFeed} subscriptions={mockSubscriptions} loading={false} />
+    );
 
-    expect(screen.getByText('Recent Activity (Last 30 Days)')).toBeInTheDocument()
-  })
+    expect(screen.getByText('Recent Activity (Last 30 Days)')).toBeInTheDocument();
+  });
 
   it('renders top active channels correctly', () => {
     render(
-      <AnalyticsDashboard 
-        feed={mockFeed} 
-        subscriptions={mockSubscriptions} 
-        loading={false} 
-      />
-    )
+      <AnalyticsDashboard feed={mockFeed} subscriptions={mockSubscriptions} loading={false} />
+    );
 
-    expect(screen.getByText('Top Active Channels')).toBeInTheDocument()
-    expect(screen.getByText('Test Channel 1')).toBeInTheDocument()
-    expect(screen.getByText('Test Channel 2')).toBeInTheDocument()
-    
+    expect(screen.getByText('Top Active Channels')).toBeInTheDocument();
+    expect(screen.getByText('Test Channel 1')).toBeInTheDocument();
+    expect(screen.getByText('Test Channel 2')).toBeInTheDocument();
+
     // Check channel rankings - look for them within ranking circles
-    const rankingCircles = screen.getAllByText('1')
-    expect(rankingCircles.length).toBeGreaterThan(0)
-    
+    const rankingCircles = screen.getAllByText('1');
+    expect(rankingCircles.length).toBeGreaterThan(0);
+
     // Check video counts - be more specific about which elements we're checking
-    const channel1Badges = screen.getAllByText('2')
-    expect(channel1Badges.length).toBeGreaterThan(0)
-    
+    const channel1Badges = screen.getAllByText('2');
+    expect(channel1Badges.length).toBeGreaterThan(0);
+
     // Channel 2 should have 1 video - look for badge with 1
-    const channel2Badge = screen.getByText('1', { selector: '[data-slot="badge"]' })
-    expect(channel2Badge).toBeInTheDocument()
-  })
+    const channel2Badge = screen.getByText('1', { selector: '[data-slot="badge"]' });
+    expect(channel2Badge).toBeInTheDocument();
+  });
 
   it('calculates analytics correctly with mixed content', () => {
     const mixedFeed: FeedItem[] = [
@@ -196,21 +160,17 @@ describe('AnalyticsDashboard', () => {
         published: '2024-01-13T00:00:00Z',
         channelId: 'channel2',
         channelTitle: 'Test Channel 2',
-        isShort: true
-      }
-    ]
+        isShort: true,
+      },
+    ];
 
     render(
-      <AnalyticsDashboard 
-        feed={mixedFeed} 
-        subscriptions={mockSubscriptions} 
-        loading={false} 
-      />
-    )
+      <AnalyticsDashboard feed={mixedFeed} subscriptions={mockSubscriptions} loading={false} />
+    );
 
-    expect(screen.getByText('4')).toBeInTheDocument() // Total videos
-    expect(screen.getByText('50%')).toBeInTheDocument() // Shorts percentage
-  })
+    expect(screen.getByText('4')).toBeInTheDocument(); // Total videos
+    expect(screen.getByText('50%')).toBeInTheDocument(); // Shorts percentage
+  });
 
   it('handles single channel scenario', () => {
     const singleChannelFeed: FeedItem[] = [
@@ -221,22 +181,22 @@ describe('AnalyticsDashboard', () => {
         published: '2024-01-10T00:00:00Z',
         channelId: 'channel1',
         channelTitle: 'Test Channel 1',
-        isShort: false
-      }
-    ]
+        isShort: false,
+      },
+    ];
 
     render(
-      <AnalyticsDashboard 
-        feed={singleChannelFeed} 
-        subscriptions={[mockSubscriptions[0]]} 
-        loading={false} 
+      <AnalyticsDashboard
+        feed={singleChannelFeed}
+        subscriptions={[mockSubscriptions[0]]}
+        loading={false}
       />
-    )
+    );
 
-    expect(screen.getByText('1')).toBeInTheDocument() // Total videos
-    expect(screen.getByText('1')).toBeInTheDocument() // Active channels
-    expect(screen.getByText('1')).toBeInTheDocument() // Average per channel
-  })
+    expect(screen.getByText('1')).toBeInTheDocument(); // Total videos
+    expect(screen.getByText('1')).toBeInTheDocument(); // Active channels
+    expect(screen.getByText('1')).toBeInTheDocument(); // Average per channel
+  });
 
   it('handles shorts-only content', () => {
     const shortsOnlyFeed: FeedItem[] = [
@@ -247,7 +207,7 @@ describe('AnalyticsDashboard', () => {
         published: '2024-01-10T00:00:00Z',
         channelId: 'channel1',
         channelTitle: 'Test Channel 1',
-        isShort: true
+        isShort: true,
       },
       {
         id: 'short2',
@@ -256,22 +216,22 @@ describe('AnalyticsDashboard', () => {
         published: '2024-01-11T00:00:00Z',
         channelId: 'channel1',
         channelTitle: 'Test Channel 1',
-        isShort: true
-      }
-    ]
+        isShort: true,
+      },
+    ];
 
     render(
-      <AnalyticsDashboard 
-        feed={shortsOnlyFeed} 
-        subscriptions={[mockSubscriptions[0]]} 
-        loading={false} 
+      <AnalyticsDashboard
+        feed={shortsOnlyFeed}
+        subscriptions={[mockSubscriptions[0]]}
+        loading={false}
       />
-    )
+    );
 
-    expect(screen.getByText('2')).toBeInTheDocument() // Total videos
-    expect(screen.getByText('2')).toBeInTheDocument() // Short videos
-    expect(screen.getByText('100%')).toBeInTheDocument() // Shorts percentage
-  })
+    expect(screen.getByText('2')).toBeInTheDocument(); // Total videos
+    expect(screen.getByText('2')).toBeInTheDocument(); // Short videos
+    expect(screen.getByText('100%')).toBeInTheDocument(); // Shorts percentage
+  });
 
   it('handles regular videos only content', () => {
     const regularOnlyFeed: FeedItem[] = [
@@ -282,7 +242,7 @@ describe('AnalyticsDashboard', () => {
         published: '2024-01-10T00:00:00Z',
         channelId: 'channel1',
         channelTitle: 'Test Channel 1',
-        isShort: false
+        isShort: false,
       },
       {
         id: 'video2',
@@ -291,20 +251,20 @@ describe('AnalyticsDashboard', () => {
         published: '2024-01-11T00:00:00Z',
         channelId: 'channel1',
         channelTitle: 'Test Channel 1',
-        isShort: false
-      }
-    ]
+        isShort: false,
+      },
+    ];
 
     render(
-      <AnalyticsDashboard 
-        feed={regularOnlyFeed} 
-        subscriptions={[mockSubscriptions[0]]} 
-        loading={false} 
+      <AnalyticsDashboard
+        feed={regularOnlyFeed}
+        subscriptions={[mockSubscriptions[0]]}
+        loading={false}
       />
-    )
+    );
 
-    expect(screen.getByText('2')).toBeInTheDocument() // Total videos
-    expect(screen.getByText('0')).toBeInTheDocument() // Short videos
-    expect(screen.getByText('0%')).toBeInTheDocument() // Shorts percentage
-  })
-})
+    expect(screen.getByText('2')).toBeInTheDocument(); // Total videos
+    expect(screen.getByText('0')).toBeInTheDocument(); // Short videos
+    expect(screen.getByText('0%')).toBeInTheDocument(); // Shorts percentage
+  });
+});

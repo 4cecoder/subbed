@@ -70,10 +70,15 @@ class PerformanceMonitor {
 
     // Track navigation timing
     if ('performance' in window && 'getEntriesByType' in performance) {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const navigation = performance.getEntriesByType(
+        'navigation'
+      )[0] as PerformanceNavigationTiming;
       if (navigation) {
         this.recordMetric('navigation_time', navigation.loadEventEnd - navigation.fetchStart);
-        this.recordMetric('dom_content_loaded', navigation.domContentLoadedEventEnd - navigation.fetchStart);
+        this.recordMetric(
+          'dom_content_loaded',
+          navigation.domContentLoadedEventEnd - navigation.fetchStart
+        );
         this.recordMetric('first_paint', navigation.responseStart - navigation.fetchStart);
       }
     }
@@ -83,8 +88,8 @@ class PerformanceMonitor {
   getMemoryUsage(): { used: number; total: number; limit: number } | null {
     if (typeof window === 'undefined') return null;
 
-    // @ts-expect-error - performance.memory is not in types but available in Chrome
-    const memory = (performance as any).memory;
+    // Chrome-specific memory API
+    const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
     if (!memory) return null;
 
     return {
@@ -137,10 +142,7 @@ export function useComponentPerformanceTracking(componentName: string) {
 }
 
 // API call performance tracking
-export function trackApiCall<T extends any[], R>(
-  fn: (...args: T) => Promise<R>,
-  label: string
-) {
+export function trackApiCall<T extends unknown[], R>(fn: (...args: T) => Promise<R>, label: string) {
   return async (...args: T): Promise<R> => {
     performanceMonitor.startTiming(`api_${label}`);
     try {

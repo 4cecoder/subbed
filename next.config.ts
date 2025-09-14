@@ -1,4 +1,5 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
+import type { Configuration } from 'webpack';
 
 const nextConfig: NextConfig = {
   // Bundle analysis and optimization
@@ -49,11 +50,11 @@ const nextConfig: NextConfig = {
 
   // Bundle analyzer (conditionally enabled)
   ...(process.env.ANALYZE === 'true' && {
-    webpack: (config: any) => {
+    webpack: async (config: Configuration) => {
       if (process.env.NODE_ENV === 'production') {
         // Add bundle analyzer
-        const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-        config.plugins.push(
+        const { BundleAnalyzerPlugin } = await import('webpack-bundle-analyzer');
+        config.plugins?.push(
           new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             reportFilename: './analyze/client.html',

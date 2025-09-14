@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState, useMemo } from 'react';
 import { EnhancedSubscriptionList } from '@/components/enhanced-subscription-list';
@@ -60,8 +60,14 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
     const totalVideos = feed.length;
     const shortVideos = feed.filter(item => item.isShort).length;
     const channelsWithContent = new Set(feed.map(item => item.channelId)).size;
-    const oldestVideo = feed.length > 0 ? new Date(Math.min(...feed.map(item => new Date(item.published).getTime()))) : null;
-    const newestVideo = feed.length > 0 ? new Date(Math.max(...feed.map(item => new Date(item.published).getTime()))) : null;
+    const oldestVideo =
+      feed.length > 0
+        ? new Date(Math.min(...feed.map(item => new Date(item.published).getTime())))
+        : null;
+    const newestVideo =
+      feed.length > 0
+        ? new Date(Math.max(...feed.map(item => new Date(item.published).getTime())))
+        : null;
 
     return {
       totalVideos,
@@ -69,7 +75,8 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
       channelsWithContent,
       oldestVideo,
       newestVideo,
-      averageVideosPerChannel: channelsWithContent > 0 ? Math.round(totalVideos / channelsWithContent) : 0
+      averageVideosPerChannel:
+        channelsWithContent > 0 ? Math.round(totalVideos / channelsWithContent) : 0,
     };
   }, [feed]);
 
@@ -130,20 +137,14 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>
-                      {selected === 'all' ? 'All Subscriptions' : 'Feed'}
-                    </CardTitle>
+                    <CardTitle>{selected === 'all' ? 'All Subscriptions' : 'Feed'}</CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">
                       {feed.length} videos • {analytics.channelsWithContent} channels
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Badge variant="secondary">
-                      {analytics.shortVideos} shorts
-                    </Badge>
-                    <Badge variant="outline">
-                      {analytics.averageVideosPerChannel} avg/channel
-                    </Badge>
+                    <Badge variant="secondary">{analytics.shortVideos} shorts</Badge>
+                    <Badge variant="outline">{analytics.averageVideosPerChannel} avg/channel</Badge>
                   </div>
                 </div>
               </CardHeader>
@@ -165,11 +166,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
           </>
         ) : (
           /* Analytics View */
-          <AnalyticsDashboard 
-            feed={feed}
-            subscriptions={subs}
-            loading={loading}
-          />
+          <AnalyticsDashboard feed={feed} subscriptions={subs} loading={loading} />
         )}
       </div>
     </div>

@@ -1,4 +1,5 @@
 Code style and conventions:
+
 - TypeScript: Strict mode enabled, type annotations for all variables and functions, interfaces for data structures
 - React: Functional components with hooks, no class components, useEffect for side effects, useState for local state
 - Naming: camelCase for variables/functions, PascalCase for components and types, kebab-case for file names

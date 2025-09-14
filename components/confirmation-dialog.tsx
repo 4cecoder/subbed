@@ -1,9 +1,15 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { AlertTriangle } from 'lucide-react';
 
 interface ConfirmationDialogProps {
   open: boolean;
@@ -12,7 +18,7 @@ interface ConfirmationDialogProps {
   description: string;
   confirmText?: string;
   cancelText?: string;
-  variant?: "default" | "destructive";
+  variant?: 'default' | 'destructive';
   onConfirm: () => void;
   loading?: boolean;
 }
@@ -22,9 +28,9 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   onOpenChange,
   title,
   description,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  variant = "default",
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  variant = 'default',
   onConfirm,
   loading = false,
 }) => {
@@ -34,7 +40,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-md">
+      <DialogContent className="w-full max-w-md" aria-describedby="confirmation-description">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-destructive" />
@@ -42,22 +48,14 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">{description}</p>
+          <p id="confirmation-description" className="text-sm text-muted-foreground">{description}</p>
         </div>
         <DialogFooter>
-          <Button
-            onClick={() => onOpenChange(false)}
-            variant="outline"
-            disabled={loading}
-          >
+          <Button onClick={() => onOpenChange(false)} variant="outline" disabled={loading}>
             {cancelText}
           </Button>
-          <Button
-            onClick={handleConfirm}
-            variant={variant}
-            disabled={loading}
-          >
-            {loading ? "Processing..." : confirmText}
+          <Button onClick={handleConfirm} variant={variant} disabled={loading}>
+            {loading ? 'Processing...' : confirmText}
           </Button>
         </DialogFooter>
       </DialogContent>

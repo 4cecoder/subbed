@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
@@ -32,7 +32,7 @@ export function FeedbackDialog({ trigger }: FeedbackDialogProps) {
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
   const { isSubmitting, submissionResult, submitFeedback, clearResult } = useFeedback();
 
   if (!isEnabled) return null;
@@ -77,7 +77,7 @@ export function FeedbackDialog({ trigger }: FeedbackDialogProps) {
       setMessage('');
       setEmail('');
       setErrors({});
-      
+
       // Close dialog after a short delay
       setTimeout(() => {
         setIsOpen(false);
@@ -115,9 +115,7 @@ export function FeedbackDialog({ trigger }: FeedbackDialogProps) {
             <CheckCircle className="w-12 h-12 text-green-500" />
             <div className="text-center space-y-2">
               <h3 className="text-lg font-semibold">Thank you!</h3>
-              <p className="text-sm text-muted-foreground">
-                {submissionResult.message}
-              </p>
+              <p className="text-sm text-muted-foreground">{submissionResult.message}</p>
             </div>
           </div>
         ) : (
@@ -131,7 +129,7 @@ export function FeedbackDialog({ trigger }: FeedbackDialogProps) {
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map((cat) => (
+                  {CATEGORIES.map(cat => (
                     <SelectItem key={cat.value} value={cat.value}>
                       {cat.label}
                     </SelectItem>
@@ -153,7 +151,7 @@ export function FeedbackDialog({ trigger }: FeedbackDialogProps) {
               <Textarea
                 id="message"
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={e => setMessage(e.target.value)}
                 placeholder="Tell us what you think..."
                 rows={4}
                 className={errors.message ? 'border-red-500' : ''}
@@ -181,7 +179,7 @@ export function FeedbackDialog({ trigger }: FeedbackDialogProps) {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 className={errors.email ? 'border-red-500' : ''}
                 aria-invalid={!!errors.email}

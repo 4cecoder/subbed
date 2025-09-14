@@ -1,4 +1,5 @@
 Util commands for the system (Linux):
+
 - File operations: ls, cd, mkdir, rm, cp, mv
 - Text processing: grep, sed, awk, cat, head, tail
 - Process management: ps, kill, top

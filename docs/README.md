@@ -5,22 +5,26 @@ Welcome to the comprehensive documentation for **Subbed** — a YouTube subscrip
 ## 📚 Documentation Structure
 
 ### 🚀 Getting Started
+
 - [**Setup Guide**](./SETUP.md) - Installation and configuration instructions
 - [**Architecture Overview**](./ARCHITECTURE.md) - System design and component relationships
 - [**Features**](./FEATURES.md) - Complete feature documentation
 
 ### 🔧 Technical Documentation
+
 - [**API Documentation**](./API.md) - API endpoints and usage
 - [**Deployment Guide**](./DEPLOYMENT.md) - Production deployment instructions
 - [**Performance Optimization**](./PERFORMANCE.md) - Performance improvements and monitoring
 - [**Hybrid Storage**](./HYBRID_STORAGE.md) - Offline-first architecture details
 
 ### 🛠️ Development
+
 - [**Contributing Guidelines**](./CONTRIBUTING.md) - How to contribute to the project
 - [**Testing Guide**](./TESTING.md) - Testing strategies and procedures
 - [**Code Style**](./CODE_STYLE.md) - Coding conventions and best practices
 
 ### 📋 Troubleshooting
+
 - [**Common Issues**](./TROUBLESHOOTING.md) - Solutions to common problems
 - [**Bug Fixes**](./BUG_FIXES.md) - Documented bug fixes and solutions
 - [**Migration Guide**](./MIGRATION.md) - Data migration and upgrade procedures
@@ -28,11 +32,13 @@ Welcome to the comprehensive documentation for **Subbed** — a YouTube subscrip
 ## 🎯 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+ or Bun
 - Convex account
 - Clerk account (for authentication)
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/4cecoder/subbed.git
@@ -50,6 +56,7 @@ bun run dev
 ```
 
 ### Key Features
+
 - 🎥 **YouTube Subscription Management** - Organize and filter your YouTube subscriptions
 - 🔐 **Authentication** - Secure user authentication with Clerk
 - 🌐 **Real-time Sync** - Instant synchronization across all devices
@@ -99,6 +106,7 @@ We welcome contributions! Please read our [Contributing Guidelines](./CONTRIBUTI
 ## 📞 Support
 
 If you need help:
+
 1. Check the [Troubleshooting Guide](./TROUBLESHOOTING.md)
 2. Search existing [Bug Fixes](./BUG_FIXES.md)
 3. Open an issue on GitHub

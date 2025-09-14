@@ -1,17 +1,17 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { query, mutation } from './_generated/server';
+import { v } from 'convex/values';
 
 export const getSubscriptions = query({
   args: {},
-  handler: async (ctx) => {
+  handler: async ctx => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       return [];
     }
     return await ctx.db
-      .query("subscriptions")
-      .filter((q) => q.eq(q.field("userId"), identity.subject))
-      .order("desc")
+      .query('subscriptions')
+      .filter(q => q.eq(q.field('userId'), identity.subject))
+      .order('desc')
       .collect();
   },
 });
@@ -26,16 +26,13 @@ export const addSubscription = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Not authenticated");
+      throw new Error('Not authenticated');
     }
-    
+
     const existingSubscription = await ctx.db
-      .query("subscriptions")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), identity.subject),
-          q.eq(q.field("channelId"), args.channelId)
-        )
+      .query('subscriptions')
+      .filter(q =>
+        q.and(q.eq(q.field('userId'), identity.subject), q.eq(q.field('channelId'), args.channelId))
       )
       .first();
 
@@ -51,7 +48,7 @@ export const addSubscription = mutation({
     }
 
     // Create new subscription
-    const subscriptionId = await ctx.db.insert("subscriptions", {
+    const subscriptionId = await ctx.db.insert('subscriptions', {
       userId: identity.subject,
       channelId: args.channelId,
       channelName: args.channelName,
@@ -60,7 +57,7 @@ export const addSubscription = mutation({
       createdAt: new Date().toISOString(),
       lastSyncedAt: new Date().toISOString(),
     });
-    
+
     return subscriptionId;
   },
 });
@@ -70,16 +67,13 @@ export const removeSubscription = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Not authenticated");
+      throw new Error('Not authenticated');
     }
-    
+
     const subscription = await ctx.db
-      .query("subscriptions")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), identity.subject),
-          q.eq(q.field("channelId"), args.channelId)
-        )
+      .query('subscriptions')
+      .filter(q =>
+        q.and(q.eq(q.field('userId'), identity.subject), q.eq(q.field('channelId'), args.channelId))
       )
       .first();
 
@@ -93,17 +87,17 @@ export const removeSubscription = mutation({
 
 export const clearSubscriptions = mutation({
   args: {},
-  handler: async (ctx) => {
+  handler: async ctx => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Not authenticated");
+      throw new Error('Not authenticated');
     }
-    
+
     const subscriptions = await ctx.db
-      .query("subscriptions")
-      .filter((q) => q.eq(q.field("userId"), identity.subject))
+      .query('subscriptions')
+      .filter(q => q.eq(q.field('userId'), identity.subject))
       .collect();
-    
+
     for (const subscription of subscriptions) {
       await ctx.db.delete(subscription._id);
     }
@@ -121,16 +115,13 @@ export const syncSubscription = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Not authenticated");
+      throw new Error('Not authenticated');
     }
-    
+
     const existingSubscription = await ctx.db
-      .query("subscriptions")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), identity.subject),
-          q.eq(q.field("channelId"), args.channelId)
-        )
+      .query('subscriptions')
+      .filter(q =>
+        q.and(q.eq(q.field('userId'), identity.subject), q.eq(q.field('channelId'), args.channelId))
       )
       .first();
 
@@ -144,7 +135,7 @@ export const syncSubscription = mutation({
       return existingSubscription._id;
     }
 
-    const subscriptionId = await ctx.db.insert("subscriptions", {
+    const subscriptionId = await ctx.db.insert('subscriptions', {
       userId: identity.subject,
       channelId: args.channelId,
       channelName: args.channelName,
@@ -153,7 +144,7 @@ export const syncSubscription = mutation({
       createdAt: args.createdAt,
       lastSyncedAt: new Date().toISOString(),
     });
-    
+
     return subscriptionId;
   },
 });

@@ -15,6 +15,7 @@ A modern, real-time YouTube subscription manager built with Next.js, Convex, and
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+ or Bun
 - Convex account
 - Clerk account
@@ -58,21 +59,25 @@ NEXT_PUBLIC_ANALYTICS_ID=your_analytics_id
 Comprehensive documentation is available in the [`docs/`](./docs/) directory:
 
 ### 📖 Getting Started
+
 - [**Setup Guide**](./docs/SETUP.md) - Installation and configuration
 - [**Architecture Overview**](./docs/ARCHITECTURE.md) - System design and components
 
 ### 🔧 Technical Documentation
+
 - [**API Documentation**](./docs/API.md) - API endpoints and usage
 - [**Deployment Guide**](./docs/DEPLOYMENT.md) - Production deployment
 - [**Performance Guide**](./docs/PERFORMANCE.md) - Performance optimization
 - [**Hybrid Storage**](./docs/HYBRID_STORAGE.md) - Offline-first architecture
 
 ### 🛠️ Development
+
 - [**Contributing Guide**](./docs/CONTRIBUTING.md) - How to contribute
 - [**Testing Guide**](./docs/TESTING.md) - Testing strategies
 - [**Code Style Guide**](./docs/CODE_STYLE.md) - Coding conventions
 
 ### 📋 Additional Resources
+
 - [**Troubleshooting**](./docs/TROUBLESHOOTING.md) - Common issues and solutions
 - [**Bug Fixes**](./docs/BUG_FIXES.md) - Documented bug fixes
 - [**Migration Guide**](./docs/MIGRATION.md) - Data migration procedures

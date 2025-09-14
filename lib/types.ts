@@ -29,8 +29,8 @@ export interface RawFeedItem {
   isShort?: boolean;
 }
 
-export type FeedType = "all" | "video" | "short";
-export type SortOrder = "newest" | "oldest";
+export type FeedType = 'all' | 'video' | 'short';
+export type SortOrder = 'newest' | 'oldest';
 
 export interface UserSettings {
   per_page: number;

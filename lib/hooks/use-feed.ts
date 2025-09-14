@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
-import { FeedItem, UseFeedReturn, UserSettings } from "@/lib/types";
-import { apiClient } from "@/lib/api-client";
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { FeedItem, UseFeedReturn, UserSettings } from '@/lib/types';
+import { apiClient } from '@/lib/api-client';
 
 export function useFeed(settings: UserSettings | null): UseFeedReturn {
   const [feed, setFeed] = useState<FeedItem[]>([]);
@@ -16,84 +16,90 @@ export function useFeed(settings: UserSettings | null): UseFeedReturn {
     if (!settings) return feed;
 
     const feedType = settings.defaultFeedType;
-    if (feedType === "all") return feed;
+    if (feedType === 'all') return feed;
 
-    return feed.filter((item) => {
-      if (feedType === "video") return !item.isShort;
-      if (feedType === "short") return !!item.isShort;
+    return feed.filter(item => {
+      if (feedType === 'video') return !item.isShort;
+      if (feedType === 'short') return !!item.isShort;
       return true;
     });
   }, [feed, settings]);
 
-  const loadFeed = useCallback(async (pageToLoad = 1, search = "") => {
-    if (!settings) return;
-    
-    setError(null);
-    setLoading(true);
+  const loadFeed = useCallback(
+    async (pageToLoad = 1, search = '') => {
+      if (!settings) return;
 
-    try {
-      const perPage = settings.per_page || 20;
-      const feedType = settings.defaultFeedType || "all";
+      setError(null);
+      setLoading(true);
 
-      const response = await apiClient.getFeed(pageToLoad, perPage, search, feedType);
-      const data = response.data;
+      try {
+        const perPage = settings.per_page || 20;
+        const feedType = settings.defaultFeedType || 'all';
 
-      const items: FeedItem[] = (data.items || []);
-      if (pageToLoad === 1) {
-        setFeed(items);
-      } else {
-        setFeed((prev) => [...prev, ...items]);
+        const response = await apiClient.getFeed(pageToLoad, perPage, search, feedType);
+        const data = response.data;
+
+        const items: FeedItem[] = data.items || [];
+        if (pageToLoad === 1) {
+          setFeed(items);
+        } else {
+          setFeed(prev => [...prev, ...items]);
+        }
+
+        const totalCount = Number(data.total || 0);
+        setHasMore(pageToLoad * perPage < totalCount);
+        setPage(pageToLoad);
+        setTotal(totalCount || null);
+        setSelectedId('all');
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load feed';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
       }
+    },
+    [settings]
+  );
 
-      const totalCount = Number(data.total || 0);
-      setHasMore(pageToLoad * perPage < totalCount);
-      setPage(pageToLoad);
-      setTotal(totalCount || null);
-      setSelectedId("all");
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load feed";
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, [settings]);
+  const loadChannelFeed = useCallback(
+    async (channelId: string) => {
+      if (!settings) return;
 
-  const loadChannelFeed = useCallback(async (channelId: string) => {
-    if (!settings) return;
-    
-    setError(null);
-    setLoading(true);
-    setFeed([]);
+      setError(null);
+      setLoading(true);
+      setFeed([]);
 
-    try {
-      const limit = settings.per_channel || 10;
-      const feedType = settings.defaultFeedType || "all";
+      try {
+        const limit = settings.per_channel || 10;
+        const feedType = settings.defaultFeedType || 'all';
 
-      const response = await apiClient.getRssFeed(channelId, limit, feedType);
-      const data = response.data;
+        const response = await apiClient.getRssFeed(channelId, limit, feedType);
+        const data = response.data;
 
-      const items: FeedItem[] = (data.items || []).map((item: unknown) => ({
-        ...item,
-        channelId: data.channelId,
-        channelTitle: data.channelTitle,
-      }));
+        const items: FeedItem[] = (data.items || []).map((item: unknown) => ({
+          ...item,
+          channelId: data.channelId,
+          channelTitle: data.channelTitle,
+        }));
 
-      setFeed(items);
-      setTotal(items.length);
-      setHasMore(false);
-      setPage(1);
-      setSelectedId(channelId);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load channel feed";
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, [settings]);
+        setFeed(items);
+        setTotal(items.length);
+        setHasMore(false);
+        setPage(1);
+        setSelectedId(channelId);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load channel feed';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [settings]
+  );
 
   const refreshCurrentFeed = useCallback(async () => {
-    if (selectedId === "all") {
-      await loadFeed(1, "");
+    if (selectedId === 'all') {
+      await loadFeed(1, '');
     } else if (selectedId) {
       await loadChannelFeed(selectedId);
     }
@@ -102,7 +108,7 @@ export function useFeed(settings: UserSettings | null): UseFeedReturn {
   // Auto-load feed when settings are available
   useEffect(() => {
     if (settings && selectedId === null) {
-      loadFeed(1, "");
+      loadFeed(1, '');
     }
   }, [settings, selectedId, loadFeed]);
 

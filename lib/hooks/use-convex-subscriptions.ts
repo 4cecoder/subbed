@@ -1,5 +1,5 @@
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 export function useConvexSubscriptions() {
   // Try to get authenticated subscriptions first
@@ -9,18 +9,22 @@ export function useConvexSubscriptions() {
   const devSubscriptions = useQuery(api.dev_subscriptions.getDevSubscriptions);
 
   // Use authenticated subscriptions if available, otherwise fall back to dev subscriptions
-  const subscriptions = authSubscriptions !== undefined
-    ? authSubscriptions
-    : devSubscriptions || [];
+  const subscriptions =
+    authSubscriptions !== undefined ? authSubscriptions : devSubscriptions || [];
 
-  const loading = (authSubscriptions === undefined) && (devSubscriptions === undefined);
+  const loading = authSubscriptions === undefined && devSubscriptions === undefined;
 
   // Mutations
   const addSubscriptionMutation = useMutation(api.subscriptions.addSubscription);
   const removeSubscriptionMutation = useMutation(api.subscriptions.removeSubscription);
   const clearSubscriptionsMutation = useMutation(api.subscriptions.clearSubscriptions);
 
-  const addSubscription = async (channelId: string, channelName: string, channelLogoUrl: string, channelUrl: string) => {
+  const addSubscription = async (
+    channelId: string,
+    channelName: string,
+    channelLogoUrl: string,
+    channelUrl: string
+  ) => {
     await addSubscriptionMutation({ channelId, channelName, channelLogoUrl, channelUrl });
   };
 

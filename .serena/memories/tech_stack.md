@@ -1,4 +1,5 @@
 Tech stack:
+
 - Frontend: Next.js 15.5.3, React 19.1.0, TypeScript 5
 - Styling: Tailwind CSS 4, Radix UI components (Dialog, ScrollArea, Slot), Lucide React icons
 - State management: React hooks (useState, useEffect)
