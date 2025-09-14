@@ -112,8 +112,11 @@ export const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
   }, [removeSubscription]);
 
   const handleClearAll = useCallback(async () => {
+    console.log('handleClearAll called - starting clear process');
     try {
+      console.log('About to call clearSubscriptions mutation');
       await clearSubscriptions();
+      console.log('clearSubscriptions completed successfully');
       setShowClearConfirm(false);
     } catch (error) {
       console.error('Failed to clear subscriptions:', error);

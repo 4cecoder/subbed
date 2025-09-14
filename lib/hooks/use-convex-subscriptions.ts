@@ -8,10 +8,10 @@ export function useConvexSubscriptions() {
   // Fall back to dev subscriptions if no authenticated subscriptions are available
   const devSubscriptions = useQuery(api.dev_subscriptions.getDevSubscriptions);
 
-  // Use dev subscriptions in development mode when no auth subscriptions exist
-  const subscriptions = authSubscriptions && authSubscriptions.length > 0
+  // Use authenticated subscriptions if available, otherwise fall back to dev subscriptions
+  const subscriptions = authSubscriptions !== undefined
     ? authSubscriptions
-    : devSubscriptions;
+    : devSubscriptions || [];
 
   const loading = (authSubscriptions === undefined) && (devSubscriptions === undefined);
 
@@ -29,7 +29,15 @@ export function useConvexSubscriptions() {
   };
 
   const clearSubscriptions = async () => {
-    await clearSubscriptionsMutation({});
+    console.log('clearSubscriptions hook called');
+    try {
+      console.log('Calling clearSubscriptionsMutation');
+      await clearSubscriptionsMutation({});
+      console.log('clearSubscriptionsMutation completed');
+    } catch (error) {
+      console.error('Error in clearSubscriptions hook:', error);
+      throw error;
+    }
   };
 
   const refreshSubscriptions = async () => {
