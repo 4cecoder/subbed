@@ -147,7 +147,9 @@ describe('useConvexSettings', () => {
   it('refreshes settings', async () => {
     const { result } = renderHook(() => useConvexSettings());
 
-    await result.current.refreshSettings();
+    await act(async () => {
+      await result.current.refreshSettings();
+    });
 
     // Should not throw error and should maintain current settings
     expect(result.current.settings).toEqual(mockConvexSettings);
@@ -161,7 +163,9 @@ describe('useConvexSettings', () => {
 
     const { result } = renderHook(() => useConvexSettings());
 
-    await result.current.refreshSettings();
+    await act(async () => {
+      await result.current.refreshSettings();
+    });
 
     expect(result.current.error).toBe('Failed to fetch settings');
   });

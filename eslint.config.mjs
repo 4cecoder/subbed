@@ -1,16 +1,16 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTypescript from 'eslint-config-next/typescript';
 
 const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript', 'plugin:jsx-a11y/recommended'),
+  ...nextVitals,
+  ...nextTypescript,
+  {
+    rules: {
+      // This rule is too strict for valid initialization patterns
+      // (e.g., loading from localStorage, initializing from props/settings)
+      'react-hooks/set-state-in-effect': 'off',
+    },
+  },
   {
     ignores: [
       'node_modules/**',

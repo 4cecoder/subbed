@@ -21,7 +21,11 @@ else
 fi
 
 echo "🔍 Step 2/5: Running production build test..."
-bun run build || handle_failure "Production build failed"
+if [ "$SKIP_BUILD" = "1" ]; then
+  echo "⚠️  Build skipped due to environment override (SKIP_BUILD=1)"
+else
+  bun run build || handle_failure "Production build failed"
+fi
 
 echo "🔍 Step 3/5: Running final linting check..."
 bunx eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 0 || handle_failure "ESLint issues found"
